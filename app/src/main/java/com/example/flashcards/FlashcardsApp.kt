@@ -18,22 +18,36 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.flashcards.data.DeckDatasource
+import com.example.flashcards.data.FlashcardDatasource
 import com.example.flashcards.data.Screens
+import com.example.flashcards.ui.decks.DeckOverview
 
 @Composable
 fun FlashcardsApp(
     navController: NavHostController = rememberNavController()
 ) {
+    val deckDatasource = DeckDatasource()
+    val flashcardDatasource = FlashcardDatasource()
+
     val backStackEntry by navController.currentBackStackEntryAsState()
     val screenRoute = backStackEntry?.destination?.route ?: Screens.HomeScreen.name
-    val currentScreen = Screens.valueOf(screenRoute)
+    val baseRoute = screenRoute.substringBefore("/")
 
-    val topBarTitle: String = currentScreen.title
-
+    val topBarTitle: String = when (val currentScreen = Screens.valueOf(baseRoute)) {
+        Screens.DeckOverview -> {
+            val deckId = backStackEntry?.arguments?.getInt("deckId") ?: 0
+            val deck = deckDatasource.loadDeckById(deckId)
+            deck?.name ?: currentScreen.title
+        }
+        else -> currentScreen.title
+    }
 
     Scaffold(
         topBar = {
@@ -54,22 +68,35 @@ fun FlashcardsApp(
                     // TODO: Implement HomeScreen Composable
                     Text("Home Screen Placeholder")
 
-                    Button(onClick = { navController.navigate(Screens.DeckOverview.name) }) {
+                    Button(
+                        onClick = {
+                            navController.navigate("${Screens.DeckOverview.name}/1")
+                        }
+                    ) {
                         Text("Go to Deck Overview")
                     }
                 }
             }
 
-            composable(Screens.DeckOverview.name) {
-                // TODO: Implement DeckOverview Composable
-                Text("Deck Overview Placeholder")
+            composable(
+                route = "${Screens.DeckOverview.name}/{deckId}",
+                arguments = listOf(navArgument("deckId") { type = NavType.IntType })
+            ) {
+                val deckId = it.arguments?.getInt("deckId") ?: 0
+                val deck = deckDatasource.loadDeckById(deckId)
+                val flashCards = flashcardDatasource.loadFlashcards()
+
+                if (deck != null) {
+                    DeckOverview(deck, flashCards)
+                } else {
+                    Text("Deck not found")
+                }
             }
 
             // TODO: Implement other screens in the navigation graph
         }
     }
 }
-
 
 @Composable
 private fun FlashCardsAppTopBar(
