@@ -1,4 +1,4 @@
-package com.example.flashcards.ui.decks
+package io.github.robinphillips98.flashcards.ui.decks
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,8 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.flashcards.model.DeckInfo
-import com.example.flashcards.model.FlashcardInfo
+import io.github.robinphillips98.flashcards.model.DeckInfo
+import io.github.robinphillips98.flashcards.model.FlashcardInfo
 
 @Composable
 fun DeckOverview(

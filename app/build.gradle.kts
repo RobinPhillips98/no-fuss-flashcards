@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.flashcards"
+    namespace = "io.github.robinphillips98.flashcards"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.flashcards"
+        applicationId = "io.github.robinphillips98.flashcards"
         minSdk = 24
         targetSdk = 37
         versionCode = 1

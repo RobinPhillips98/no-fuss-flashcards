@@ -1,4 +1,4 @@
-package com.example.flashcards.ui.theme
+package io.github.robinphillips98.flashcards.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

@@ -1,6 +1,6 @@
-package com.example.flashcards.data
+package io.github.robinphillips98.flashcards.data
 
-import com.example.flashcards.model.FlashcardInfo
+import io.github.robinphillips98.flashcards.model.FlashcardInfo
 
 class FlashcardDatasource {
     private val flashCards = listOf(

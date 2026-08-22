@@ -1,4 +1,4 @@
-package com.example.flashcards.model
+package io.github.robinphillips98.flashcards.model
 
 data class FlashcardInfo(
     val id: Int,

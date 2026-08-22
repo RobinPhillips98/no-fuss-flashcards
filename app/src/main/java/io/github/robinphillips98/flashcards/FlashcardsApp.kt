@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.example.flashcards
+package io.github.robinphillips98.flashcards
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -24,11 +24,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.flashcards.data.DeckDatasource
-import com.example.flashcards.data.FlashcardDatasource
-import com.example.flashcards.data.Screens
-import com.example.flashcards.ui.decks.DeckFlashcards
-import com.example.flashcards.ui.decks.DeckOverview
+import io.github.robinphillips98.flashcards.data.DeckDatasource
+import io.github.robinphillips98.flashcards.data.FlashcardDatasource
+import io.github.robinphillips98.flashcards.data.Screens
+import io.github.robinphillips98.flashcards.ui.decks.DeckFlashcards
+import io.github.robinphillips98.flashcards.ui.decks.DeckOverview
 
 @Composable
 fun FlashcardsApp(

@@ -1,4 +1,4 @@
-package com.example.flashcards.ui.flashcards
+package io.github.robinphillips98.flashcards.ui.flashcards
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.flashcards.model.FlashcardInfo
+import io.github.robinphillips98.flashcards.model.FlashcardInfo
 
 @Composable
 fun Flashcard(

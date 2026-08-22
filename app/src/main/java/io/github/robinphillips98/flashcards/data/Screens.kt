@@ -1,4 +1,4 @@
-package com.example.flashcards.data
+package io.github.robinphillips98.flashcards.data
 
 enum class Screens(val title: String) {
     HomeScreen("Flashcards App"),

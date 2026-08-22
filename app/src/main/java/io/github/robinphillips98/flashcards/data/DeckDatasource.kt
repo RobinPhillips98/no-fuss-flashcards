@@ -1,6 +1,6 @@
-package com.example.flashcards.data
+package io.github.robinphillips98.flashcards.data
 
-import com.example.flashcards.model.DeckInfo
+import io.github.robinphillips98.flashcards.model.DeckInfo
 
 class DeckDatasource {
     private val sampleDeck = DeckInfo(

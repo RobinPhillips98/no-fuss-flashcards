@@ -1,4 +1,4 @@
-package com.example.flashcards.ui.decks
+package io.github.robinphillips98.flashcards.ui.decks
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -18,11 +18,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import com.example.flashcards.model.FlashcardInfo
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.flashcards.model.DeckInfo
-import com.example.flashcards.ui.flashcards.Flashcard
+import io.github.robinphillips98.flashcards.model.DeckInfo
+import io.github.robinphillips98.flashcards.model.FlashcardInfo
+import io.github.robinphillips98.flashcards.ui.flashcards.Flashcard
 
 @Composable
 fun DeckFlashcards(
