@@ -27,6 +27,7 @@ import androidx.navigation.navArgument
 import com.example.flashcards.data.DeckDatasource
 import com.example.flashcards.data.FlashcardDatasource
 import com.example.flashcards.data.Screens
+import com.example.flashcards.ui.decks.DeckFlashcards
 import com.example.flashcards.ui.decks.DeckOverview
 
 @Composable
@@ -41,7 +42,7 @@ fun FlashcardsApp(
     val baseRoute = screenRoute.substringBefore("/")
 
     val topBarTitle: String = when (val currentScreen = Screens.valueOf(baseRoute)) {
-        Screens.DeckOverview -> {
+        Screens.DeckOverview, Screens.DeckFlashcards -> {
             val deckId = backStackEntry?.arguments?.getInt("deckId") ?: 0
             val deck = deckDatasource.loadDeckById(deckId)
             deck?.name ?: currentScreen.title
@@ -87,7 +88,28 @@ fun FlashcardsApp(
                 val flashCards = flashcardDatasource.loadFlashcards()
 
                 if (deck != null) {
-                    DeckOverview(deck, flashCards)
+                    DeckOverview(
+                        deck = deck,
+                        flashCards = flashCards,
+                        onOpenCardsClicked = {
+                            navController.navigate("${Screens.DeckFlashcards.name}/$deckId")
+                        }
+                    )
+                } else {
+                    Text("Deck not found")
+                }
+            }
+
+            composable(
+                route = "${Screens.DeckFlashcards.name}/{deckId}",
+                arguments = listOf(navArgument("deckId") { type = NavType.IntType })
+            ) {
+                val deckId = it.arguments?.getInt("deckId") ?: 0
+                val deck = deckDatasource.loadDeckById(deckId)
+                val flashcards = flashcardDatasource.loadFlashcards()
+
+                if (deck != null) {
+                    DeckFlashcards(deck = deck, flashcards = flashcards)
                 } else {
                     Text("Deck not found")
                 }

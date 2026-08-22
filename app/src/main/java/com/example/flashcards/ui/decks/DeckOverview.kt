@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +30,7 @@ import com.example.flashcards.model.FlashcardInfo
 fun DeckOverview(
     deck: DeckInfo,
     flashCards: List<FlashcardInfo>,
+    onOpenCardsClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (flashCards.isNotEmpty()) {
@@ -41,6 +43,13 @@ fun DeckOverview(
                 text = "Deck: ${deck.name}",
                 style = MaterialTheme.typography.titleMedium
             )
+
+            Button(
+                onClick = onOpenCardsClicked,
+                modifier = Modifier.padding(vertical = 8.dp)
+            ) {
+                Text(text = "Open Cards")
+            }
 
             HorizontalDivider()
 
