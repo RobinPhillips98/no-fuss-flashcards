@@ -1,8 +1,17 @@
 package com.example.flashcards.ui.decks
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -11,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import com.example.flashcards.model.FlashcardInfo
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.flashcards.model.DeckInfo
 import com.example.flashcards.ui.flashcards.Flashcard
 
@@ -21,14 +31,41 @@ fun DeckFlashcards(
     modifier: Modifier = Modifier
 ) {
     if (flashcards.isNotEmpty()) {
-        Text(
-            text = "Deck: ${deck.name}",
-            style = MaterialTheme.typography.titleMedium
-        )
+        val pageCount = flashcards.size * 400
+        val pagerState = rememberPagerState(initialPage = pageCount / 2, pageCount = { pageCount })
+        val currentCard = (pagerState.currentPage % flashcards.size) + 1
 
-        HorizontalDivider()
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(top = 8.dp)
+        ) {
+            Text(
+                text = "Deck: ${deck.name}",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+            Text(
+                text = "Card $currentCard/${flashcards.size}",
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+            )
 
-        FlashcardsPager(flashcards)
+            Spacer(modifier = Modifier.height(4.dp))
+            HorizontalDivider()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                FlashcardsPager(
+                    flashcards = flashcards,
+                    pagerState = pagerState,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
     } else {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(text = "No flashcards available in this deck.")
@@ -37,15 +74,36 @@ fun DeckFlashcards(
 }
 
 @Composable
-private fun FlashcardsPager(flashcards: List<FlashcardInfo>) {
-    val pageCount = flashcards.size * 400
-    val pagerState = rememberPagerState(initialPage = pageCount / 2, pageCount = { pageCount })
+private fun FlashcardsPager(
+    flashcards: List<FlashcardInfo>,
+    pagerState: PagerState,
+    modifier: Modifier = Modifier
+) {
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+        val availableWidth = maxWidth
+        val availableHeight = maxHeight
+        val pageWidth = (availableWidth * 0.88f).coerceIn(280.dp, 560.dp)
+        val cardHeight = (availableHeight * 0.45f).coerceIn(240.dp, 420.dp)
+        val horizontalInset = ((availableWidth - pageWidth) / 2).coerceAtLeast(8.dp)
 
-    HorizontalPager(
-        state = pagerState,
-        modifier = Modifier.fillMaxSize()
-    ) { page ->
-        val flashcard = flashcards[page % flashcards.size]
-        Flashcard(flashcardData = flashcard, modifier = Modifier.fillMaxSize())
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 12.dp, bottom = 8.dp),
+            pageSize = PageSize.Fixed(pageWidth),
+            contentPadding = PaddingValues(horizontal = horizontalInset),
+            pageSpacing = 12.dp
+        ) { page ->
+            val flashcard = flashcards[page % flashcards.size]
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Flashcard(
+                    flashcardData = flashcard,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(cardHeight)
+                )
+            }
+        }
     }
 }
