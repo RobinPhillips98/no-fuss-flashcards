@@ -1,17 +1,24 @@
 package io.github.robinphillips98.flashcards.ui.decks
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +38,7 @@ fun DeckOverview(
     deck: DeckInfo,
     flashCards: List<FlashcardInfo>,
     onOpenCardsClicked: () -> Unit,
+    onFlashCardClicked: (id: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (flashCards.isNotEmpty()) {
@@ -62,7 +70,7 @@ fun DeckOverview(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(flashCards) { flashcard ->
-                    FlashcardItem(flashcard = flashcard)
+                    FlashcardItem(flashcard = flashcard, onFlashCardClicked = onFlashCardClicked)
                 }
             }
         }
@@ -75,19 +83,43 @@ fun DeckOverview(
 }
 
 @Composable
-private fun FlashcardItem(flashcard: FlashcardInfo, modifier: Modifier = Modifier) {
+private fun FlashcardItem(
+    flashcard: FlashcardInfo,
+    onFlashCardClicked: (id: Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
 
 
-    Card(modifier = modifier.fillMaxSize())
-    {
+    Card(
+        onClick = { onFlashCardClicked(flashcard.id) },
+        modifier = modifier.fillMaxSize(),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
         Column(
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxSize()
         ) {
-            Text(
-                text = flashcard.term,
-                style = MaterialTheme.typography.titleSmall
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = flashcard.term,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    imageVector = Icons.Filled.ChevronRight,
+                    contentDescription = "Open flashcard",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            HorizontalDivider(
+                thickness = 2.dp,
+                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
             )
 
             ExpandableDescriptionText(text = flashcard.definition)

@@ -2,6 +2,7 @@
 
 package io.github.robinphillips98.flashcards
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -81,7 +82,7 @@ fun FlashcardsApp(
             ) {
                 val deckId = it.arguments?.getInt("deckId") ?: 0
                 val deck = deckDatasource.loadDeckById(deckId)
-                val flashCards = flashcardDatasource.loadFlashcards()
+                val flashCards = flashcardDatasource.loadFlashcardsByDeckId(deckId)
 
                 if (deck != null) {
                     DeckOverview(
@@ -89,6 +90,20 @@ fun FlashcardsApp(
                         flashCards = flashCards,
                         onOpenCardsClicked = {
                             navController.navigate("${Screens.DeckFlashcards.name}/$deckId")
+                        },
+                        onFlashCardClicked = { flashcardId ->
+                            val flashcard = flashcardDatasource.getFlashcardById(flashcardId)
+                            if (flashcard != null) {
+                                navController.navigate(
+                                    "${Screens.DeckFlashcards.name}/$deckId?flashcardId=$flashcardId"
+                                )
+                            } else {
+                                Toast.makeText(
+                                    navController.context,
+                                    "Flashcard not found",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     )
                 } else {
@@ -97,15 +112,27 @@ fun FlashcardsApp(
             }
 
             composable(
-                route = "${Screens.DeckFlashcards.name}/{deckId}",
-                arguments = listOf(navArgument("deckId") { type = NavType.IntType })
-            ) {
-                val deckId = it.arguments?.getInt("deckId") ?: 0
+                route = "${Screens.DeckFlashcards.name}/{deckId}?flashcardId={flashcardId}",
+                arguments = listOf(
+                    navArgument("deckId") { type = NavType.IntType },
+                    navArgument("flashcardId") {
+                        type = NavType.IntType
+                        defaultValue = -1
+                    }
+                )
+            ) { entry ->
+                val deckId = entry.arguments?.getInt("deckId") ?: 0
+                val flashcardId = entry.arguments?.getInt("flashcardId") ?: -1
+                val selectedFlashcardId = flashcardId.takeIf { it != -1 }
                 val deck = deckDatasource.loadDeckById(deckId)
-                val flashcards = flashcardDatasource.loadFlashcards()
+                val flashcards = flashcardDatasource.loadFlashcardsByDeckId(deckId)
 
                 if (deck != null) {
-                    DeckFlashcards(deck = deck, flashcards = flashcards)
+                    DeckFlashcards(
+                        deck = deck,
+                        flashcards = flashcards,
+                        selectedFlashcardId = selectedFlashcardId
+                    )
                 } else {
                     Text("Deck not found")
                 }

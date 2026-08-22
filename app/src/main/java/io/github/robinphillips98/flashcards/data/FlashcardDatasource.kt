@@ -59,6 +59,10 @@ class FlashcardDatasource {
         return flashCards
     }
 
+    fun loadFlashcardsByDeckId(deckId: Int): List<FlashcardInfo> {
+        return flashCards.filter { it.deckId == deckId }
+    }
+
     fun getFlashcardById(id: Int): FlashcardInfo? {
         return try {
             flashCards[id - 1]

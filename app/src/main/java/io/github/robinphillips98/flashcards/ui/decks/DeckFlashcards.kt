@@ -28,11 +28,20 @@ import io.github.robinphillips98.flashcards.ui.flashcards.Flashcard
 fun DeckFlashcards(
     deck: DeckInfo,
     flashcards: List<FlashcardInfo>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    selectedFlashcardId: Int? = null
 ) {
     if (flashcards.isNotEmpty()) {
+        val selectedIndex = if (selectedFlashcardId != null) {
+            flashcards.indexOfFirst { it.id == selectedFlashcardId }.takeIf { it >= 0 } ?: 0
+        } else {
+            0
+        }
+
         val pageCount = flashcards.size * 400
-        val pagerState = rememberPagerState(initialPage = pageCount / 2, pageCount = { pageCount })
+        val base = pageCount / 2
+        val startPage = base - (base % flashcards.size) + selectedIndex
+        val pagerState = rememberPagerState(initialPage = startPage, pageCount = { pageCount })
         val currentCard = (pagerState.currentPage % flashcards.size) + 1
 
         Column(
