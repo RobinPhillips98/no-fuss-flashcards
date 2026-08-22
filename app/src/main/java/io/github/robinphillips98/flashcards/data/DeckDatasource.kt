@@ -6,6 +6,7 @@ class DeckDatasource {
     private val sampleDeck = DeckInfo(
         id = 1,
         name = "Sample Deck",
+        description = "This is a sample deck for testing purposes."
     )
 
     fun loadDecks(): List<DeckInfo> {

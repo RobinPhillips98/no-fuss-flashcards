@@ -2,9 +2,7 @@
 
 package io.github.robinphillips98.flashcards
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,6 +25,7 @@ import androidx.navigation.navArgument
 import io.github.robinphillips98.flashcards.data.DeckDatasource
 import io.github.robinphillips98.flashcards.data.FlashcardDatasource
 import io.github.robinphillips98.flashcards.data.Screens
+import io.github.robinphillips98.flashcards.ui.HomeScreen
 import io.github.robinphillips98.flashcards.ui.decks.DeckFlashcards
 import io.github.robinphillips98.flashcards.ui.decks.DeckOverview
 
@@ -64,19 +63,16 @@ fun FlashcardsApp(
             startDestination = Screens.HomeScreen.name,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable (Screens.HomeScreen.name) {
-                Column {
-                    // TODO: Implement HomeScreen Composable
-                    Text("Home Screen Placeholder")
 
-                    Button(
-                        onClick = {
-                            navController.navigate("${Screens.DeckOverview.name}/1")
-                        }
-                    ) {
-                        Text("Go to Deck Overview")
+            composable(route = Screens.HomeScreen.name) {
+                HomeScreen(
+                    decks = deckDatasource.loadDecks(),
+                    onCreateDeckClicked = { },
+                    onSettingsClicked = { },
+                    onDeckClicked = { deckId ->
+                        navController.navigate("${Screens.DeckOverview.name}/$deckId")
                     }
-                }
+                )
             }
 
             composable(
