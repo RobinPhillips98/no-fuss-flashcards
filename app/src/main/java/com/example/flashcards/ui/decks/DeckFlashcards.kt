@@ -38,10 +38,14 @@ fun DeckFlashcards(
 
 @Composable
 private fun FlashcardsPager(flashcards: List<FlashcardInfo>) {
-    val pagerState = rememberPagerState(initialPage = 0) { flashcards.size }
+    val pageCount = flashcards.size * 400
+    val pagerState = rememberPagerState(initialPage = pageCount / 2, pageCount = { pageCount })
 
-    HorizontalPager(state = pagerState, Modifier.fillMaxSize()) { page ->
-        val flashcard = flashcards[page]
+    HorizontalPager(
+        state = pagerState,
+        modifier = Modifier.fillMaxSize()
+    ) { page ->
+        val flashcard = flashcards[page % flashcards.size]
         Flashcard(flashcardData = flashcard, modifier = Modifier.fillMaxSize())
     }
 }
