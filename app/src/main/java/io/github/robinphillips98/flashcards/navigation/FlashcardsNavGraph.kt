@@ -11,9 +11,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import io.github.robinphillips98.flashcards.data.DeckDatasource
 import io.github.robinphillips98.flashcards.data.FlashcardDatasource
-import io.github.robinphillips98.flashcards.data.Screens
 import io.github.robinphillips98.flashcards.ui.decks.DeckDetailsDestination
 import io.github.robinphillips98.flashcards.ui.decks.DeckDetailsScreen
+import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardsPagerDestination
 import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardsPagerScreen
 import io.github.robinphillips98.flashcards.ui.home.HomeDestination
 import io.github.robinphillips98.flashcards.ui.home.HomeScreen
@@ -59,13 +59,15 @@ fun FlashcardsNavHost(
                     deck = deck,
                     flashCards = flashCards,
                     navigateToFlashcards = {
-                        navController.navigate("${Screens.DeckFlashcards.name}/$deckId")
+                        navController.navigate("${FlashcardsPagerDestination.route}/$deckId")
                     },
                     navigateToFlashcardWithId = { flashcardId ->
                         val flashcard = flashcardDatasource.getFlashcardById(flashcardId)
                         if (flashcard != null) {
                             navController.navigate(
-                                "${Screens.DeckFlashcards.name}/$deckId?flashcardId=$flashcardId"
+                                route = FlashcardsPagerDestination.route +
+                                        "/$deckId" +
+                                        "?${FlashcardsPagerDestination.FLASHCARD_ID_ARG}=$flashcardId"
                             )
                         } else {
                             Toast.makeText(
@@ -83,17 +85,19 @@ fun FlashcardsNavHost(
         }
 
         composable(
-            route = "${Screens.DeckFlashcards.name}/{deckId}?flashcardId={flashcardId}",
+            route = FlashcardsPagerDestination.routeWithArgs,
             arguments = listOf(
-                navArgument("deckId") { type = NavType.IntType },
-                navArgument("flashcardId") {
+                navArgument(FlashcardsPagerDestination.DECK_ID_ARG) {
+                    type = NavType.IntType
+                },
+                navArgument(FlashcardsPagerDestination.FLASHCARD_ID_ARG) {
                     type = NavType.IntType
                     defaultValue = -1
                 }
             )
         ) { entry ->
-            val deckId = entry.arguments?.getInt("deckId") ?: 0
-            val flashcardId = entry.arguments?.getInt("flashcardId") ?: -1
+            val deckId = entry.arguments?.getInt(FlashcardsPagerDestination.DECK_ID_ARG) ?: 0
+            val flashcardId = entry.arguments?.getInt(FlashcardsPagerDestination.FLASHCARD_ID_ARG) ?: -1
             val selectedFlashcardId = flashcardId.takeIf { it != -1 }
             val deck = deckDatasource.loadDeckById(deckId)
             val flashcards = flashcardDatasource.loadFlashcardsByDeckId(deckId)
@@ -102,6 +106,7 @@ fun FlashcardsNavHost(
                 FlashcardsPagerScreen(
                     deck = deck,
                     flashcards = flashcards,
+                    navigateBack = { navController.navigateUp() },
                     selectedFlashcardId = selectedFlashcardId
                 )
             } else {
@@ -109,6 +114,6 @@ fun FlashcardsNavHost(
             }
         }
 
-        // TODO: Implement other screens in the navigation graph
+        // TODO: Implement deck create/edit, flashcard create/edit, quiz, and settings screens
     }
 }

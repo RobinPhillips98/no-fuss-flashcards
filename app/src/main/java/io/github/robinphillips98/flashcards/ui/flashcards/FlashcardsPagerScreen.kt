@@ -13,18 +13,58 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.robinphillips98.flashcards.FlashCardsAppTopBar
 import io.github.robinphillips98.flashcards.data.decks.Deck
 import io.github.robinphillips98.flashcards.data.flashcards.Flashcard
+import io.github.robinphillips98.flashcards.navigation.NavigationDestination
 
+object FlashcardsPagerDestination: NavigationDestination {
+    override val route = "flashcards_pager"
+    override val title = "Flashcards Viewer"
+    const val DECK_ID_ARG = "deckId"
+    const val FLASHCARD_ID_ARG = "flashcardId"
+    val routeWithArgs = "$route/{$DECK_ID_ARG}?$FLASHCARD_ID_ARG={$FLASHCARD_ID_ARG}"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashcardsPagerScreen(
+    deck: Deck,
+    flashcards: List<Flashcard>,
+    navigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    selectedFlashcardId: Int? = null
+) {
+    Scaffold(
+        topBar = {
+            FlashCardsAppTopBar(
+                title = FlashcardsPagerDestination.title,
+                canNavigateBack = true,
+                navigateUp = navigateBack
+            )
+        },
+        modifier = modifier
+    ) { innerPadding ->
+        FlashcardsPagerBody(
+            deck = deck,
+            flashcards = flashcards,
+            modifier = modifier.padding(innerPadding),
+            selectedFlashcardId = selectedFlashcardId
+        )
+    }
+}
+
+@Composable
+private fun FlashcardsPagerBody(
     deck: Deck,
     flashcards: List<Flashcard>,
     modifier: Modifier = Modifier,
