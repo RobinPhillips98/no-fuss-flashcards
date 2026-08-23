@@ -57,7 +57,7 @@ fun DeckDetailsScreen(
     Scaffold(
         topBar = {
             FlashCardsAppTopBar(
-                title = deck.name,
+                title = DeckDetailsDestination.title,
                 canNavigateBack = true,
                 navigateUp = navigateBack
             )
