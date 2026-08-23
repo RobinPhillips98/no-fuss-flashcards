@@ -26,8 +26,6 @@ data class Flashcard(
     val flashcardId: Int,
     val term: String,
     val definition: String,
-    @ColumnInfo(name = "acceptable_answers")
-    val acceptableAnswers: List<String> = emptyList(),
     @ColumnInfo(name = "deck_id")
     val deckId: Int
 )

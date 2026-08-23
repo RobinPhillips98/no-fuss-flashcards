@@ -8,7 +8,6 @@ class FlashcardDatasource {
             flashcardId = 1,
             term = "AHA - American Hospital Organization",
             definition = "A national organization that represents hospitals, health systems, and other healthcare organizations and advocates for improvements in healthcare.",
-            acceptableAnswers = listOf("AHA", "American Hospital Organization"),
             deckId = 1
         ),
         Flashcard(
@@ -33,14 +32,12 @@ class FlashcardDatasource {
             flashcardId = 5,
             term = "C & S - Culture and Sensitivity",
             definition = "Laboratory testing used to identify microorganisms causing an infection and determine which antimicrobial medications are effective against them.",
-            acceptableAnswers = listOf("C & S", "C&S", "Culture and Sensitivity"),
             deckId = 1
         ),
         Flashcard(
             flashcardId = 6,
             term = "CE - Continuing Education",
             definition = "Education completed after initial training to maintain or improve professional knowledge and skills and, when applicable, meet certification or licensure requirements.",
-            acceptableAnswers = listOf("CE", "Continuing Education"),
             deckId = 1
         ),
         Flashcard(
@@ -59,7 +56,6 @@ class FlashcardDatasource {
             flashcardId = 9,
             term = "CLIA '88 - Clinical Laboratory Improvement Amendments of 1998",
             definition = "Federal regulations establishing quality standards for laboratory testing performed on human specimens to help ensure accurate, reliable, and timely test results.",
-            acceptableAnswers = listOf("CLIA '88", "CLIA 88", "Clinical Laboratory Improvement Amendments of 1998"),
             deckId = 1
         ),
     )
