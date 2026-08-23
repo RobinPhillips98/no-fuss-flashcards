@@ -1,6 +1,5 @@
 package io.github.robinphillips98.flashcards.navigation
 
-import android.widget.Toast
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -51,37 +50,20 @@ fun FlashcardsNavHost(
             })
         ) {
             val deckId = it.arguments?.getInt(DeckDetailsDestination.DECK_ID_ARG) ?: 0
-            val deck = deckDatasource.loadDeckById(deckId)
-            val flashCards = flashcardDatasource.loadFlashcardsByDeckId(deckId)
 
-            if (deck != null) {
-                DeckDetailsScreen(
-                    deck = deck,
-                    flashCards = flashCards,
-                    navigateToFlashcards = {
-                        navController.navigate("${FlashcardsPagerDestination.route}/$deckId")
-                    },
-                    navigateToFlashcardWithId = { flashcardId ->
-                        val flashcard = flashcardDatasource.getFlashcardById(flashcardId)
-                        if (flashcard != null) {
-                            navController.navigate(
-                                route = FlashcardsPagerDestination.route +
-                                        "/$deckId" +
-                                        "?${FlashcardsPagerDestination.FLASHCARD_ID_ARG}=$flashcardId"
-                            )
-                        } else {
-                            Toast.makeText(
-                                navController.context,
-                                "Flashcard not found",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    },
-                    navigateBack = { navController.navigateUp() }
-                )
-            } else {
-                Text("Deck not found")
-            }
+            DeckDetailsScreen(
+                navigateToFlashcards = {
+                    navController.navigate("${FlashcardsPagerDestination.route}/$deckId")
+                },
+                navigateToFlashcardWithId = { flashcardId ->
+                    navController.navigate(
+                        route = FlashcardsPagerDestination.route +
+                                "/$deckId" +
+                                "?${FlashcardsPagerDestination.FLASHCARD_ID_ARG}=$flashcardId"
+                    )
+                },
+                navigateBack = { navController.navigateUp() }
+            )
         }
 
         composable(

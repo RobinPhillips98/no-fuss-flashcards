@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,10 +33,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.flashcards.FlashCardsAppTopBar
 import io.github.robinphillips98.flashcards.data.decks.Deck
 import io.github.robinphillips98.flashcards.data.flashcards.Flashcard
 import io.github.robinphillips98.flashcards.navigation.NavigationDestination
+import io.github.robinphillips98.flashcards.ui.AppViewModelProvider
 
 object DeckDetailsDestination: NavigationDestination {
     override val route = "deck_details"
@@ -47,13 +50,14 @@ object DeckDetailsDestination: NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeckDetailsScreen(
-    deck: Deck,
-    flashCards: List<Flashcard>,
     navigateToFlashcards: () -> Unit,
     navigateToFlashcardWithId: (id: Int) -> Unit,
     navigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: DeckDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = {
             FlashCardsAppTopBar(
@@ -65,18 +69,18 @@ fun DeckDetailsScreen(
         modifier = modifier
     ) { innerPadding ->
         DeckDetailsBody(
-            deck,
-            flashCards,
-            navigateToFlashcards,
-            navigateToFlashcardWithId,
-            modifier.padding(innerPadding)
+            deckDetails = uiState.deckDetails.toDeck(),
+            flashCards = uiState.flashcards,
+            navigateToFlashcards = navigateToFlashcards,
+            navigateToFlashcardWithId = navigateToFlashcardWithId,
+            modifier = modifier.padding(innerPadding)
         )
     }
 }
 
 @Composable
 private fun DeckDetailsBody(
-    deck: Deck,
+    deckDetails: Deck,
     flashCards: List<Flashcard>,
     navigateToFlashcards: () -> Unit,
     navigateToFlashcardWithId: (id: Int) -> Unit,
@@ -89,7 +93,7 @@ private fun DeckDetailsBody(
                 .padding(16.dp)
         ) {
             Text(
-                text = "Deck: ${deck.name}",
+                text = "Deck: ${deckDetails.name}",
                 style = MaterialTheme.typography.titleMedium
             )
 

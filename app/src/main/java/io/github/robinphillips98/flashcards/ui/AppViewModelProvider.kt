@@ -2,10 +2,12 @@ package io.github.robinphillips98.flashcards.ui
 
 import android.app.Application
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import io.github.robinphillips98.flashcards.FlashcardApplication
+import io.github.robinphillips98.flashcards.ui.decks.DeckDetailsViewModel
 import io.github.robinphillips98.flashcards.ui.home.HomeViewModel
 
 /**
@@ -16,6 +18,14 @@ object AppViewModelProvider {
         // Initializer for HomeViewModel
         initializer {
             HomeViewModel(flashcardsApplication().container.decksRepository)
+        }
+        // Initializer for DeckDetailsViewModel
+        initializer {
+            DeckDetailsViewModel(
+                this.createSavedStateHandle(),
+                flashcardsApplication().container.decksRepository,
+                flashcardsApplication().container.flashcardsRepository
+            )
         }
     }
 }
