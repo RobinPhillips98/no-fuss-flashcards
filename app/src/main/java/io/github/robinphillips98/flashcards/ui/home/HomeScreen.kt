@@ -1,4 +1,4 @@
-package io.github.robinphillips98.flashcards.ui
+package io.github.robinphillips98.flashcards.ui.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
@@ -23,15 +23,21 @@ import io.github.robinphillips98.flashcards.data.decks.Deck
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.robinphillips98.flashcards.ui.AppViewModelProvider
 
 @Composable
 fun HomeScreen(
-    decks: List<Deck>,
     onCreateDeckClicked: () -> Unit,
     onSettingsClicked: () -> Unit,
     onDeckClicked: (deckId: Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val homeUiState by viewModel.homeUiState.collectAsState()
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -70,7 +76,7 @@ fun HomeScreen(
             Text("Settings")
         }
 
-        DeckList(decks = decks, onDeckClicked = onDeckClicked)
+        DeckList(decks = homeUiState.deckList, onDeckClicked = onDeckClicked)
     }
 }
 

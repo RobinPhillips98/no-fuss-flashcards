@@ -26,7 +26,7 @@ import androidx.navigation.navArgument
 import io.github.robinphillips98.flashcards.data.DeckDatasource
 import io.github.robinphillips98.flashcards.data.FlashcardDatasource
 import io.github.robinphillips98.flashcards.data.Screens
-import io.github.robinphillips98.flashcards.ui.HomeScreen
+import io.github.robinphillips98.flashcards.ui.home.HomeScreen
 import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardsPagerScreen
 import io.github.robinphillips98.flashcards.ui.decks.DeckOverview
 
@@ -41,14 +41,7 @@ fun FlashcardsApp(
     val screenRoute = backStackEntry?.destination?.route ?: Screens.HomeScreen.name
     val baseRoute = screenRoute.substringBefore("/")
 
-    val topBarTitle: String = when (val currentScreen = Screens.valueOf(baseRoute)) {
-        Screens.DeckOverview, Screens.DeckFlashcards -> {
-            val deckId = backStackEntry?.arguments?.getInt("deckId") ?: 0
-            val deck = deckDatasource.loadDeckById(deckId)
-            deck?.name ?: currentScreen.title
-        }
-        else -> currentScreen.title
-    }
+    val topBarTitle: String = Screens.valueOf(baseRoute).title
 
     Scaffold(
         topBar = {
@@ -67,7 +60,6 @@ fun FlashcardsApp(
 
             composable(route = Screens.HomeScreen.name) {
                 HomeScreen(
-                    decks = deckDatasource.loadDecks(),
                     onCreateDeckClicked = { },
                     onSettingsClicked = { },
                     onDeckClicked = { deckId ->
