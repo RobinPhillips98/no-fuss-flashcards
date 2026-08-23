@@ -3,9 +3,9 @@ package io.github.robinphillips98.flashcards.ui.decks
 import io.github.robinphillips98.flashcards.data.decks.Deck
 
 data class DeckDetails(
-    val deckId: Int,
-    val name: String,
-    val description: String?,
+    val deckId: Int = 0,
+    val name: String = "",
+    val description: String? = null,
 )
 
 fun DeckDetails.toDeck(): Deck = Deck(

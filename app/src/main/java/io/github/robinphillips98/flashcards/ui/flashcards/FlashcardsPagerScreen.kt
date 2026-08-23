@@ -19,13 +19,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.flashcards.FlashCardsAppTopBar
 import io.github.robinphillips98.flashcards.data.decks.Deck
 import io.github.robinphillips98.flashcards.data.flashcards.Flashcard
 import io.github.robinphillips98.flashcards.navigation.NavigationDestination
+import io.github.robinphillips98.flashcards.ui.AppViewModelProvider
+import io.github.robinphillips98.flashcards.ui.decks.toDeck
 
 object FlashcardsPagerDestination: NavigationDestination {
     override val route = "flashcards_pager"
@@ -38,12 +43,12 @@ object FlashcardsPagerDestination: NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashcardsPagerScreen(
-    deck: Deck,
-    flashcards: List<Flashcard>,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    selectedFlashcardId: Int? = null
+    viewModel: FlashcardsPagerViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = {
             FlashCardsAppTopBar(
@@ -55,10 +60,10 @@ fun FlashcardsPagerScreen(
         modifier = modifier
     ) { innerPadding ->
         FlashcardsPagerBody(
-            deck = deck,
-            flashcards = flashcards,
+            deck = uiState.deckDetails.toDeck(),
+            flashcards = uiState.flashcards,
             modifier = modifier.padding(innerPadding),
-            selectedFlashcardId = selectedFlashcardId
+            initialSelectedIndex = uiState.initialSelectedIndex
         )
     }
 }
@@ -67,19 +72,15 @@ fun FlashcardsPagerScreen(
 private fun FlashcardsPagerBody(
     deck: Deck,
     flashcards: List<Flashcard>,
+    initialSelectedIndex: Int,
     modifier: Modifier = Modifier,
-    selectedFlashcardId: Int? = null
 ) {
     if (flashcards.isNotEmpty()) {
-        val selectedIndex = if (selectedFlashcardId != null) {
-            flashcards.indexOfFirst { it.flashcardId == selectedFlashcardId }.takeIf { it >= 0 } ?: 0
-        } else {
-            0
-        }
 
         val pageCount = flashcards.size * 400
         val base = pageCount / 2
-        val startPage = base - (base % flashcards.size) + selectedIndex
+        val safeInitialIndex = initialSelectedIndex.coerceIn(0, flashcards.lastIndex)
+        val startPage = base - (base % flashcards.size) + safeInitialIndex
         val pagerState = rememberPagerState(initialPage = startPage, pageCount = { pageCount })
         val currentCard = (pagerState.currentPage % flashcards.size) + 1
 

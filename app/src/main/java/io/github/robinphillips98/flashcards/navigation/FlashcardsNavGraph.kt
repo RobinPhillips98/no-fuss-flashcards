@@ -1,6 +1,5 @@
 package io.github.robinphillips98.flashcards.navigation
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -77,24 +76,7 @@ fun FlashcardsNavHost(
                     defaultValue = -1
                 }
             )
-        ) { entry ->
-            val deckId = entry.arguments?.getInt(FlashcardsPagerDestination.DECK_ID_ARG) ?: 0
-            val flashcardId = entry.arguments?.getInt(FlashcardsPagerDestination.FLASHCARD_ID_ARG) ?: -1
-            val selectedFlashcardId = flashcardId.takeIf { it != -1 }
-            val deck = deckDatasource.loadDeckById(deckId)
-            val flashcards = flashcardDatasource.loadFlashcardsByDeckId(deckId)
-
-            if (deck != null) {
-                FlashcardsPagerScreen(
-                    deck = deck,
-                    flashcards = flashcards,
-                    navigateBack = { navController.navigateUp() },
-                    selectedFlashcardId = selectedFlashcardId
-                )
-            } else {
-                Text("Deck not found")
-            }
-        }
+        ) {  FlashcardsPagerScreen(navigateBack = { navController.navigateUp() }) }
 
         // TODO: Implement deck create/edit, flashcard create/edit, quiz, and settings screens
     }

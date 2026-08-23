@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import io.github.robinphillips98.flashcards.FlashcardApplication
 import io.github.robinphillips98.flashcards.ui.decks.DeckDetailsViewModel
+import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardsPagerViewModel
 import io.github.robinphillips98.flashcards.ui.home.HomeViewModel
 
 /**
@@ -19,9 +20,19 @@ object AppViewModelProvider {
         initializer {
             HomeViewModel(flashcardsApplication().container.decksRepository)
         }
+
         // Initializer for DeckDetailsViewModel
         initializer {
             DeckDetailsViewModel(
+                this.createSavedStateHandle(),
+                flashcardsApplication().container.decksRepository,
+                flashcardsApplication().container.flashcardsRepository
+            )
+        }
+
+        // Initializer for FlashcardsPagerViewModel
+        initializer {
+            FlashcardsPagerViewModel(
                 this.createSavedStateHandle(),
                 flashcardsApplication().container.decksRepository,
                 flashcardsApplication().container.flashcardsRepository
