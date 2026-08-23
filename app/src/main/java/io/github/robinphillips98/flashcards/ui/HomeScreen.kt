@@ -19,14 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import io.github.robinphillips98.flashcards.model.DeckInfo
+import io.github.robinphillips98.flashcards.data.Deck
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Icon
 
 @Composable
 fun HomeScreen(
-    decks: List<DeckInfo>,
+    decks: List<Deck>,
     onCreateDeckClicked: () -> Unit,
     onSettingsClicked: () -> Unit,
     onDeckClicked: (deckId: Int) -> Unit,
@@ -76,7 +76,7 @@ fun HomeScreen(
 
 @Composable
 private fun DeckList(
-    decks: List<DeckInfo>,
+    decks: List<Deck>,
     onDeckClicked: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -112,7 +112,7 @@ private fun DeckList(
 
 @Composable
 private fun DeckItem(
-    deck: DeckInfo,
+    deck: Deck,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {

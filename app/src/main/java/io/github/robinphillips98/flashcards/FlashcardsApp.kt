@@ -27,7 +27,7 @@ import io.github.robinphillips98.flashcards.data.DeckDatasource
 import io.github.robinphillips98.flashcards.data.FlashcardDatasource
 import io.github.robinphillips98.flashcards.data.Screens
 import io.github.robinphillips98.flashcards.ui.HomeScreen
-import io.github.robinphillips98.flashcards.ui.decks.DeckFlashcards
+import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardsPagerScreen
 import io.github.robinphillips98.flashcards.ui.decks.DeckOverview
 
 @Composable
@@ -128,7 +128,7 @@ fun FlashcardsApp(
                 val flashcards = flashcardDatasource.loadFlashcardsByDeckId(deckId)
 
                 if (deck != null) {
-                    DeckFlashcards(
+                    FlashcardsPagerScreen(
                         deck = deck,
                         flashcards = flashcards,
                         selectedFlashcardId = selectedFlashcardId

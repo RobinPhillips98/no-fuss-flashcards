@@ -23,11 +23,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.github.robinphillips98.flashcards.model.FlashcardInfo
+import io.github.robinphillips98.flashcards.data.Flashcard
 
 @Composable
-fun Flashcard(
-    flashcardData: FlashcardInfo,
+fun FlashcardDetail(
+    flashcardData: Flashcard,
     modifier: Modifier = Modifier
 ) {
     var isFlipped by remember { mutableStateOf(false) }

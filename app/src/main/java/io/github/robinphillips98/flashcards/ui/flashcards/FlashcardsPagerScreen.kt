@@ -1,4 +1,4 @@
-package io.github.robinphillips98.flashcards.ui.decks
+package io.github.robinphillips98.flashcards.ui.flashcards
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -20,14 +20,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.github.robinphillips98.flashcards.model.DeckInfo
-import io.github.robinphillips98.flashcards.model.FlashcardInfo
-import io.github.robinphillips98.flashcards.ui.flashcards.Flashcard
+import io.github.robinphillips98.flashcards.data.Deck
+import io.github.robinphillips98.flashcards.data.Flashcard
 
 @Composable
-fun DeckFlashcards(
-    deck: DeckInfo,
-    flashcards: List<FlashcardInfo>,
+fun FlashcardsPagerScreen(
+    deck: Deck,
+    flashcards: List<Flashcard>,
     modifier: Modifier = Modifier,
     selectedFlashcardId: Int? = null
 ) {
@@ -84,7 +83,7 @@ fun DeckFlashcards(
 
 @Composable
 private fun FlashcardsPager(
-    flashcards: List<FlashcardInfo>,
+    flashcards: List<Flashcard>,
     pagerState: PagerState,
     modifier: Modifier = Modifier
 ) {
@@ -106,7 +105,7 @@ private fun FlashcardsPager(
         ) { page ->
             val flashcard = flashcards[page % flashcards.size]
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Flashcard(
+                FlashcardDetail(
                     flashcardData = flashcard,
                     modifier = Modifier
                         .fillMaxWidth()

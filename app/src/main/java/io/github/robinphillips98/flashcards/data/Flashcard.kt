@@ -1,6 +1,6 @@
-package io.github.robinphillips98.flashcards.model
+package io.github.robinphillips98.flashcards.data
 
-data class FlashcardInfo(
+data class Flashcard(
     val id: Int,
     val term: String,
     val definition: String,

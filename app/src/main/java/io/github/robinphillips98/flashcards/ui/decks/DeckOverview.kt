@@ -30,13 +30,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import io.github.robinphillips98.flashcards.model.DeckInfo
-import io.github.robinphillips98.flashcards.model.FlashcardInfo
+import io.github.robinphillips98.flashcards.data.Deck
+import io.github.robinphillips98.flashcards.data.Flashcard
 
 @Composable
 fun DeckOverview(
-    deck: DeckInfo,
-    flashCards: List<FlashcardInfo>,
+    deck: Deck,
+    flashCards: List<Flashcard>,
     onOpenCardsClicked: () -> Unit,
     onFlashCardClicked: (id: Int) -> Unit,
     modifier: Modifier = Modifier
@@ -84,7 +84,7 @@ fun DeckOverview(
 
 @Composable
 private fun FlashcardItem(
-    flashcard: FlashcardInfo,
+    flashcard: Flashcard,
     onFlashCardClicked: (id: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {

@@ -1,19 +1,17 @@
 package io.github.robinphillips98.flashcards.data
 
-import io.github.robinphillips98.flashcards.model.DeckInfo
-
 class DeckDatasource {
-    private val sampleDeck = DeckInfo(
+    private val sampleDeck = Deck(
         id = 1,
         name = "Sample Deck",
         description = "This is a sample deck for testing purposes."
     )
 
-    fun loadDecks(): List<DeckInfo> {
+    fun loadDecks(): List<Deck> {
         return listOf(sampleDeck)
     }
 
-    fun loadDeckById(deckId: Int): DeckInfo? {
+    fun loadDeckById(deckId: Int): Deck? {
         return if (deckId == sampleDeck.id) {
             sampleDeck
         } else {
