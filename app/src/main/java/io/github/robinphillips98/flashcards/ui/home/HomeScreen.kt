@@ -22,12 +22,22 @@ import androidx.compose.ui.unit.dp
 import io.github.robinphillips98.flashcards.data.decks.Deck
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.robinphillips98.flashcards.FlashCardsAppTopBar
+import io.github.robinphillips98.flashcards.navigation.NavigationDestination
 import io.github.robinphillips98.flashcards.ui.AppViewModelProvider
 
+object HomeDestination: NavigationDestination {
+    override val route = "home"
+    override val title = "Flashcards App"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onCreateDeckClicked: () -> Unit,
@@ -38,6 +48,33 @@ fun HomeScreen(
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
 
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            FlashCardsAppTopBar(
+                title = HomeDestination.title,
+                canNavigateBack = false,
+            )
+        }
+    ) { innerPadding ->
+        HomeBody(
+            deckList = homeUiState.deckList,
+            onCreateDeckClicked = onCreateDeckClicked,
+            onSettingsClicked = onSettingsClicked,
+            onDeckClicked = onDeckClicked,
+            modifier = modifier.padding(innerPadding),
+        )
+    }
+}
+
+@Composable
+private fun HomeBody(
+    deckList: List<Deck>,
+    onCreateDeckClicked: () -> Unit,
+    onSettingsClicked: () -> Unit,
+    onDeckClicked: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -76,7 +113,7 @@ fun HomeScreen(
             Text("Settings")
         }
 
-        DeckList(decks = homeUiState.deckList, onDeckClicked = onDeckClicked)
+        DeckList(decks = deckList, onDeckClicked = onDeckClicked)
     }
 }
 

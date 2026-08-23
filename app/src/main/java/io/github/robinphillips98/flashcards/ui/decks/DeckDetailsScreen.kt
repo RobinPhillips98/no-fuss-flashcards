@@ -34,7 +34,7 @@ import io.github.robinphillips98.flashcards.data.decks.Deck
 import io.github.robinphillips98.flashcards.data.flashcards.Flashcard
 
 @Composable
-fun DeckOverview(
+fun DeckDetailsScreen(
     deck: Deck,
     flashCards: List<Flashcard>,
     onOpenCardsClicked: () -> Unit,
