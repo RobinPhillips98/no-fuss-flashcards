@@ -95,7 +95,7 @@ private fun DeckList(
             }
             items(decks.size) { index ->
                 val deck = decks[index]
-                DeckItem(deck = deck, onClick = { onDeckClicked(deck.id) })
+                DeckItem(deck = deck, onClick = { onDeckClicked(deck.deckId) })
             }
         }
     } else {

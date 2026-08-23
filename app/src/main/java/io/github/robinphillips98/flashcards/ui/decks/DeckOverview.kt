@@ -31,7 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.robinphillips98.flashcards.data.decks.Deck
-import io.github.robinphillips98.flashcards.data.Flashcard
+import io.github.robinphillips98.flashcards.data.flashcards.Flashcard
 
 @Composable
 fun DeckOverview(
@@ -91,7 +91,7 @@ private fun FlashcardItem(
 
 
     Card(
-        onClick = { onFlashCardClicked(flashcard.id) },
+        onClick = { onFlashCardClicked(flashcard.flashcardId) },
         modifier = modifier.fillMaxSize(),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)

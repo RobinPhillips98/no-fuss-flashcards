@@ -6,7 +6,7 @@ import io.github.robinphillips98.flashcards.data.decks.Deck
 
 class DeckDatasource {
     private val sampleDeck = Deck(
-        id = 1,
+        deckId = 1,
         name = "Sample Deck",
         description = "This is a sample deck for testing purposes."
     )
@@ -16,7 +16,7 @@ class DeckDatasource {
     }
 
     fun loadDeckById(deckId: Int): Deck? {
-        return if (deckId == sampleDeck.id) {
+        return if (deckId == sampleDeck.deckId) {
             sampleDeck
         } else {
             null

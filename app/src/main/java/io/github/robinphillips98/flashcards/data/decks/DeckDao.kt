@@ -13,7 +13,7 @@ interface DeckDao {
     @Query("SELECT * FROM decks")
     fun getAllDecks(): Flow<List<Deck>>
 
-    @Query("SELECT * FROM decks WHERE id = :deckId")
+    @Query("SELECT * FROM decks WHERE deck_id = :deckId")
     fun getDeckById(deckId: Int): Flow<Deck>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

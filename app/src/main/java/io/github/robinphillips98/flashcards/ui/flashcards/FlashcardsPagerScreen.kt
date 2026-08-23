@@ -21,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.robinphillips98.flashcards.data.decks.Deck
-import io.github.robinphillips98.flashcards.data.Flashcard
+import io.github.robinphillips98.flashcards.data.flashcards.Flashcard
 
 @Composable
 fun FlashcardsPagerScreen(
@@ -32,7 +32,7 @@ fun FlashcardsPagerScreen(
 ) {
     if (flashcards.isNotEmpty()) {
         val selectedIndex = if (selectedFlashcardId != null) {
-            flashcards.indexOfFirst { it.id == selectedFlashcardId }.takeIf { it >= 0 } ?: 0
+            flashcards.indexOfFirst { it.flashcardId == selectedFlashcardId }.takeIf { it >= 0 } ?: 0
         } else {
             0
         }
