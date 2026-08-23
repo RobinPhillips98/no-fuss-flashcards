@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import io.github.robinphillips98.flashcards.data.DeckDatasource
 import io.github.robinphillips98.flashcards.data.FlashcardDatasource
 import io.github.robinphillips98.flashcards.data.Screens
+import io.github.robinphillips98.flashcards.ui.decks.DeckDetailsDestination
 import io.github.robinphillips98.flashcards.ui.decks.DeckDetailsScreen
 import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardsPagerScreen
 import io.github.robinphillips98.flashcards.ui.home.HomeDestination
@@ -38,16 +39,18 @@ fun FlashcardsNavHost(
                 onCreateDeckClicked = { },
                 onSettingsClicked = { },
                 onDeckClicked = { deckId ->
-                    navController.navigate("${Screens.DeckOverview.name}/$deckId")
+                    navController.navigate("${DeckDetailsDestination.route}/$deckId")
                 }
             )
         }
 
         composable(
-            route = "${Screens.DeckOverview.name}/{deckId}",
-            arguments = listOf(navArgument("deckId") { type = NavType.IntType })
+            route = DeckDetailsDestination.routeWithArgs,
+            arguments = listOf(navArgument(DeckDetailsDestination.DECK_ID_ARG) {
+                type = NavType.IntType
+            })
         ) {
-            val deckId = it.arguments?.getInt("deckId") ?: 0
+            val deckId = it.arguments?.getInt(DeckDetailsDestination.DECK_ID_ARG) ?: 0
             val deck = deckDatasource.loadDeckById(deckId)
             val flashCards = flashcardDatasource.loadFlashcardsByDeckId(deckId)
 
@@ -55,10 +58,10 @@ fun FlashcardsNavHost(
                 DeckDetailsScreen(
                     deck = deck,
                     flashCards = flashCards,
-                    onOpenCardsClicked = {
+                    navigateToFlashcards = {
                         navController.navigate("${Screens.DeckFlashcards.name}/$deckId")
                     },
-                    onFlashCardClicked = { flashcardId ->
+                    navigateToFlashcardWithId = { flashcardId ->
                         val flashcard = flashcardDatasource.getFlashcardById(flashcardId)
                         if (flashcard != null) {
                             navController.navigate(
@@ -71,7 +74,8 @@ fun FlashcardsNavHost(
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                    }
+                    },
+                    navigateBack = { navController.navigateUp() }
                 )
             } else {
                 Text("Deck not found")

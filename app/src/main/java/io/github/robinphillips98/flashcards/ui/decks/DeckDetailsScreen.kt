@@ -17,9 +17,11 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,15 +32,54 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import io.github.robinphillips98.flashcards.FlashCardsAppTopBar
 import io.github.robinphillips98.flashcards.data.decks.Deck
 import io.github.robinphillips98.flashcards.data.flashcards.Flashcard
+import io.github.robinphillips98.flashcards.navigation.NavigationDestination
 
+object DeckDetailsDestination: NavigationDestination {
+    override val route = "deck_details"
+    override val title = "Deck Details"
+    const val DECK_ID_ARG = "deckId"
+    val routeWithArgs = "$route/{$DECK_ID_ARG}"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeckDetailsScreen(
     deck: Deck,
     flashCards: List<Flashcard>,
-    onOpenCardsClicked: () -> Unit,
-    onFlashCardClicked: (id: Int) -> Unit,
+    navigateToFlashcards: () -> Unit,
+    navigateToFlashcardWithId: (id: Int) -> Unit,
+    navigateBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Scaffold(
+        topBar = {
+            FlashCardsAppTopBar(
+                title = deck.name,
+                canNavigateBack = true,
+                navigateUp = navigateBack
+            )
+        },
+        modifier = modifier
+    ) { innerPadding ->
+        DeckDetailsBody(
+            deck,
+            flashCards,
+            navigateToFlashcards,
+            navigateToFlashcardWithId,
+            modifier.padding(innerPadding)
+        )
+    }
+}
+
+@Composable
+private fun DeckDetailsBody(
+    deck: Deck,
+    flashCards: List<Flashcard>,
+    navigateToFlashcards: () -> Unit,
+    navigateToFlashcardWithId: (id: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (flashCards.isNotEmpty()) {
@@ -53,7 +94,7 @@ fun DeckDetailsScreen(
             )
 
             Button(
-                onClick = onOpenCardsClicked,
+                onClick = navigateToFlashcards,
                 modifier = Modifier.padding(vertical = 8.dp)
             ) {
                 Text(text = "Open Cards")
@@ -70,12 +111,11 @@ fun DeckDetailsScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(flashCards) { flashcard ->
-                    FlashcardItem(flashcard = flashcard, onFlashCardClicked = onFlashCardClicked)
+                    FlashcardItem(flashcard = flashcard, onFlashCardClicked = navigateToFlashcardWithId)
                 }
             }
         }
-    }
-    else {
+    } else {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(text = "No flashcards available in this deck.")
         }
