@@ -3,32 +3,38 @@ package io.github.robinphillips98.flashcards.ui.home
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import io.github.robinphillips98.flashcards.data.decks.Deck
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.flashcards.FlashCardsAppTopBar
+import io.github.robinphillips98.flashcards.data.decks.Deck
 import io.github.robinphillips98.flashcards.navigation.NavigationDestination
 import io.github.robinphillips98.flashcards.ui.AppViewModelProvider
 
@@ -41,7 +47,6 @@ object HomeDestination: NavigationDestination {
 @Composable
 fun HomeScreen(
     onCreateDeckClicked: () -> Unit,
-    onSettingsClicked: () -> Unit,
     onDeckClicked: (deckId: Int) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -55,12 +60,24 @@ fun HomeScreen(
                 title = HomeDestination.title,
                 canNavigateBack = false,
             )
+        },
+        // TODO: Add FAB group for settings and create deck (Blocked until settings screen is implemented)
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = onCreateDeckClicked,
+//                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier
+                    .padding(
+                        end = WindowInsets.safeDrawing.asPaddingValues()
+                            .calculateEndPadding(LocalLayoutDirection.current)
+                    ),
+                icon = { Icon(Icons.Default.Add,contentDescription = "Create Deck") },
+                text = { Text("Create Deck") }
+            )
         }
     ) { innerPadding ->
         HomeBody(
             deckList = homeUiState.deckList,
-            onCreateDeckClicked = onCreateDeckClicked,
-            onSettingsClicked = onSettingsClicked,
             onDeckClicked = onDeckClicked,
             modifier = modifier.padding(innerPadding),
         )
@@ -70,8 +87,6 @@ fun HomeScreen(
 @Composable
 private fun HomeBody(
     deckList: List<Deck>,
-    onCreateDeckClicked: () -> Unit,
-    onSettingsClicked: () -> Unit,
     onDeckClicked: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -87,31 +102,6 @@ private fun HomeBody(
         )
 
         HorizontalDivider()
-
-        Text(
-            text = "Select an option below to get started:",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier
-                .padding(16.dp)
-        )
-
-        // TODO: Implement the create deck functionality
-        Button(
-            onClick = onCreateDeckClicked,
-            modifier = Modifier.widthIn(min = 200.dp),
-            enabled = false
-        ) {
-            Text("Create New Deck")
-        }
-
-        // TODO: Implement the settings functionality
-        Button(
-            onClick = onSettingsClicked,
-            modifier = Modifier.widthIn(min = 200.dp),
-            enabled = false
-        ) {
-            Text("Settings")
-        }
 
         DeckList(decks = deckList, onDeckClicked = onDeckClicked)
     }

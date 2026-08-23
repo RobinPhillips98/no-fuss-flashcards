@@ -11,11 +11,11 @@ data class DeckDetails(
 fun DeckDetails.toDeck(): Deck = Deck(
     deckId = deckId,
     name = name,
-    description = description
+    description = description.takeIf { it?.isNotBlank() ?: false }
 )
 
 fun Deck.toDeckDetails(): DeckDetails = DeckDetails(
     deckId = deckId,
     name = name,
-    description = description,
+    description = description.takeIf { it?.isNotBlank() ?: false },
 )
