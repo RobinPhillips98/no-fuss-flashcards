@@ -52,10 +52,6 @@ class DeckDetailsViewModel(
  * UiState for [DeckDetailsScreen]
  */
 data class DeckDetailsUiState(
-    val deckDetails: DeckDetails = DeckDetails(
-        deckId = 0,
-        name = "",
-        description = null,
-    ),
+    val deckDetails: DeckDetails = DeckDetails(),
     val flashcards: List<Flashcard> = emptyList()
 )

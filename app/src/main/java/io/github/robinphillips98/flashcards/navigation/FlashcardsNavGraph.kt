@@ -7,8 +7,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import io.github.robinphillips98.flashcards.data.DeckDatasource
-import io.github.robinphillips98.flashcards.data.FlashcardDatasource
 import io.github.robinphillips98.flashcards.ui.decks.DeckDetailsDestination
 import io.github.robinphillips98.flashcards.ui.decks.DeckDetailsScreen
 import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardsPagerDestination
@@ -24,9 +22,6 @@ fun FlashcardsNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
-    val deckDatasource = DeckDatasource()
-    val flashcardDatasource = FlashcardDatasource()
-
     NavHost(
         navController = navController,
         startDestination = HomeDestination.route,
