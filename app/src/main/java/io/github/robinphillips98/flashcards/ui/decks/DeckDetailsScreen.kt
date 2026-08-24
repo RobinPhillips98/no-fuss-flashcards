@@ -294,7 +294,9 @@ private fun FlashcardItem(
                 modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
             )
 
-            ExpandableDescriptionText(text = flashcard.definition)
+            if (flashcard.definition != null) {
+                ExpandableDescriptionText(text = flashcard.definition)
+            }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

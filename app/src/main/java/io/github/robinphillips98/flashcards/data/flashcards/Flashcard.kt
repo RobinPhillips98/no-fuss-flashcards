@@ -25,7 +25,7 @@ data class Flashcard(
     @ColumnInfo(name = "flashcard_id")
     val flashcardId: Int,
     val term: String,
-    val definition: String,
+    val definition: String? = null,
     @ColumnInfo(name = "deck_id")
     val deckId: Int,
     @ColumnInfo(name = "image_path")

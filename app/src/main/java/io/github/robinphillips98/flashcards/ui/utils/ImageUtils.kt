@@ -79,7 +79,7 @@ fun ImageUploader(
                 verticalArrangement = spacedBy(12.dp)
             ) {
                 Text(
-                    text = "Image *",
+                    text = "Image",
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(

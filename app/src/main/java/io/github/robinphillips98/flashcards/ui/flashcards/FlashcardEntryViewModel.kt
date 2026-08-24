@@ -35,11 +35,12 @@ class FlashcardEntryViewModel(
      * triggers a validation for input values.
      */
     fun updateUiState(flashcardDetails: FlashcardDetails, imageUri: Uri? = null) {
+        val finalImageUri = imageUri ?: flashcardUiState.imageUri
         flashcardUiState =
             FlashcardUiState(
                 flashcardDetails = flashcardDetails,
-                imageUri = imageUri ?: flashcardUiState.imageUri,
-                isEntryValid = validateInput(flashcardDetails)
+                imageUri = finalImageUri,
+                isEntryValid = validateInput(flashcardDetails, finalImageUri)
             )
     }
 
@@ -59,9 +60,13 @@ class FlashcardEntryViewModel(
         }
     }
 
-    private fun validateInput(uiState: FlashcardDetails = flashcardUiState.flashcardDetails): Boolean {
+    private fun validateInput(
+        uiState: FlashcardDetails = flashcardUiState.flashcardDetails,
+        imageUri: Uri? = flashcardUiState.imageUri
+    ): Boolean {
         return with(uiState) {
-            term.isNotBlank() && definition.isNotBlank()
+            term.isNotBlank() &&
+            (!definition.isNullOrBlank() || imageUri != null)
         }
     }
 
@@ -82,7 +87,7 @@ data class FlashcardUiState(
 data class FlashcardDetails(
     val id: Int = 0,
     val term: String = "",
-    val definition: String = "",
+    val definition: String? = "",
     val deckId: Int = 0
 )
 

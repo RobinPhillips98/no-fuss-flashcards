@@ -40,7 +40,8 @@ fun FlashcardDetail(
 ) {
     var isFlipped by remember { mutableStateOf(false) }
     val sideLabel = if (isFlipped) "Term" else "Definition"
-    val cardText = if (isFlipped) flashcardData.term else flashcardData.definition
+    val cardText =
+        if (isFlipped) flashcardData.term else flashcardData.definition
     val cardStyle = if (isFlipped)
         MaterialTheme.typography.displaySmall
     else
@@ -77,11 +78,13 @@ fun FlashcardDetail(
                     verticalArrangement = Arrangement.Center
                 ) {
 
-                    Text(
-                        text = cardText,
-                        style = cardStyle,
-                        textAlign = TextAlign.Center
-                    )
+                    if (cardText != null) {
+                        Text(
+                            text = cardText,
+                            style = cardStyle,
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
                     if (!isFlipped && flashcardData.imagePath != null) {
                         Spacer(modifier = Modifier.height(12.dp))

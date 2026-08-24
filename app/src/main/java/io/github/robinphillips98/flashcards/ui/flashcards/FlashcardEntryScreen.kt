@@ -105,6 +105,7 @@ fun FlashcardEntryBody(
             onImageUploaded = onImageUploaded,
             modifier = Modifier.fillMaxWidth(),
         )
+
         Button(
             onClick = onSaveClick,
             enabled = flashcardUiState.isEntryValid,
@@ -112,6 +113,14 @@ fun FlashcardEntryBody(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Save")
+        }
+
+        if (!flashcardUiState.isEntryValid) {
+            Text(
+                text = "Must provide a term and either a definition or an image.",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodySmall
+            )
         }
     }
 }
@@ -132,7 +141,7 @@ fun FlashcardInputForm(
         OutlinedTextField(
             value = flashcardDetails.term,
             onValueChange = { onValueChange(flashcardDetails.copy(term = it)) },
-            label = { Text("Term*") },
+            label = { Text("Term *") },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -142,9 +151,9 @@ fun FlashcardInputForm(
             singleLine = true
         )
         OutlinedTextField(
-            value = flashcardDetails.definition,
+            value = flashcardDetails.definition ?: "",
             onValueChange = { onValueChange(flashcardDetails.copy(definition = it)) },
-            label = { Text("Definition *") },
+            label = { Text("Definition") },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,

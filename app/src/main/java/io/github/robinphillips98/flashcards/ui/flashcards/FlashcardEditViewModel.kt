@@ -72,7 +72,8 @@ class FlashcardEditViewModel(
 
     private fun validateInput(uiState: FlashcardDetails = flashcardUiState.flashcardDetails): Boolean {
         return with(uiState) {
-            term.isNotBlank() && definition.isNotBlank()
+            term.isNotBlank() &&
+            (!definition.isNullOrBlank() || flashcardUiState.imageUri != null)
         }
     }
 }

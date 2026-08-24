@@ -11,7 +11,7 @@ import io.github.robinphillips98.flashcards.data.flashcards.FlashcardDao
 
 @Database(
     entities = [Deck::class, Flashcard::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class FlashcardAppDatabase : RoomDatabase() {
