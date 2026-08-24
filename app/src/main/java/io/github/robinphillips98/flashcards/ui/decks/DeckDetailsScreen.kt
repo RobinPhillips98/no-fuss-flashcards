@@ -55,6 +55,7 @@ object DeckDetailsDestination: NavigationDestination {
 fun DeckDetailsScreen(
     navigateToFlashcards: () -> Unit,
     navigateToFlashcardWithId: (id: Int) -> Unit,
+    navigateToEditScreen: (id: Int) -> Unit,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DeckDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -88,6 +89,7 @@ fun DeckDetailsScreen(
                         navigateBack()
                     }
                 },
+                navigateToEditScreen = navigateToEditScreen,
                 modifier = modifier.padding(innerPadding)
             )
         }
@@ -100,6 +102,7 @@ private fun DeckDetailsBody(
     flashCards: List<Flashcard>,
     navigateToFlashcards: () -> Unit,
     navigateToFlashcardWithId: (id: Int) -> Unit,
+    navigateToEditScreen: (id: Int) -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -115,6 +118,14 @@ private fun DeckDetailsBody(
             text = "Deck: ${deckDetails.name}",
             style = MaterialTheme.typography.titleMedium
         )
+
+        deckDetails.description?.let { description ->
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
 
         Row(
             modifier = Modifier
@@ -132,8 +143,7 @@ private fun DeckDetailsBody(
             }
 
             Button(
-                onClick = {},
-                enabled = false, // TODO: Implement the edit deck functionality
+                onClick = { navigateToEditScreen(deckDetails.deckId) }
             ) {
                 Text("Edit Deck")
             }

@@ -9,6 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import io.github.robinphillips98.flashcards.ui.decks.DeckDetailsDestination
 import io.github.robinphillips98.flashcards.ui.decks.DeckDetailsScreen
+import io.github.robinphillips98.flashcards.ui.decks.DeckEditDestination
+import io.github.robinphillips98.flashcards.ui.decks.DeckEditScreen
 import io.github.robinphillips98.flashcards.ui.decks.DeckEntryDestination
 import io.github.robinphillips98.flashcards.ui.decks.DeckEntryScreen
 import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardsPagerDestination
@@ -57,6 +59,9 @@ fun FlashcardsNavHost(
                                 "?${FlashcardsPagerDestination.FLASHCARD_ID_ARG}=$flashcardId"
                     )
                 },
+                navigateToEditScreen = { deckId ->
+                    navController.navigate("${DeckEditDestination.route}/$deckId")
+                },
                 navigateBack = { navController.navigateUp() }
             )
         }
@@ -81,6 +86,18 @@ fun FlashcardsNavHost(
             )
         }
 
-        // TODO: Implement deck edit, flashcard create/edit, quiz, and settings screens
+        composable(
+            route = DeckEditDestination.routeWithArgs,
+            arguments = listOf(navArgument(DeckEditDestination.DECK_ID_ARG) {
+                type = NavType.IntType
+            })
+        ) {
+            DeckEditScreen(
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() }
+            )
+        }
+
+        // TODO: Implement flashcard create/edit, quiz, and settings screens
     }
 }
