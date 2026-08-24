@@ -22,7 +22,10 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         // Initializer for HomeViewModel
         initializer {
-            HomeViewModel(flashcardsApplication().container.decksRepository)
+            HomeViewModel(
+                flashcardsApplication().container.decksRepository,
+                flashcardsApplication().container.userPreferencesRepository
+            )
         }
 
         // Initializer for DeckDetailsViewModel

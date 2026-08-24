@@ -1,6 +1,7 @@
 package io.github.robinphillips98.flashcards.ui.home
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -14,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -76,8 +78,12 @@ fun HomeScreen(
     ) { innerPadding ->
         HomeBody(
             deckList = homeUiState.deckList,
-            onDeckClicked = onDeckClicked,
+            onDeckClicked = { deckId ->
+                onDeckClicked(deckId)
+                viewModel.updateLastOpenedDeckId(deckId)
+            },
             modifier = modifier.padding(innerPadding),
+            lastDeckId = homeUiState.lastOpenedDeckId
         )
     }
 }
@@ -87,17 +93,31 @@ private fun HomeBody(
     deckList: List<Deck>,
     onDeckClicked: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    lastDeckId: Int? = null
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 20.dp, vertical = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Welcome to the Flashcards App!",
             style = MaterialTheme.typography.titleLarge
         )
+
+        if (lastDeckId != null) {
+            val lastDeckName = deckList.find { it.deckId == lastDeckId }?.name
+            lastDeckName?.let {
+                Button(
+                    onClick = { onDeckClicked(lastDeckId) },
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    Text("Jump back into \"$lastDeckName\"")
+                }
+            }
+        }
 
         HorizontalDivider()
 
