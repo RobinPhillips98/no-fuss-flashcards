@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -174,37 +173,14 @@ private fun DeckItem(
                 )
             }
 
-            HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
-
             deck.description?.let {
+                HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+
                 Text(
                     text = it,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(top = 12.dp)
                 )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Button(
-                    onClick = {},
-                    enabled = false, // TODO: Implement the edit deck functionality
-                    modifier = Modifier.padding(end = 8.dp)
-                ) {
-                    Text("Edit Deck")
-                }
-
-                Button(
-                    onClick = {},
-                    enabled = false // TODO: Implement the delete deck functionality
-                ) {
-                    Text("Delete Deck")
-                }
             }
         }
     }

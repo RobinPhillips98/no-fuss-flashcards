@@ -28,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +40,8 @@ import io.github.robinphillips98.flashcards.data.decks.Deck
 import io.github.robinphillips98.flashcards.data.flashcards.Flashcard
 import io.github.robinphillips98.flashcards.navigation.NavigationDestination
 import io.github.robinphillips98.flashcards.ui.AppViewModelProvider
+import io.github.robinphillips98.flashcards.ui.utils.DeleteConfirmationDialog
+import kotlinx.coroutines.launch
 
 object DeckDetailsDestination: NavigationDestination {
     override val route = "deck_details"
@@ -57,6 +60,7 @@ fun DeckDetailsScreen(
     viewModel: DeckDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -68,13 +72,25 @@ fun DeckDetailsScreen(
         },
         modifier = modifier
     ) { innerPadding ->
-        DeckDetailsBody(
-            deckDetails = uiState.deckDetails.toDeck(),
-            flashCards = uiState.flashcards,
-            navigateToFlashcards = navigateToFlashcards,
-            navigateToFlashcardWithId = navigateToFlashcardWithId,
-            modifier = modifier.padding(innerPadding)
-        )
+        if (uiState.isDeckMissing) {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = "Deck not found.")
+            }
+        } else {
+            DeckDetailsBody(
+                deckDetails = uiState.deckDetails.toDeck(),
+                flashCards = uiState.flashcards,
+                navigateToFlashcards = navigateToFlashcards,
+                navigateToFlashcardWithId = navigateToFlashcardWithId,
+                onDelete = {
+                    coroutineScope.launch {
+                        viewModel.deleteDeck()
+                        navigateBack()
+                    }
+                },
+                modifier = modifier.padding(innerPadding)
+            )
+        }
     }
 }
 
@@ -84,28 +100,54 @@ private fun DeckDetailsBody(
     flashCards: List<Flashcard>,
     navigateToFlashcards: () -> Unit,
     navigateToFlashcardWithId: (id: Int) -> Unit,
+    onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (flashCards.isNotEmpty()) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "Deck: ${deckDetails.name}",
-                style = MaterialTheme.typography.titleMedium
-            )
+    var deleteConfirmationOpen by remember { mutableStateOf(false) }
+    val flashcardsAvailable = flashCards.isNotEmpty()
 
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "Deck: ${deckDetails.name}",
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
             Button(
                 onClick = navigateToFlashcards,
+                enabled = flashcardsAvailable,
                 modifier = Modifier.padding(vertical = 8.dp)
             ) {
                 Text(text = "Open Cards")
             }
 
-            HorizontalDivider()
+            Button(
+                onClick = {},
+                enabled = false, // TODO: Implement the edit deck functionality
+            ) {
+                Text("Edit Deck")
+            }
 
+            Button(
+                onClick = { deleteConfirmationOpen = true }
+            ) {
+                Text("Delete Deck")
+            }
+        }
+
+        HorizontalDivider()
+
+        if (flashcardsAvailable) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier
@@ -115,14 +157,29 @@ private fun DeckDetailsBody(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(flashCards) { flashcard ->
-                    FlashcardItem(flashcard = flashcard, onFlashCardClicked = navigateToFlashcardWithId)
+                    FlashcardItem(
+                        flashcard = flashcard,
+                        onFlashCardClicked = navigateToFlashcardWithId
+                    )
                 }
             }
+        } else {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = "No flashcards available in this deck.")
+            }
         }
-    } else {
-        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(text = "No flashcards available in this deck.")
-        }
+    }
+
+    if (deleteConfirmationOpen) {
+        DeleteConfirmationDialog(
+            objectType = "deck",
+            onDeleteConfirm = {
+                deleteConfirmationOpen = false
+                onDelete()
+            },
+            onDeleteCancel = { deleteConfirmationOpen = false },
+            modifier = Modifier.padding(16.dp)
+        )
     }
 }
 

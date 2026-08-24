@@ -9,7 +9,6 @@ import io.github.robinphillips98.flashcards.data.flashcards.FlashcardsRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
 
 /**
@@ -20,7 +19,7 @@ import kotlinx.coroutines.flow.stateIn
  */
 class DeckDetailsViewModel(
     savedStateHandle: SavedStateHandle,
-    decksRepository: DecksRepository,
+    private val decksRepository: DecksRepository,
     flashcardsRepository: FlashcardsRepository
 ): ViewModel() {
     private val deckId: Int = checkNotNull(savedStateHandle[DeckDetailsDestination.DECK_ID_ARG]) {
@@ -29,19 +28,30 @@ class DeckDetailsViewModel(
 
     val uiState: StateFlow<DeckDetailsUiState> =
         combine(
-            decksRepository.getDeckStream(deckId).filterNotNull(),
+            decksRepository.getDeckStream(deckId),
             flashcardsRepository.getFlashcardsByDeckIdStream(deckId)
         ) { deck, flashcards ->
-            DeckDetailsUiState(
-                deckDetails = deck.toDeckDetails(),
-                flashcards = flashcards
-            )
+            if (deck == null) {
+                DeckDetailsUiState(isDeckMissing = true)
+            } else {
+                DeckDetailsUiState(
+                    deckDetails = deck.toDeckDetails(),
+                    flashcards = flashcards
+                )
+            }
         }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
                 initialValue = DeckDetailsUiState()
             )
+
+    /**
+     * Deletes the deck from the [DecksRepository]'s data source.
+     */
+    suspend fun deleteDeck() {
+        decksRepository.deleteDeck(uiState.value.deckDetails.toDeck())
+    }
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
@@ -53,5 +63,6 @@ class DeckDetailsViewModel(
  */
 data class DeckDetailsUiState(
     val deckDetails: DeckDetails = DeckDetails(),
-    val flashcards: List<Flashcard> = emptyList()
+    val flashcards: List<Flashcard> = emptyList(),
+    val isDeckMissing: Boolean = false
 )
