@@ -132,7 +132,7 @@ private fun FlashcardsPager(
         val availableWidth = maxWidth
         val availableHeight = maxHeight
         val pageWidth = (availableWidth * 0.88f).coerceIn(280.dp, 560.dp)
-        val cardHeight = (availableHeight * 0.45f).coerceIn(240.dp, 420.dp)
+        val cardHeight = (availableHeight * 0.67f).coerceIn(320.dp, 600.dp)
         val horizontalInset = ((availableWidth - pageWidth) / 2).coerceAtLeast(8.dp)
 
         HorizontalPager(
