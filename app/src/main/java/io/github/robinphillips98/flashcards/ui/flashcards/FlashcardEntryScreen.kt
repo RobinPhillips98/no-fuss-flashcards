@@ -5,18 +5,27 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.flashcards.FlashCardsAppTopBar
+import io.github.robinphillips98.flashcards.data.decks.Deck
 import io.github.robinphillips98.flashcards.navigation.NavigationDestination
 import io.github.robinphillips98.flashcards.ui.AppViewModelProvider
 import kotlinx.coroutines.launch
@@ -64,7 +73,8 @@ fun FlashcardEntryBody(
     flashcardUiState: FlashcardUiState,
     onFlashcardValueChange: (FlashcardDetails) -> Unit,
     onSaveClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    availableDecks: List<Deck>? = null,
 ) {
     Column(
         modifier = modifier.padding(16.dp),
@@ -73,7 +83,8 @@ fun FlashcardEntryBody(
         FlashcardInputForm(
             flashcardDetails = flashcardUiState.flashcardDetails,
             onValueChange = onFlashcardValueChange,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            availableDecks = availableDecks
         )
         Button(
             onClick = onSaveClick,
@@ -90,7 +101,8 @@ fun FlashcardEntryBody(
 fun FlashcardInputForm(
     flashcardDetails: FlashcardDetails,
     onValueChange: (FlashcardDetails) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    availableDecks: List<Deck>?
 ) {
     Column(
         modifier = modifier,
@@ -121,5 +133,76 @@ fun FlashcardInputForm(
             minLines = 3,
             maxLines = 5
         )
+
+        /*
+        By making availableDecks null by default, we can make the deck selection optional. If
+        availableDecks is provided, the dropdown will be displayed; otherwise, it will be omitted.
+
+        For example, when creating a new flashcard, the card is simply associated with the deck
+        that was selected when navigating to the FlashcardEntryScreen. In this case, we don't need
+        to show the dropdown, so we can leave availableDecks as null. However, when editing an
+        existing flashcard, we want to allow the user to change the deck, so we provide the list of
+        available decks and display the dropdown.
+         */
+        if (availableDecks != null) {
+            FlashcardDeckDropdown(
+                selectedDeck = flashcardDetails.deckId,
+                availableDecks = availableDecks,
+                onDeckSelected = { onValueChange(flashcardDetails.copy(deckId = it)) },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FlashcardDeckDropdown(
+    selectedDeck: Int,
+    availableDecks: List<Deck>,
+    onDeckSelected: (id: Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    val selectedDeckName = availableDecks
+        .firstOrNull { it.deckId == selectedDeck }
+        ?.name
+        .orEmpty()
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = modifier
+    ) {
+        OutlinedTextField(
+            value = selectedDeckName,
+            onValueChange = {},
+            label = { Text("Deck") },
+            readOnly = true,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+            modifier = Modifier
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                .fillMaxWidth()
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            availableDecks.forEach { deck ->
+                DropdownMenuItem(
+                    text = { Text(deck.name) },
+                    onClick = {
+                        onDeckSelected(deck.deckId)
+                        expanded = false
+                    }
+                )
+            }
+        }
     }
 }

@@ -68,7 +68,8 @@ object AppViewModelProvider {
         initializer {
             FlashcardEditViewModel(
                 this.createSavedStateHandle(),
-                flashcardsApplication().container.flashcardsRepository
+                flashcardsApplication().container.flashcardsRepository,
+                flashcardsApplication().container.decksRepository
             )
         }
     }
