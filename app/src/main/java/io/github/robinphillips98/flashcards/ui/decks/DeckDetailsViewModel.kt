@@ -55,6 +55,14 @@ class DeckDetailsViewModel(
      * Deletes the deck from the [DecksRepository]'s data source.
      */
     suspend fun deleteDeck() {
+        val flashcards = uiState.value.flashcards
+        /*
+         Manually delete flashcards to ensure that any associated images are also deleted from
+         internal storage
+         */
+        for (flashcard in flashcards) {
+            deleteFlashcard(flashcard)
+        }
         decksRepository.deleteDeck(uiState.value.deckDetails.toDeck())
     }
 
@@ -62,6 +70,14 @@ class DeckDetailsViewModel(
      * Deletes a flashcard from the [FlashcardsRepository]'s data source.
      */
     suspend fun deleteFlashcard(flashcard: Flashcard) {
+        val imagePath = flashcard.imagePath
+        if (imagePath != null) {
+            // Delete the image from internal storage
+            val file = java.io.File(imagePath)
+            if (file.exists()) {
+                file.delete()
+            }
+        }
         flashcardsRepository.deleteFlashcard(flashcard)
     }
 
