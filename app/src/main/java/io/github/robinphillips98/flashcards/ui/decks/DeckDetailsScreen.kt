@@ -19,13 +19,16 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -70,6 +73,7 @@ fun DeckDetailsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
+    val flashcardToDelete by viewModel.flashcardToDelete.collectAsState()
 
     Scaffold(
         topBar = {
@@ -101,15 +105,24 @@ fun DeckDetailsScreen(
             DeckDetailsBody(
                 deckDetails = uiState.deckDetails.toDeck(),
                 flashCards = uiState.flashcards,
+                flashcardToDelete = flashcardToDelete,
                 navigateToFlashcards = navigateToFlashcards,
                 navigateToFlashcardWithId = navigateToFlashcardWithId,
-                onDelete = {
+                onDeleteDeck = {
                     coroutineScope.launch {
                         viewModel.deleteDeck()
                         navigateBack()
                     }
                 },
+                onDeleteFlashcard = { flashcard ->
+                    coroutineScope.launch {
+                        viewModel.deleteFlashcard(flashcard)
+                    }
+                },
                 navigateToEditScreen = navigateToEditScreen,
+                setFlashCardToDelete = { flashcard ->
+                    viewModel.setFlashcardToDelete(flashcard)
+                },
                 modifier = modifier.padding(innerPadding)
             )
         }
@@ -120,13 +133,17 @@ fun DeckDetailsScreen(
 private fun DeckDetailsBody(
     deckDetails: Deck,
     flashCards: List<Flashcard>,
+    flashcardToDelete: Flashcard?,
     navigateToFlashcards: () -> Unit,
     navigateToFlashcardWithId: (id: Int) -> Unit,
     navigateToEditScreen: (id: Int) -> Unit,
-    onDelete: () -> Unit,
+    onDeleteDeck: () -> Unit,
+    onDeleteFlashcard: (flashcard: Flashcard) -> Unit,
+    setFlashCardToDelete: (flashcard: Flashcard?) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var deleteConfirmationOpen by remember { mutableStateOf(false) }
+    var deleteDeckConfirmationOpen by remember { mutableStateOf(false) }
+    var deleteFlashcardConfirmationOpen by remember { mutableStateOf(false) }
     val flashcardsAvailable = flashCards.isNotEmpty()
 
     Column(
@@ -169,7 +186,7 @@ private fun DeckDetailsBody(
             }
 
             Button(
-                onClick = { deleteConfirmationOpen = true }
+                onClick = { deleteDeckConfirmationOpen = true }
             ) {
                 Text("Delete Deck")
             }
@@ -189,7 +206,11 @@ private fun DeckDetailsBody(
                 items(flashCards) { flashcard ->
                     FlashcardItem(
                         flashcard = flashcard,
-                        onFlashCardClicked = navigateToFlashcardWithId
+                        onFlashCardClicked = navigateToFlashcardWithId,
+                        onDelete = {
+                            setFlashCardToDelete(flashcard)
+                            deleteFlashcardConfirmationOpen = true
+                        }
                     )
                 }
             }
@@ -200,14 +221,27 @@ private fun DeckDetailsBody(
         }
     }
 
-    if (deleteConfirmationOpen) {
+    if (deleteDeckConfirmationOpen) {
         DeleteConfirmationDialog(
             objectType = "deck",
             onDeleteConfirm = {
-                deleteConfirmationOpen = false
-                onDelete()
+                deleteDeckConfirmationOpen = false
+                onDeleteDeck()
             },
-            onDeleteCancel = { deleteConfirmationOpen = false },
+            onDeleteCancel = { deleteDeckConfirmationOpen = false },
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+
+    if (deleteFlashcardConfirmationOpen) {
+        DeleteConfirmationDialog(
+            objectType = "flashcard",
+            onDeleteConfirm = {
+                deleteFlashcardConfirmationOpen = false
+                flashcardToDelete?.let { onDeleteFlashcard(it) }
+                setFlashCardToDelete(null)
+            },
+            onDeleteCancel = { deleteFlashcardConfirmationOpen = false },
             modifier = Modifier.padding(16.dp)
         )
     }
@@ -217,6 +251,7 @@ private fun DeckDetailsBody(
 private fun FlashcardItem(
     flashcard: Flashcard,
     onFlashCardClicked: (id: Int) -> Unit,
+    onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -254,6 +289,20 @@ private fun FlashcardItem(
             )
 
             ExpandableDescriptionText(text = flashcard.definition)
+
+            FilledIconButton(
+                onClick = onDelete,
+                modifier = Modifier.align(Alignment.End),
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete flashcard",
+                )
+            }
         }
     }
 }

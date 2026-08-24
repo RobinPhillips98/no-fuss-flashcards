@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import io.github.robinphillips98.flashcards.data.decks.DecksRepository
 import io.github.robinphillips98.flashcards.data.flashcards.Flashcard
 import io.github.robinphillips98.flashcards.data.flashcards.FlashcardsRepository
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
@@ -20,11 +22,14 @@ import kotlinx.coroutines.flow.stateIn
 class DeckDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val decksRepository: DecksRepository,
-    flashcardsRepository: FlashcardsRepository
+    private val flashcardsRepository: FlashcardsRepository
 ): ViewModel() {
     private val deckId: Int = checkNotNull(savedStateHandle[DeckDetailsDestination.DECK_ID_ARG]) {
         "Deck ID is required"
     }
+
+    private val _flashcardToDelete = MutableStateFlow<Flashcard?>(null)
+    val flashcardToDelete: StateFlow<Flashcard?> = _flashcardToDelete.asStateFlow()
 
     val uiState: StateFlow<DeckDetailsUiState> =
         combine(
@@ -53,6 +58,20 @@ class DeckDetailsViewModel(
         decksRepository.deleteDeck(uiState.value.deckDetails.toDeck())
     }
 
+    /**
+     * Deletes a flashcard from the [FlashcardsRepository]'s data source.
+     */
+    suspend fun deleteFlashcard(flashcard: Flashcard) {
+        flashcardsRepository.deleteFlashcard(flashcard)
+    }
+
+    /**
+     * Sets the flashcard to be deleted.
+     */
+    fun setFlashcardToDelete(flashcard: Flashcard?) {
+        _flashcardToDelete.value = flashcard
+    }
+
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }
@@ -64,5 +83,5 @@ class DeckDetailsViewModel(
 data class DeckDetailsUiState(
     val deckDetails: DeckDetails = DeckDetails(),
     val flashcards: List<Flashcard> = emptyList(),
-    val isDeckMissing: Boolean = false
+    val isDeckMissing: Boolean = false,
 )
