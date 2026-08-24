@@ -10,6 +10,7 @@ import io.github.robinphillips98.flashcards.FlashcardApplication
 import io.github.robinphillips98.flashcards.ui.decks.DeckDetailsViewModel
 import io.github.robinphillips98.flashcards.ui.decks.DeckEditViewModel
 import io.github.robinphillips98.flashcards.ui.decks.DeckEntryViewModel
+import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardEntryViewModel
 import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardsPagerViewModel
 import io.github.robinphillips98.flashcards.ui.home.HomeViewModel
 
@@ -51,6 +52,14 @@ object AppViewModelProvider {
             DeckEditViewModel(
                 this.createSavedStateHandle(),
                 flashcardsApplication().container.decksRepository
+            )
+        }
+
+        // Initializer for FlashcardEntryViewModel
+        initializer {
+            FlashcardEntryViewModel(
+                this.createSavedStateHandle(),
+                flashcardsApplication().container.flashcardsRepository
             )
         }
     }

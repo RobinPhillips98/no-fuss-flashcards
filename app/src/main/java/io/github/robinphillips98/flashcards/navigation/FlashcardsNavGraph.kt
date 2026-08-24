@@ -16,6 +16,8 @@ import io.github.robinphillips98.flashcards.ui.decks.DeckEditDestination
 import io.github.robinphillips98.flashcards.ui.decks.DeckEditScreen
 import io.github.robinphillips98.flashcards.ui.decks.DeckEntryDestination
 import io.github.robinphillips98.flashcards.ui.decks.DeckEntryScreen
+import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardEntryDestination
+import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardEntryScreen
 import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardsPagerDestination
 import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardsPagerScreen
 import io.github.robinphillips98.flashcards.ui.home.HomeDestination
@@ -86,6 +88,9 @@ fun FlashcardsNavHost(
                 navigateToEditScreen = { deckId ->
                     navController.navigate("${DeckEditDestination.route}/$deckId")
                 },
+                navigateToFlashCardEntryScreen = { deckId ->
+                    navController.navigate("${FlashcardEntryDestination.route}/$deckId")
+                },
                 navigateBack = { navController.navigateUp() }
             )
         }
@@ -101,7 +106,14 @@ fun FlashcardsNavHost(
                     defaultValue = -1
                 }
             )
-        ) {  FlashcardsPagerScreen(navigateBack = { navController.navigateUp() }) }
+        ) {
+            FlashcardsPagerScreen(
+                navigateBack = { navController.navigateUp() },
+                navigateToFlashCardEntryScreen = { deckId ->
+                    navController.navigate("${FlashcardEntryDestination.route}/$deckId")
+                },
+            )
+        }
 
         composable(route = DeckEntryDestination.route) {
             DeckEntryScreen(
@@ -117,6 +129,18 @@ fun FlashcardsNavHost(
             })
         ) {
             DeckEditScreen(
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() }
+            )
+        }
+
+        composable(
+            route = FlashcardEntryDestination.routeWithArgs,
+            arguments = listOf(navArgument(FlashcardEntryDestination.DECK_ID_ARG) {
+                type = NavType.IntType
+            })
+        ) {
+            FlashcardEntryScreen(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() }
             )

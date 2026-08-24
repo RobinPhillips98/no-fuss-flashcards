@@ -64,7 +64,6 @@ fun HomeScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = onCreateDeckClicked,
-//                shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .padding(
                         end = WindowInsets.safeDrawing.asPaddingValues()
