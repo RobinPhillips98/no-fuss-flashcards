@@ -29,6 +29,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -40,6 +44,8 @@ import io.github.robinphillips98.flashcards.data.flashcards.Flashcard
 import io.github.robinphillips98.flashcards.navigation.NavigationDestination
 import io.github.robinphillips98.flashcards.ui.AppViewModelProvider
 import io.github.robinphillips98.flashcards.ui.decks.toDeck
+import io.github.robinphillips98.flashcards.ui.utils.DeleteConfirmationDialog
+import kotlinx.coroutines.launch
 
 object FlashcardsPagerDestination: NavigationDestination {
     override val route = "flashcards_pager"
@@ -58,6 +64,8 @@ fun FlashcardsPagerScreen(
     viewModel: FlashcardsPagerViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val flashcardToDelete by viewModel.flashcardToDelete.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -84,6 +92,13 @@ fun FlashcardsPagerScreen(
         FlashcardsPagerBody(
             deck = uiState.deckDetails.toDeck(),
             flashcards = uiState.flashcards,
+            flashcardToDelete = flashcardToDelete,
+            onDeleteFlashcard = { flashcard ->
+                coroutineScope.launch {
+                    viewModel.deleteFlashcard(flashcard)
+                }
+            },
+            setFlashCardToDelete = { flashcard -> viewModel.setFlashcardToDelete(flashcard) },
             modifier = modifier.padding(innerPadding),
             initialSelectedIndex = uiState.initialSelectedIndex
         )
@@ -94,10 +109,14 @@ fun FlashcardsPagerScreen(
 private fun FlashcardsPagerBody(
     deck: Deck,
     flashcards: List<Flashcard>,
+    flashcardToDelete: Flashcard?,
     initialSelectedIndex: Int,
+    onDeleteFlashcard: (flashcard: Flashcard) -> Unit,
+    setFlashCardToDelete: (flashcard: Flashcard?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (flashcards.isNotEmpty()) {
+        var deleteFlashcardConfirmationOpen by remember { mutableStateOf(false) }
 
         val pageCount = flashcards.size * 400
         val base = pageCount / 2
@@ -133,7 +152,25 @@ private fun FlashcardsPagerBody(
                 FlashcardsPager(
                     flashcards = flashcards,
                     pagerState = pagerState,
+                    onDelete = { flashcard ->
+                        setFlashCardToDelete(flashcard)
+                        deleteFlashcardConfirmationOpen = true
+                    },
                     modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            if (deleteFlashcardConfirmationOpen) {
+                DeleteConfirmationDialog(
+                    objectType = "flashcard",
+                    onDeleteConfirm = {
+                        deleteFlashcardConfirmationOpen = false
+                        flashcardToDelete?.let { onDeleteFlashcard(it) }
+                        setFlashCardToDelete(null)
+
+                    },
+                    onDeleteCancel = { deleteFlashcardConfirmationOpen = false },
+                    modifier = Modifier.padding(16.dp)
                 )
             }
         }
@@ -148,6 +185,7 @@ private fun FlashcardsPagerBody(
 private fun FlashcardsPager(
     flashcards: List<Flashcard>,
     pagerState: PagerState,
+    onDelete: (Flashcard) -> Unit,
     modifier: Modifier = Modifier
 ) {
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
@@ -169,7 +207,8 @@ private fun FlashcardsPager(
             val flashcard = flashcards[page % flashcards.size]
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 FlashcardDetail(
-                    flashcardData = flashcard,
+                    flashcard = flashcard,
+                    onDelete = { onDelete(flashcard) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(cardHeight)
