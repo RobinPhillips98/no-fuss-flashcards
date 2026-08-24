@@ -16,6 +16,8 @@ import io.github.robinphillips98.flashcards.ui.decks.DeckEditDestination
 import io.github.robinphillips98.flashcards.ui.decks.DeckEditScreen
 import io.github.robinphillips98.flashcards.ui.decks.DeckEntryDestination
 import io.github.robinphillips98.flashcards.ui.decks.DeckEntryScreen
+import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardEditDestination
+import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardEditScreen
 import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardEntryDestination
 import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardEntryScreen
 import io.github.robinphillips98.flashcards.ui.flashcards.FlashcardsPagerDestination
@@ -88,8 +90,11 @@ fun FlashcardsNavHost(
                 navigateToEditScreen = { deckId ->
                     navController.navigate("${DeckEditDestination.route}/$deckId")
                 },
-                navigateToFlashCardEntryScreen = { deckId ->
+                navigateToFlashcardEntryScreen = { deckId ->
                     navController.navigate("${FlashcardEntryDestination.route}/$deckId")
+                },
+                navigateToFlashcardEditScreen = { flashcardId ->
+                    navController.navigate("${FlashcardEditDestination.route}/$flashcardId")
                 },
                 navigateBack = { navController.navigateUp() }
             )
@@ -146,6 +151,20 @@ fun FlashcardsNavHost(
             )
         }
 
-        // TODO: Implement flashcard create/edit, quiz, and settings screens
+        composable(
+            route = FlashcardEditDestination.routeWithArgs,
+            arguments = listOf(
+                navArgument(FlashcardEditDestination.FLASHCARD_ID_ARG) {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            FlashcardEditScreen(
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() }
+            )
+        }
+
+        // TODO: Implement quiz and settings screens
     }
 }

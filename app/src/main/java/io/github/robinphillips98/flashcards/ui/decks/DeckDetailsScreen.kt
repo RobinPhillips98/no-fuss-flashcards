@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -66,7 +67,8 @@ fun DeckDetailsScreen(
     navigateToFlashcards: () -> Unit,
     navigateToFlashcardWithId: (id: Int) -> Unit,
     navigateToEditScreen: (id: Int) -> Unit,
-    navigateToFlashCardEntryScreen: (deckId: Int) -> Unit,
+    navigateToFlashcardEntryScreen: (deckId: Int) -> Unit,
+    navigateToFlashcardEditScreen: (flashcardId: Int) -> Unit,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DeckDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -85,7 +87,7 @@ fun DeckDetailsScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navigateToFlashCardEntryScreen(uiState.deckDetails.deckId) },
+                onClick = { navigateToFlashcardEntryScreen(uiState.deckDetails.deckId) },
                 modifier = Modifier
                     .padding(
                         end = WindowInsets.safeDrawing.asPaddingValues()
@@ -120,6 +122,7 @@ fun DeckDetailsScreen(
                     }
                 },
                 navigateToEditScreen = navigateToEditScreen,
+                navigateToFlashcardEditScreen = navigateToFlashcardEditScreen,
                 setFlashCardToDelete = { flashcard ->
                     viewModel.setFlashcardToDelete(flashcard)
                 },
@@ -137,6 +140,7 @@ private fun DeckDetailsBody(
     navigateToFlashcards: () -> Unit,
     navigateToFlashcardWithId: (id: Int) -> Unit,
     navigateToEditScreen: (id: Int) -> Unit,
+    navigateToFlashcardEditScreen: (flashcardId: Int) -> Unit,
     onDeleteDeck: () -> Unit,
     onDeleteFlashcard: (flashcard: Flashcard) -> Unit,
     setFlashCardToDelete: (flashcard: Flashcard?) -> Unit,
@@ -207,6 +211,7 @@ private fun DeckDetailsBody(
                     FlashcardItem(
                         flashcard = flashcard,
                         onFlashCardClicked = navigateToFlashcardWithId,
+                        onEditClicked = navigateToFlashcardEditScreen,
                         onDelete = {
                             setFlashCardToDelete(flashcard)
                             deleteFlashcardConfirmationOpen = true
@@ -251,6 +256,7 @@ private fun DeckDetailsBody(
 private fun FlashcardItem(
     flashcard: Flashcard,
     onFlashCardClicked: (id: Int) -> Unit,
+    onEditClicked: (id: Int) -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -290,18 +296,34 @@ private fun FlashcardItem(
 
             ExpandableDescriptionText(text = flashcard.definition)
 
-            FilledIconButton(
-                onClick = onDelete,
-                modifier = Modifier.align(Alignment.End),
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer
-                )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
             ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete flashcard",
-                )
+                FilledIconButton(
+                    onClick = { onEditClicked(flashcard.flashcardId) },
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit flashcard",
+                    )
+                }
+                FilledIconButton(
+                    onClick = onDelete,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete flashcard",
+                    )
+                }
             }
         }
     }
