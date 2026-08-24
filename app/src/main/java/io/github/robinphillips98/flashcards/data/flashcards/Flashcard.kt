@@ -27,5 +27,7 @@ data class Flashcard(
     val term: String,
     val definition: String,
     @ColumnInfo(name = "deck_id")
-    val deckId: Int
+    val deckId: Int,
+    @ColumnInfo(name = "image_path")
+    val imagePath: String? = null
 )

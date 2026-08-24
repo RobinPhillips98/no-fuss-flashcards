@@ -45,6 +45,7 @@ fun FlashcardEditScreen(
         FlashcardEntryBody(
             flashcardUiState = viewModel.flashcardUiState,
             onFlashcardValueChange = viewModel::updateUiState,
+            onImageUploaded = { /* TODO: Add support for editing saved image */},
             onSaveClick = {
                 coroutineScope.launch {
                     viewModel.updateFlashcard()

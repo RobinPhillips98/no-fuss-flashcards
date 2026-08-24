@@ -55,6 +55,7 @@ dependencies {
 
     val nav_version = "2.9.8"
     val room_version = "2.8.4"
+    val coil_version = "2.7.0"
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:${nav_version}")
@@ -62,8 +63,11 @@ dependencies {
     // Material Icons
     implementation("androidx.compose.material:material-icons-extended")
 
-    //Room
+    // Room
     implementation("androidx.room:room-runtime:${room_version}")
-    ksp("androidx.room:room-compiler:$room_version")
+    ksp("androidx.room:room-compiler:${room_version}")
     implementation("androidx.room:room-ktx:${room_version}")
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:${coil_version}")
 }

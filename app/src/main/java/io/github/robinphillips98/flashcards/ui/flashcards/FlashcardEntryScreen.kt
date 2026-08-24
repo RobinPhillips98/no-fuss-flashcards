@@ -1,9 +1,12 @@
 package io.github.robinphillips98.flashcards.ui.flashcards
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,12 +25,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.flashcards.FlashCardsAppTopBar
 import io.github.robinphillips98.flashcards.data.decks.Deck
 import io.github.robinphillips98.flashcards.navigation.NavigationDestination
 import io.github.robinphillips98.flashcards.ui.AppViewModelProvider
+import io.github.robinphillips98.flashcards.ui.utils.ImageUploader
 import kotlinx.coroutines.launch
 
 object FlashcardEntryDestination: NavigationDestination {
@@ -45,6 +50,9 @@ fun FlashcardEntryScreen(
     viewModel: FlashcardEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val flashcardUiState = viewModel.flashcardUiState
+
     Scaffold(
         topBar = {
             FlashCardsAppTopBar(
@@ -55,11 +63,17 @@ fun FlashcardEntryScreen(
         }
     ) { innerPadding ->
         FlashcardEntryBody(
-            flashcardUiState = viewModel.flashcardUiState,
+            flashcardUiState = flashcardUiState,
             onFlashcardValueChange = viewModel::updateUiState,
+            onImageUploaded = {
+                imageUri -> viewModel.updateUiState(
+                    flashcardUiState.flashcardDetails,
+                    imageUri
+                )
+            },
             onSaveClick = {
                 coroutineScope.launch {
-                    viewModel.saveFlashcard()
+                    viewModel.saveFlashcard(context)
                     navigateBack()
                 }
             },
@@ -72,19 +86,24 @@ fun FlashcardEntryScreen(
 fun FlashcardEntryBody(
     flashcardUiState: FlashcardUiState,
     onFlashcardValueChange: (FlashcardDetails) -> Unit,
+    onImageUploaded: (imageUri: Uri?) -> Unit,
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier,
     availableDecks: List<Deck>? = null,
 ) {
     Column(
-        modifier = modifier.padding(16.dp),
+        modifier = modifier
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         FlashcardInputForm(
             flashcardDetails = flashcardUiState.flashcardDetails,
+            availableDecks = availableDecks,
+            selectedImageUri = flashcardUiState.imageUri,
             onValueChange = onFlashcardValueChange,
+            onImageUploaded = onImageUploaded,
             modifier = Modifier.fillMaxWidth(),
-            availableDecks = availableDecks
         )
         Button(
             onClick = onSaveClick,
@@ -100,9 +119,11 @@ fun FlashcardEntryBody(
 @Composable
 fun FlashcardInputForm(
     flashcardDetails: FlashcardDetails,
+    availableDecks: List<Deck>?,
+    selectedImageUri: Uri?,
     onValueChange: (FlashcardDetails) -> Unit,
+    onImageUploaded: (imageUri: Uri?) -> Unit,
     modifier: Modifier = Modifier,
-    availableDecks: List<Deck>?
 ) {
     Column(
         modifier = modifier,
@@ -152,6 +173,13 @@ fun FlashcardInputForm(
                 modifier = Modifier.fillMaxWidth()
             )
         }
+
+        ImageUploader(
+            objectDescription = "flashcard",
+            onImageUploaded = onImageUploaded,
+            selectedImageUri = selectedImageUri,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
