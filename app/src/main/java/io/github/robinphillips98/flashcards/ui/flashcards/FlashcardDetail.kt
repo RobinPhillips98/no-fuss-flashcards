@@ -11,13 +11,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,13 +27,12 @@ import io.github.robinphillips98.flashcards.data.flashcards.Flashcard
 
 @Composable
 fun FlashcardDetail(
-    flashcard: Flashcard,
-    onDelete: (Flashcard) -> Unit,
+    flashcardData: Flashcard,
     modifier: Modifier = Modifier
 ) {
     var isFlipped by remember { mutableStateOf(false) }
     val sideLabel = if (isFlipped) "Term" else "Definition"
-    val cardText = if (isFlipped) flashcard.term else flashcard.definition
+    val cardText = if (isFlipped) flashcardData.term else flashcardData.definition
     val cardStyle = if (isFlipped)
         MaterialTheme.typography.titleLarge
     else
@@ -81,18 +75,6 @@ fun FlashcardDetail(
                         onClick = { isFlipped = !isFlipped }
                     ) {
                         Text(text = "Flip")
-                    }
-                    FilledIconButton(
-                        onClick = { onDelete(flashcard) },
-                        colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.errorContainer,
-                            contentColor = MaterialTheme.colorScheme.onErrorContainer
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete flashcard",
-                        )
                     }
                 }
             }

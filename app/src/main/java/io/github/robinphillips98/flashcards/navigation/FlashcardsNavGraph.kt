@@ -113,10 +113,7 @@ fun FlashcardsNavHost(
             )
         ) {
             FlashcardsPagerScreen(
-                navigateBack = { navController.navigateUp() },
-                navigateToFlashCardEntryScreen = { deckId ->
-                    navController.navigate("${FlashcardEntryDestination.route}/$deckId")
-                },
+                navigateBack = { navController.navigateUp() }
             )
         }
 
