@@ -1,0 +1,167 @@
+package io.github.robinphillips98.nofussflashcards.navigation
+
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import io.github.robinphillips98.nofussflashcards.ui.decks.DeckDetailsDestination
+import io.github.robinphillips98.nofussflashcards.ui.decks.DeckDetailsScreen
+import io.github.robinphillips98.nofussflashcards.ui.decks.DeckEditDestination
+import io.github.robinphillips98.nofussflashcards.ui.decks.DeckEditScreen
+import io.github.robinphillips98.nofussflashcards.ui.decks.DeckEntryDestination
+import io.github.robinphillips98.nofussflashcards.ui.decks.DeckEntryScreen
+import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardEditDestination
+import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardEditScreen
+import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardEntryDestination
+import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardEntryScreen
+import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardsPagerDestination
+import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardsPagerScreen
+import io.github.robinphillips98.nofussflashcards.ui.home.HomeDestination
+import io.github.robinphillips98.nofussflashcards.ui.home.HomeScreen
+
+/**
+ * Provides Navigation graph for the application.
+ */
+@Composable
+fun NoFussFlashcardsNavHost(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+) {
+    val durationMillis = 150
+    NavHost(
+        navController = navController,
+        startDestination = HomeDestination.route,
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Start,
+                tween(durationMillis, easing = EaseInOut))
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Start,
+                tween(durationMillis, easing = EaseInOut))
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.End,
+                tween(durationMillis, easing = EaseInOut))
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.End,
+                tween(durationMillis, easing = EaseInOut))
+        },
+        modifier = modifier
+    ) {
+        composable(route = HomeDestination.route) {
+            HomeScreen(
+                onCreateDeckClicked = { navController.navigate(DeckEntryDestination.route) },
+                onDeckClicked = { deckId ->
+                    navController.navigate("${DeckDetailsDestination.route}/$deckId")
+                }
+            )
+        }
+
+        composable(
+            route = DeckDetailsDestination.routeWithArgs,
+            arguments = listOf(navArgument(DeckDetailsDestination.DECK_ID_ARG) {
+                type = NavType.IntType
+            })
+        ) {
+            val deckId = it.arguments?.getInt(DeckDetailsDestination.DECK_ID_ARG) ?: 0
+
+            DeckDetailsScreen(
+                navigateToFlashcards = {
+                    navController.navigate("${FlashcardsPagerDestination.route}/$deckId")
+                },
+                navigateToFlashcardWithId = { flashcardId ->
+                    navController.navigate(
+                        route = FlashcardsPagerDestination.route +
+                                "/$deckId" +
+                                "?${FlashcardsPagerDestination.FLASHCARD_ID_ARG}=$flashcardId"
+                    )
+                },
+                navigateToEditScreen = { deckId ->
+                    navController.navigate("${DeckEditDestination.route}/$deckId")
+                },
+                navigateToFlashcardEntryScreen = { deckId ->
+                    navController.navigate("${FlashcardEntryDestination.route}/$deckId")
+                },
+                navigateToFlashcardEditScreen = { flashcardId ->
+                    navController.navigate("${FlashcardEditDestination.route}/$flashcardId")
+                },
+                navigateBack = { navController.navigateUp() }
+            )
+        }
+
+        composable(
+            route = FlashcardsPagerDestination.routeWithArgs,
+            arguments = listOf(
+                navArgument(FlashcardsPagerDestination.DECK_ID_ARG) {
+                    type = NavType.IntType
+                },
+                navArgument(FlashcardsPagerDestination.FLASHCARD_ID_ARG) {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) {
+            FlashcardsPagerScreen(
+                navigateBack = { navController.navigateUp() }
+            )
+        }
+
+        composable(route = DeckEntryDestination.route) {
+            DeckEntryScreen(
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() }
+            )
+        }
+
+        composable(
+            route = DeckEditDestination.routeWithArgs,
+            arguments = listOf(navArgument(DeckEditDestination.DECK_ID_ARG) {
+                type = NavType.IntType
+            })
+        ) {
+            DeckEditScreen(
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() }
+            )
+        }
+
+        composable(
+            route = FlashcardEntryDestination.routeWithArgs,
+            arguments = listOf(navArgument(FlashcardEntryDestination.DECK_ID_ARG) {
+                type = NavType.IntType
+            })
+        ) {
+            FlashcardEntryScreen(
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() }
+            )
+        }
+
+        composable(
+            route = FlashcardEditDestination.routeWithArgs,
+            arguments = listOf(
+                navArgument(FlashcardEditDestination.FLASHCARD_ID_ARG) {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            FlashcardEditScreen(
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() }
+            )
+        }
+
+        // TODO: Implement quiz and settings screens
+    }
+}
