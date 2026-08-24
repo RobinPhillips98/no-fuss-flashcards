@@ -1,5 +1,8 @@
 package io.github.robinphillips98.flashcards.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -26,9 +29,30 @@ fun FlashcardsNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
+    val durationMillis = 150
     NavHost(
         navController = navController,
         startDestination = HomeDestination.route,
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Start,
+                tween(durationMillis, easing = EaseInOut))
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Start,
+                tween(durationMillis, easing = EaseInOut))
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.End,
+                tween(durationMillis, easing = EaseInOut))
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.End,
+                tween(durationMillis, easing = EaseInOut))
+        },
         modifier = modifier
     ) {
         composable(route = HomeDestination.route) {
