@@ -90,6 +90,7 @@ fun FlashcardEntryBody(
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier,
     availableDecks: List<Deck>? = null,
+    onImageRestored: (() -> Unit)? = null,
 ) {
     Column(
         modifier = modifier
@@ -100,9 +101,11 @@ fun FlashcardEntryBody(
         FlashcardInputForm(
             flashcardDetails = flashcardUiState.flashcardDetails,
             availableDecks = availableDecks,
-            selectedImageUri = flashcardUiState.imageUri,
+            selectedImageUri = flashcardUiState.selectedImageUri,
+            existingImageUri = flashcardUiState.existingImageUri,
             onValueChange = onFlashcardValueChange,
             onImageUploaded = onImageUploaded,
+            onImageRestored = onImageRestored,
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -130,9 +133,11 @@ fun FlashcardInputForm(
     flashcardDetails: FlashcardDetails,
     availableDecks: List<Deck>?,
     selectedImageUri: Uri?,
+    existingImageUri: Uri?,
     onValueChange: (FlashcardDetails) -> Unit,
     onImageUploaded: (imageUri: Uri?) -> Unit,
     modifier: Modifier = Modifier,
+    onImageRestored: (() -> Unit)? = null,
 ) {
     Column(
         modifier = modifier,
@@ -187,6 +192,8 @@ fun FlashcardInputForm(
             objectDescription = "flashcard",
             onImageUploaded = onImageUploaded,
             selectedImageUri = selectedImageUri,
+            existingImageUri = existingImageUri,
+            onImageRestored = onImageRestored,
             modifier = Modifier.fillMaxWidth()
         )
     }

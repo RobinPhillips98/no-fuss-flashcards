@@ -35,11 +35,12 @@ class FlashcardEntryViewModel(
      * triggers a validation for input values.
      */
     fun updateUiState(flashcardDetails: FlashcardDetails, imageUri: Uri? = null) {
-        val finalImageUri = imageUri ?: flashcardUiState.imageUri
+        val finalImageUri = imageUri ?: flashcardUiState.selectedImageUri
         flashcardUiState =
             FlashcardUiState(
                 flashcardDetails = flashcardDetails,
-                imageUri = finalImageUri,
+                selectedImageUri = finalImageUri,
+                existingImageUri = flashcardUiState.existingImageUri,
                 isEntryValid = validateInput(flashcardDetails, finalImageUri)
             )
     }
@@ -49,8 +50,8 @@ class FlashcardEntryViewModel(
      */
     suspend fun saveFlashcard(context: Context) {
         if (validateInput()) {
-            val imagePath = if (flashcardUiState.imageUri != null) {
-                saveImageToInternalStorage(context, flashcardUiState.imageUri!!)
+            val imagePath = if (flashcardUiState.selectedImageUri != null) {
+                saveImageToInternalStorage(context, flashcardUiState.selectedImageUri!!)
             } else {
                 null
             }
@@ -62,7 +63,7 @@ class FlashcardEntryViewModel(
 
     private fun validateInput(
         uiState: FlashcardDetails = flashcardUiState.flashcardDetails,
-        imageUri: Uri? = flashcardUiState.imageUri
+        imageUri: Uri? = flashcardUiState.selectedImageUri
     ): Boolean {
         return with(uiState) {
             term.isNotBlank() &&
@@ -77,7 +78,8 @@ class FlashcardEntryViewModel(
  */
 data class FlashcardUiState(
     val flashcardDetails: FlashcardDetails = FlashcardDetails(),
-    val imageUri: Uri? = null,
+    val selectedImageUri: Uri? = null,
+    val existingImageUri: Uri? = null,
     val isEntryValid: Boolean = false
 )
 

@@ -40,6 +40,8 @@ import java.util.UUID
  * @param modifier Optional [Modifier] for styling the image uploader component.
  * @param existingImageUri The URI of an existing image associated with the object, if any. This is
  * used to display a preview of the existing image in the UI if no new image has been selected.
+ * @param onImageRestored An optional callback invoked when the user taps the Restore button to
+ * revert to the original existing image. When null, the Restore button is not shown.
  */
 @Composable
 fun ImageUploader(
@@ -48,6 +50,7 @@ fun ImageUploader(
     selectedImageUri: Uri?,
     modifier: Modifier = Modifier,
     existingImageUri: Uri? = null,
+    onImageRestored: (() -> Unit)? = null,
 ) {
     // Will set previewImage to null if there is no selected or existing image URI
     val previewImage = selectedImageUri ?: existingImageUri
@@ -90,7 +93,7 @@ fun ImageUploader(
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = spacedBy(12.dp)
+                    horizontalArrangement = spacedBy(8.dp)
                 ) {
                     Button(
                         modifier = Modifier.weight(1f),
@@ -109,15 +112,30 @@ fun ImageUploader(
                     OutlinedButton(
                         modifier = Modifier.weight(1f),
                         onClick = { onImageUploaded(null) },
-                        enabled = selectedImageUri != null
+                        // Enabled if there's a newly selected image, or an existing image that
+                        // can be cleared (only relevant when onImageRestored is provided)
+                        enabled = selectedImageUri != null ||
+                            (existingImageUri != null && onImageRestored != null)
                     ) {
                         Text("Clear")
+                    }
+
+                    if (onImageRestored != null) {
+                        OutlinedButton(
+                            modifier = Modifier.weight(1f),
+                            onClick = onImageRestored,
+                            // Enabled when there's something to restore (i.e. the image was
+                            // cleared or replaced with a new one)
+                            enabled = selectedImageUri != null || existingImageUri == null
+                        ) {
+                            Text("Reset")
+                        }
                     }
                 }
 
                 Text(
                     text = if (previewImage != null) {
-                        "Image selected"
+                        if (selectedImageUri != null) "New image selected" else "Existing image"
                     } else {
                         "No image selected yet"
                     },

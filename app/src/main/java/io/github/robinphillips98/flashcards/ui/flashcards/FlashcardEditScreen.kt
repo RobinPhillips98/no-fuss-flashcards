@@ -8,6 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.flashcards.FlashCardsAppTopBar
 import io.github.robinphillips98.flashcards.navigation.NavigationDestination
@@ -30,6 +31,7 @@ fun FlashcardEditScreen(
     viewModel: FlashcardEditViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     val availableDecks by viewModel.availableDecks.collectAsState()
 
     Scaffold(
@@ -45,10 +47,15 @@ fun FlashcardEditScreen(
         FlashcardEntryBody(
             flashcardUiState = viewModel.flashcardUiState,
             onFlashcardValueChange = viewModel::updateUiState,
-            onImageUploaded = { /* TODO: Add support for editing saved image */},
+            onImageUploaded = viewModel::onImageSelected,
+            onImageRestored = if (viewModel.hasOriginalImage) {
+                viewModel::restoreExistingImage
+            } else {
+                null
+            },
             onSaveClick = {
                 coroutineScope.launch {
-                    viewModel.updateFlashcard()
+                    viewModel.updateFlashcard(context)
                     navigateBack()
                 }
             },
