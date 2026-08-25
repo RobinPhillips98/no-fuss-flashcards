@@ -24,7 +24,8 @@ object AppViewModelProvider {
         initializer {
             HomeViewModel(
                 noFussFlashcardsApplication().container.decksRepository,
-                noFussFlashcardsApplication().container.userPreferencesRepository
+                noFussFlashcardsApplication().container.userPreferencesRepository,
+                noFussFlashcardsApplication().container.stringResolver
             )
         }
 

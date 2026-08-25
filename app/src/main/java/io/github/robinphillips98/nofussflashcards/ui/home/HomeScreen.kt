@@ -24,10 +24,14 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -47,6 +51,14 @@ object HomeDestination: NavigationDestination {
     override val titleResId = R.string.full_app_name
 }
 
+/**
+ * Composable function that represents the Home screen of the app.
+ *
+ * @param onCreateDeckClicked Callback function to be invoked when the "Create Deck" button is clicked.
+ * @param onDeckClicked Callback function to be invoked when a deck is clicked, passing the deck ID.
+ * @param modifier [Modifier] for styling and layout adjustments.
+ * @param viewModel [HomeViewModel] for managing the state and logic of the Home screen.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -56,6 +68,15 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is HomeUiEvent.ShowSnackbar -> snackbarHostState.showSnackbar(event.message)
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier,
@@ -81,7 +102,8 @@ fun HomeScreen(
                 },
                 text = { Text(stringResource(R.string.create_deck_button)) }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
         HomeBody(
             deckList = homeUiState.deckList,
@@ -95,10 +117,18 @@ fun HomeScreen(
     }
 }
 
+/**
+ * Composable function that represents the body of the Home screen.
+ *
+ * @param deckList List of decks to be displayed.
+ * @param onDeckClicked Callback function to be invoked when a deck is clicked, passing the deck ID.
+ * @param modifier [Modifier] for styling and layout adjustments.
+ * @param lastDeckId ID of the last opened deck, if any.
+ */
 @Composable
 private fun HomeBody(
     deckList: List<Deck>,
-    onDeckClicked: (Int) -> Unit,
+    onDeckClicked: (deckId: Int) -> Unit,
     modifier: Modifier = Modifier,
     lastDeckId: Int? = null
 ) {
@@ -135,10 +165,17 @@ private fun HomeBody(
     }
 }
 
+/**
+ * Composable function that represents the list of decks.
+ *
+ * @param decks List of decks to be displayed.
+ * @param onDeckClicked Callback function to be invoked when a deck is clicked, passing the deck ID.
+ * @param modifier [Modifier] for styling and layout adjustments.
+ */
 @Composable
 private fun DeckList(
     decks: List<Deck>,
-    onDeckClicked: (Int) -> Unit,
+    onDeckClicked: (deckId: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -171,6 +208,13 @@ private fun DeckList(
     }
 }
 
+/**
+ * Composable function that represents a single deck item.
+ *
+ * @param deck Deck to be displayed.
+ * @param onClick Callback function to be invoked when the deck is clicked.
+ * @param modifier [Modifier] for styling and layout adjustments.
+ */
 @Composable
 private fun DeckItem(
     deck: Deck,
@@ -215,6 +259,10 @@ private fun DeckItem(
     }
 }
 
+/*
+ * Previews for the Home screen and its components
+ */
+
 @Preview(showBackground = true)
 @Composable
 fun HomeBodyPreview() {
@@ -240,7 +288,7 @@ fun HomeBodyEmptyPreview() {
     )
 }
 
-@Preview()
+@Preview
 @Composable
 fun DeckItemPreview() {
     val sampleDeck = Deck(deckId = 1, name = "Sample Deck", description = "This is a sample deck description.")
