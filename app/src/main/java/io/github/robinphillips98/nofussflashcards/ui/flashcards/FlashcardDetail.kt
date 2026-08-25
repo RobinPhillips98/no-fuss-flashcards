@@ -32,6 +32,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.robinphillips98.nofussflashcards.data.flashcards.Flashcard
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 
 @Composable
 fun FlashcardDetail(
@@ -39,13 +44,25 @@ fun FlashcardDetail(
     modifier: Modifier = Modifier
 ) {
     var isFlipped by remember { mutableStateOf(false) }
-    val sideLabel = if (isFlipped) "Term" else "Definition"
-    val cardText =
-        if (isFlipped) flashcardData.term else flashcardData.definition
-    val cardStyle = if (isFlipped)
+
+    val cardRotationY by animateFloatAsState(
+        targetValue = if (isFlipped) 180f else 0f,
+        animationSpec = tween(durationMillis = 450, easing = FastOutSlowInEasing),
+        label = "cardFlip"
+    )
+
+    // Which side should be visible at the current animation frame?
+    val showBackSide = cardRotationY > 90f
+
+    val sideLabel = if (showBackSide) "Term" else "Definition"
+    val cardText = if (showBackSide) flashcardData.term else flashcardData.definition
+    val cardStyle = if (showBackSide) {
         MaterialTheme.typography.displaySmall
-    else
+    } else {
         MaterialTheme.typography.titleMedium
+    }
+
+    val density = LocalDensity.current
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Card(
@@ -53,13 +70,21 @@ fun FlashcardDetail(
                 .fillMaxWidth()
                 .fillMaxHeight(0.95f)
                 .heightIn(min = 320.dp)
+                .graphicsLayer {
+                    rotationY = cardRotationY
+                    // Compose cameraDistance uses "px-like" units; larger = less perspective distortion.
+                    cameraDistance = 12f * density.density * 100f
+                }
         ) {
+            // Counter-rotate content on the back half so text is not mirrored.
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .graphicsLayer {
+                        rotationY = if (showBackSide) 180f else 0f
+                    }
                     .padding(16.dp)
             ) {
-                // Header
                 Text(
                     text = sideLabel,
                     style = MaterialTheme.typography.labelMedium,
@@ -68,7 +93,6 @@ fun FlashcardDetail(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Content
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -77,7 +101,6 @@ fun FlashcardDetail(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-
                     if (cardText != null) {
                         Text(
                             text = cardText,
@@ -86,13 +109,14 @@ fun FlashcardDetail(
                         )
                     }
 
-                    if (!isFlipped && flashcardData.imagePath != null) {
+                    // Show image only on definition/front side.
+                    if (!showBackSide && flashcardData.imagePath != null) {
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth(0.86f)
-                                .heightIn(min = 120.dp, max = 220.dp) // bounded so it won't push footer out
+                                .heightIn(min = 120.dp, max = 220.dp)
                                 .aspectRatio(1.35f),
                             shape = RoundedCornerShape(16.dp),
                             colors = CardDefaults.cardColors(
@@ -119,7 +143,6 @@ fun FlashcardDetail(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Footer
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
