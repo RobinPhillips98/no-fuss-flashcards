@@ -43,11 +43,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
+import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.data.decks.Deck
 import io.github.robinphillips98.nofussflashcards.data.flashcards.Flashcard
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
@@ -57,7 +59,7 @@ import kotlinx.coroutines.launch
 
 object DeckDetailsDestination: NavigationDestination {
     override val route = "deck_details"
-    override val title = "Deck Details"
+    override val titleResId = R.string.deck_detail_title
     const val DECK_ID_ARG = "deckId"
     val routeWithArgs = "$route/{$DECK_ID_ARG}"
 }
@@ -81,7 +83,7 @@ fun DeckDetailsScreen(
     Scaffold(
         topBar = {
             NoFussFlashCardsTopAppBar(
-                title = DeckDetailsDestination.title,
+                title = stringResource(DeckDetailsDestination.titleResId),
                 canNavigateBack = true,
                 navigateUp = navigateBack
             )
@@ -95,14 +97,17 @@ fun DeckDetailsScreen(
                             .calculateEndPadding(LocalLayoutDirection.current)
                     ),
             ) {
-                Icon(Icons.Default.Add,contentDescription = "Add Flashcard")
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.add_flashcard_button)
+                )
             }
         },
         modifier = modifier
     ) { innerPadding ->
         if (uiState.isDeckMissing) {
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "Deck not found.")
+                Text(stringResource(R.string.deck_not_found))
             }
         } else {
             DeckDetailsBody(
@@ -157,7 +162,7 @@ private fun DeckDetailsBody(
             .padding(16.dp)
     ) {
         Text(
-            text = "Deck: ${deckDetails.name}",
+            text = stringResource(R.string.deck_name_label, deckDetails.name),
             style = MaterialTheme.typography.titleMedium
         )
 
@@ -181,19 +186,19 @@ private fun DeckDetailsBody(
                 enabled = flashcardsAvailable,
                 modifier = Modifier.padding(vertical = 8.dp)
             ) {
-                Text(text = "Open Cards")
+                Text(stringResource(R.string.open_deck_button))
             }
 
             Button(
                 onClick = { navigateToEditScreen(deckDetails.deckId) }
             ) {
-                Text("Edit Deck")
+                Text(stringResource(R.string.edit_deck_button))
             }
 
             Button(
                 onClick = { deleteDeckConfirmationOpen = true }
             ) {
-                Text("Delete Deck")
+                Text(stringResource(R.string.delete_deck_button))
             }
         }
 
@@ -222,14 +227,14 @@ private fun DeckDetailsBody(
             }
         } else {
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "No flashcards available in this deck.")
+                Text(stringResource(R.string.deck_empty))
             }
         }
     }
 
     if (deleteDeckConfirmationOpen) {
         DeleteConfirmationDialog(
-            objectType = "deck",
+            objectType = stringResource(R.string.deck_object_type),
             onDeleteConfirm = {
                 deleteDeckConfirmationOpen = false
                 onDeleteDeck()
@@ -241,7 +246,7 @@ private fun DeckDetailsBody(
 
     if (deleteFlashcardConfirmationOpen) {
         DeleteConfirmationDialog(
-            objectType = "flashcard",
+            objectType = stringResource(R.string.flashcard_object_type),
             onDeleteConfirm = {
                 deleteFlashcardConfirmationOpen = false
                 flashcardToDelete?.let { onDeleteFlashcard(it) }
@@ -285,7 +290,7 @@ private fun FlashcardItem(
                 )
                 Icon(
                     imageVector = Icons.Filled.ChevronRight,
-                    contentDescription = "Open flashcard",
+                    contentDescription = stringResource(R.string.open_flashcard_button),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
@@ -312,7 +317,7 @@ private fun FlashcardItem(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit flashcard",
+                        contentDescription = stringResource(R.string.edit_flashcard_button),
                     )
                 }
                 FilledIconButton(
@@ -324,7 +329,7 @@ private fun FlashcardItem(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete flashcard",
+                        contentDescription = stringResource(R.string.delete_flashcard_button),
                     )
                 }
             }
@@ -349,7 +354,9 @@ private fun ExpandableDescriptionText(text: String) {
 
     if (hasOverflow || isExpanded) {
         Text(
-            text = if (isExpanded) "Show less" else "Show more",
+            text =
+                if (isExpanded) stringResource(R.string.show_less_button)
+                else stringResource(R.string.show_more_button),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier

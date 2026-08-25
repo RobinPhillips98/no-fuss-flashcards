@@ -26,10 +26,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
+import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.data.decks.Deck
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
 import io.github.robinphillips98.nofussflashcards.ui.AppViewModelProvider
@@ -38,7 +40,7 @@ import kotlinx.coroutines.launch
 
 object FlashcardEntryDestination: NavigationDestination {
     override val route = "flashcard_entry"
-    override val title = "Create Flashcard"
+    override val titleResId = R.string.flashcard_entry_title
     const val DECK_ID_ARG = "deckId"
     val routeWithArgs = "$route/{$DECK_ID_ARG}"
 }
@@ -57,7 +59,7 @@ fun FlashcardEntryScreen(
     Scaffold(
         topBar = {
             NoFussFlashCardsTopAppBar(
-                title = FlashcardEntryDestination.title,
+                title = stringResource(FlashcardEntryDestination.titleResId),
                 canNavigateBack = true,
                 navigateUp = onNavigateUp
             )
@@ -116,12 +118,12 @@ fun FlashcardEntryBody(
             shape = MaterialTheme.shapes.small,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Save")
+            Text(stringResource(R.string.save_button))
         }
 
         if (!flashcardUiState.isEntryValid) {
             Text(
-                text = "Must provide a term and either a definition or an image.",
+                text = stringResource(R.string.flashcard_entry_invalid_message),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodySmall
             )
@@ -147,7 +149,8 @@ fun FlashcardInputForm(
         OutlinedTextField(
             value = flashcardDetails.term,
             onValueChange = { onValueChange(flashcardDetails.copy(term = it)) },
-            label = { Text("Term *") },
+            label = { Text(stringResource(R.string.flashcard_entry_term_label)) },
+            placeholder = { Text(stringResource(R.string.flashcard_entry_term_placeholder)) },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -159,7 +162,8 @@ fun FlashcardInputForm(
         OutlinedTextField(
             value = flashcardDetails.definition ?: "",
             onValueChange = { onValueChange(flashcardDetails.copy(definition = it)) },
-            label = { Text("Definition") },
+            label = { Text(stringResource(R.string.flashcard_entry_definition_label)) },
+            placeholder = { Text(stringResource(R.string.flashcard_entry_definition_placeholder)) },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -190,7 +194,7 @@ fun FlashcardInputForm(
         }
 
         ImageUploader(
-            objectDescription = "flashcard",
+            objectDescription = stringResource(R.string.flashcard_object_type),
             onImageUploaded = onImageUploaded,
             selectedImageUri = selectedImageUri,
             existingImageUri = existingImageUri,
@@ -223,7 +227,7 @@ private fun FlashcardDeckDropdown(
         OutlinedTextField(
             value = selectedDeckName,
             onValueChange = {},
-            label = { Text("Deck") },
+            label = { Text(stringResource(R.string.flashcard_entry_deck_label)) },
             readOnly = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = OutlinedTextFieldDefaults.colors(

@@ -1,5 +1,7 @@
 package io.github.robinphillips98.nofussflashcards.navigation
 
+import androidx.annotation.StringRes
+
 /**
  * Interface to describe the navigation destinations for the app
  */
@@ -10,7 +12,8 @@ interface NavigationDestination {
     val route: String
 
     /**
-     * Human-readable title for the destination
+     * String resource ID for the title of the destination
      */
-    val title: String
+    @get:StringRes
+    val titleResId: Int
 }

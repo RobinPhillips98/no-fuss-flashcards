@@ -12,6 +12,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -61,7 +62,7 @@ fun NoFussFlashCardsTopAppBar(
 @Composable
 fun NoFussFlashCardsTopAppBarPreview() {
     NoFussFlashCardsTopAppBar(
-        title = "No Fuss Flashcards",
+        title = stringResource(R.string.full_app_name),
         canNavigateBack = false
     )
 }
@@ -71,7 +72,7 @@ fun NoFussFlashCardsTopAppBarPreview() {
 @Composable
 fun NoFussFlashCardsTopAppBarPreviewWithBackButton() {
     NoFussFlashCardsTopAppBar(
-        title = "No Fuss Flashcards",
+        title = stringResource(R.string.full_app_name),
         canNavigateBack = true
     )
 }

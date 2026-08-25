@@ -1,3 +1,82 @@
 <resources>
     <string name="app_name">Flashcards</string>
+    <string name="full_app_name">No Fuss Flashcards</string>
+
+    <!-- Short Descriptions -->
+    <string name="deck_object_type">deck</string>
+    <string name="flashcard_object_type">flashcard</string>
+    <string name="term">Term</string>
+    <string name="definition">Definition</string>
+    <string name="image_content_description">Image for %1$s</string>
+
+    <!-- Button Labels -->
+    <string name="add_flashcard_button">Add Flashcard</string>
+    <string name="open_deck_button">Open Deck</string>
+    <string name="edit_deck_button">Edit Deck</string>
+    <string name="delete_deck_button">Delete Deck</string>
+    <string name="open_flashcard_button">Open Flashcard</string>
+    <string name="edit_flashcard_button">Edit Flashcard</string>
+    <string name="delete_flashcard_button">Delete Flashcard</string>
+    <string name="show_less_button">Show Less</string>
+    <string name="show_more_button">Show More</string>
+    <string name="flip_button">Flip</string>
+    <string name="save_button">Save</string>
+    <string name="no_button">No</string>
+    <string name="yes_button">Yes</string>
+
+    <!-- Confirmation Dialogs -->
+    <string name="delete_confirmation_title">Deletion %1$s</string>
+    <string name="delete_confirmation_message">Are you sure you want to delete this %1$s? This action cannot be undone</string>
+
+
+    <!-- Shared Labels -->
+    <string name="deck_name_label">Deck: %1$s</string>
+    <string name="deck_empty">No flashcards in this deck. Please add a flashcard to get started.</string>
+
+    <!-- Screen Titles -->
+    <string name="deck_edit_title">Edit Deck</string>
+    <string name="flashcard_edit_title">Edit Flashcard</string>
+
+    <!-- Home Screen -->
+    <string name="create_deck_button">Create Deck</string>
+    <string name="home_welcome_text">Welcome to %1$s!</string>
+    <string name="jump_in">Jump back into "%1$s"</string>
+    <string name="deck_list_header">Available Decks</string>
+    <string name="deck_list_empty">No decks available. Please create a deck to get started.</string>
+
+    <!-- Deck Detail Screen -->
+    <string name="deck_detail_title">Deck Details</string>
+    <string name="deck_not_found">Deck not found.</string>
+
+    <!-- Flashcard Pager Screen -->
+    <string name="flashcards_pager_title">Flashcards Viewer</string>
+    <string name="flashcard_count_label">Card %1$d/%2$d</string>
+
+    <!-- Deck Entry Screen -->
+    <string name="deck_entry_title">Create Deck</string>
+    <string name="deck_entry_name_label">Name *</string>
+    <string name="deck_entry_name_placeholder">Enter deck name</string>
+    <string name="deck_entry_description_label">Description</string>
+    <string name="deck_entry_description_placeholder">Enter deck description</string>
+
+    <!-- Flashcard Entry Screen -->
+    <string name="flashcard_entry_title">Create Flashcard</string>
+    <string name="flashcard_entry_term_label">Term *</string>
+    <string name="flashcard_entry_term_placeholder">Enter term</string>
+    <string name="flashcard_entry_definition_label">Definition</string>
+    <string name="flashcard_entry_definition_placeholder">Enter definition</string>
+    <string name="flashcard_entry_invalid_message">Must provide a term and either a definition or an image.</string>
+    <string name="flashcard_entry_deck_label">Deck *</string>
+
+    <!-- Image Upload -->
+    <string name="image_label">Image</string>
+    <string name="image_upload_instructions">Select a JPEG or PNG image to represent this %1$s</string>
+    <string name="image_choose_button">Choose Image</string>
+    <string name="image_clear_button">Clear</string>
+    <string name="image_restore_button">Restore</string>
+    <string name="image_new_image_selected_message">New image selected</string>
+    <string name="image_existing_image_selected_message">Existing image selected</string>
+    <string name="image_no_image_selected_message">No image selected</string>
+    <string name="image_preview_label">Image Preview</string>
+    <string name="image_preview_content_description">Preview of selected image</string>
 </resources>

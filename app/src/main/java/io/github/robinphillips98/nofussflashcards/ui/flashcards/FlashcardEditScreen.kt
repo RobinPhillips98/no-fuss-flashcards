@@ -9,9 +9,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
+import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.data.decks.Deck
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
 import io.github.robinphillips98.nofussflashcards.ui.AppViewModelProvider
@@ -19,7 +21,7 @@ import kotlinx.coroutines.launch
 
 object FlashcardEditDestination: NavigationDestination {
     override val route = "flashcard_edit"
-    override val title = "Edit Flashcard"
+    override val titleResId = R.string.flashcard_edit_title
     const val FLASHCARD_ID_ARG = "flashcardId"
     val routeWithArgs = "$route/{$FLASHCARD_ID_ARG}"
 }
@@ -39,7 +41,7 @@ fun FlashcardEditScreen(
     Scaffold(
         topBar = {
             NoFussFlashCardsTopAppBar(
-                title = FlashcardEditDestination.title,
+                title = stringResource(FlashcardEditDestination.titleResId),
                 canNavigateBack = true,
                 navigateUp = onNavigateUp
             )

@@ -14,17 +14,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
+import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
 import io.github.robinphillips98.nofussflashcards.ui.AppViewModelProvider
 import kotlinx.coroutines.launch
 
 object DeckEntryDestination: NavigationDestination {
-    override val route: String = "deck_entry"
-    override val title: String = "Add Deck"
+    override val route = "deck_entry"
+    override val titleResId = R.string.deck_entry_title
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +40,7 @@ fun DeckEntryScreen(
     Scaffold(
         topBar = {
             NoFussFlashCardsTopAppBar(
-                title = DeckEntryDestination.title,
+                title = stringResource(DeckEntryDestination.titleResId),
                 canNavigateBack = true,
                 navigateUp = onNavigateUp
             )
@@ -80,7 +82,7 @@ fun DeckEntryBody(
             shape = MaterialTheme.shapes.small,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Save")
+            Text(stringResource(R.string.save_button))
         }
     }
 }
@@ -98,7 +100,8 @@ fun DeckInputForm(
         OutlinedTextField(
             value = deckDetails.name,
             onValueChange = { onValueChange(deckDetails.copy(name = it)) },
-            label = { Text("Deck Name*") },
+            label = { Text(stringResource(R.string.deck_entry_name_label)) },
+            placeholder = { Text(stringResource(R.string.deck_entry_name_placeholder)) },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -110,7 +113,8 @@ fun DeckInputForm(
         OutlinedTextField(
             value = deckDetails.description ?: "",
             onValueChange = { onValueChange(deckDetails.copy(description = it)) },
-            label = { Text("Deck Description") },
+            label = { Text(stringResource(R.string.deck_entry_description_label)) },
+            placeholder = { Text(stringResource(R.string.deck_entry_description_placeholder)) },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -120,7 +124,6 @@ fun DeckInputForm(
             singleLine = false
         )
     }
-
 }
 
 @Preview(showBackground = true)

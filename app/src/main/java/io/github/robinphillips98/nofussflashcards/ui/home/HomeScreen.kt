@@ -31,18 +31,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
+import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.data.decks.Deck
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
 import io.github.robinphillips98.nofussflashcards.ui.AppViewModelProvider
 
 object HomeDestination: NavigationDestination {
     override val route = "home"
-    override val title = "No Fuss Flashcards"
+    override val titleResId = R.string.full_app_name
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,11 +61,10 @@ fun HomeScreen(
         modifier = modifier,
         topBar = {
             NoFussFlashCardsTopAppBar(
-                title = HomeDestination.title,
+                title = stringResource(HomeDestination.titleResId),
                 canNavigateBack = false,
             )
         },
-        // TODO: Add FAB group for settings and create deck (Blocked until settings screen is implemented)
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = onCreateDeckClicked,
@@ -72,8 +73,13 @@ fun HomeScreen(
                         end = WindowInsets.safeDrawing.asPaddingValues()
                             .calculateEndPadding(LocalLayoutDirection.current)
                     ),
-                icon = { Icon(Icons.Default.Add,contentDescription = "Create Deck") },
-                text = { Text("Create Deck") }
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(R.string.create_deck_button)
+                    )
+                },
+                text = { Text(stringResource(R.string.create_deck_button)) }
             )
         }
     ) { innerPadding ->
@@ -104,7 +110,10 @@ private fun HomeBody(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Welcome to No Fuss Flashcards!",
+            text = stringResource(
+                R.string.home_welcome_text,
+                stringResource(R.string.full_app_name)
+            ),
             style = MaterialTheme.typography.titleLarge
         )
 
@@ -115,7 +124,7 @@ private fun HomeBody(
                     onClick = { onDeckClicked(lastDeckId) },
                     modifier = Modifier.padding(top = 16.dp)
                 ) {
-                    Text("Jump back into \"$lastDeckName\"")
+                    Text(stringResource(R.string.jump_in, lastDeckName))
                 }
             }
         }
@@ -137,7 +146,7 @@ private fun DeckList(
         LazyColumn(modifier = modifier) {
             item {
                 Text(
-                    text = "Available Decks",
+                    text = stringResource(R.string.deck_list_header),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
                         .padding(16.dp)
@@ -152,7 +161,7 @@ private fun DeckList(
         }
     } else {
         Text(
-            text = "No decks available. Please create a deck to get started.",
+            text = stringResource(R.string.deck_list_empty),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier
                 .padding(16.dp)
@@ -188,7 +197,7 @@ private fun DeckItem(
                 )
                 Icon(
                     imageVector = Icons.Filled.ChevronRight,
-                    contentDescription = "Open deck",
+                    contentDescription = stringResource(R.string.open_deck_button),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }

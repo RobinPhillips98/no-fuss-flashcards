@@ -23,10 +23,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
+import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.data.decks.Deck
 import io.github.robinphillips98.nofussflashcards.data.flashcards.Flashcard
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
@@ -35,7 +38,7 @@ import io.github.robinphillips98.nofussflashcards.ui.decks.toDeck
 
 object FlashcardsPagerDestination: NavigationDestination {
     override val route = "flashcards_pager"
-    override val title = "Flashcards Viewer"
+    override val titleResId = R.string.flashcards_pager_title
     const val DECK_ID_ARG = "deckId"
     const val FLASHCARD_ID_ARG = "flashcardId"
     val routeWithArgs = "$route/{$DECK_ID_ARG}?$FLASHCARD_ID_ARG={$FLASHCARD_ID_ARG}"
@@ -53,7 +56,7 @@ fun FlashcardsPagerScreen(
     Scaffold(
         topBar = {
             NoFussFlashCardsTopAppBar(
-                title = FlashcardsPagerDestination.title,
+                title = stringResource(FlashcardsPagerDestination.titleResId),
                 canNavigateBack = true,
                 navigateUp = navigateBack
             )
@@ -91,12 +94,16 @@ private fun FlashcardsPagerBody(
                 .padding(top = 8.dp)
         ) {
             Text(
-                text = "Deck: ${deck.name}",
+                text = stringResource(R.string.deck_name_label, deck.name),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
             Text(
-                text = "Card $currentCard/${flashcards.size}",
+                text = stringResource(
+                    R.string.flashcard_count_label,
+                    currentCard,
+                    flashcards.size
+                ),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
@@ -118,7 +125,10 @@ private fun FlashcardsPagerBody(
         }
     } else {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(text = "No flashcards available in this deck.")
+            Text(
+                text = stringResource(R.string.deck_empty),
+                textAlign = TextAlign.Center,
+            )
         }
     }
 }

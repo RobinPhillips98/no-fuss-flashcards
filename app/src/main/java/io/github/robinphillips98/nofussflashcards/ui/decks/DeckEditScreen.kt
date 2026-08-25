@@ -11,15 +11,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
+import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
 import io.github.robinphillips98.nofussflashcards.ui.AppViewModelProvider
 import kotlinx.coroutines.launch
 
 object DeckEditDestination: NavigationDestination {
     override val route = "deck_edit"
-    override val title = "Edit Deck"
+    override val titleResId = R.string.deck_edit_title
     const val DECK_ID_ARG = "deckId"
     val routeWithArgs = "$route/{$DECK_ID_ARG}"
 }
@@ -37,7 +39,7 @@ fun DeckEditScreen(
     Scaffold(
         topBar = {
             NoFussFlashCardsTopAppBar(
-                title = DeckEditDestination.title,
+                title = stringResource(DeckEditDestination.titleResId),
                 canNavigateBack = true,
                 navigateUp = onNavigateUp
             )

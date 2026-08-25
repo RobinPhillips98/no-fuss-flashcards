@@ -1,5 +1,8 @@
 package io.github.robinphillips98.nofussflashcards.ui.flashcards
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,17 +30,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.data.flashcards.Flashcard
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun FlashcardDetail(
@@ -55,7 +57,9 @@ fun FlashcardDetail(
     // Which side should be visible at the current animation frame?
     val showBackSide = cardRotationY > 90f
 
-    val sideLabel = if (showBackSide) "Term" else "Definition"
+    val sideLabel =
+        if (showBackSide) stringResource(R.string.term)
+        else stringResource(R.string.definition)
     val cardText = if (showBackSide) flashcardData.term else flashcardData.definition
     val cardStyle = if (showBackSide) {
         MaterialTheme.typography.displaySmall
@@ -133,7 +137,10 @@ fun FlashcardDetail(
                             ) {
                                 AsyncImage(
                                     model = flashcardData.imagePath,
-                                    contentDescription = "Flashcard Image",
+                                    contentDescription = stringResource(
+                                        R.string.image_content_description,
+                                        flashcardData.term
+                                    ),
                                     modifier = Modifier.fillMaxSize(),
                                     contentScale = ContentScale.Fit
                                 )
@@ -152,7 +159,7 @@ fun FlashcardDetail(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Button(onClick = { isFlipped = !isFlipped }) {
-                        Text(text = "Flip")
+                        Text(stringResource(R.string.flip_button))
                     }
                 }
             }

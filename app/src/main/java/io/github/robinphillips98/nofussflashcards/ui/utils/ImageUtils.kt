@@ -22,8 +22,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import io.github.robinphillips98.nofussflashcards.R
 import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
@@ -82,11 +84,14 @@ fun ImageUploader(
                 verticalArrangement = spacedBy(12.dp)
             ) {
                 Text(
-                    text = "Image",
+                    text = stringResource(R.string.image_label),
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = "Select a JPEG or PNG image to represent this $objectDescription.",
+                    text = stringResource(
+                        R.string.image_upload_instructions,
+                        objectDescription
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     color = colorScheme.onSurfaceVariant
                 )
@@ -106,7 +111,7 @@ fun ImageUploader(
                             )
                         }
                     ) {
-                        Text("Choose Image")
+                        Text(stringResource(R.string.image_choose_button))
                     }
 
                     OutlinedButton(
@@ -117,7 +122,7 @@ fun ImageUploader(
                         enabled = selectedImageUri != null ||
                             (existingImageUri != null && onImageRestored != null)
                     ) {
-                        Text("Clear")
+                        Text(stringResource(R.string.image_clear_button))
                     }
 
                     if (onImageRestored != null) {
@@ -128,16 +133,17 @@ fun ImageUploader(
                             // cleared or replaced with a new one)
                             enabled = selectedImageUri != null || existingImageUri == null
                         ) {
-                            Text("Reset")
+                            Text(stringResource(R.string.image_restore_button))
                         }
                     }
                 }
 
                 Text(
                     text = if (previewImage != null) {
-                        if (selectedImageUri != null) "New image selected" else "Existing image"
+                        if (selectedImageUri != null) stringResource(R.string.image_new_image_selected_message)
+                        else stringResource(R.string.image_existing_image_selected_message)
                     } else {
-                        "No image selected yet"
+                        stringResource(R.string.image_no_image_selected_message)
                     },
                     color = if (previewImage != null) {
                         colorScheme.primary
@@ -157,13 +163,13 @@ fun ImageUploader(
                 modifier = Modifier.fillMaxSize()
             ) {
                 Text(
-                    text = "Image Preview",
+                    text = stringResource(R.string.image_preview_label),
                     modifier = Modifier.padding(start = 12.dp, top = 12.dp),
                     style = MaterialTheme.typography.labelLarge
                 )
                 AsyncImage(
                     model = model,
-                    contentDescription = "Selected Image Preview",
+                    contentDescription = stringResource(R.string.image_preview_content_description),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(12.dp),
