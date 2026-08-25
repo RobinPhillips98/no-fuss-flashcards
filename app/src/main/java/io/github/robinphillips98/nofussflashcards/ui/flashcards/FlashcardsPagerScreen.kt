@@ -23,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
@@ -155,4 +156,39 @@ private fun FlashcardsPager(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FlashcardsPagerBodyPreview() {
+    val sampleDeck = Deck(
+        deckId = 1,
+        name = "Sample Deck",
+        description = "A sample deck for preview purposes."
+    )
+    val sampleFlashcards = listOf(
+        Flashcard(flashcardId = 1, deckId = 1, term = "Term 1", definition = "Definition 1"),
+        Flashcard(flashcardId = 2, deckId = 1, term = "Term 2", definition = "Definition 2"),
+        Flashcard(flashcardId = 3, deckId = 1, term = "Term 3", definition = "Definition 3")
+    )
+    FlashcardsPagerBody(
+        deck = sampleDeck,
+        flashcards = sampleFlashcards,
+        initialSelectedIndex = 0
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FlashcardPagerBodyEmptyPreview() {
+    val sampleDeck = Deck(
+        deckId = 1,
+        name = "Sample Deck",
+        description = "A sample deck for preview purposes."
+    )
+    FlashcardsPagerBody(
+        deck = sampleDeck,
+        flashcards = emptyList(),
+        initialSelectedIndex = 0
+    )
 }

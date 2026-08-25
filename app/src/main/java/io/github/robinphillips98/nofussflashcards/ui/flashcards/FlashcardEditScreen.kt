@@ -9,8 +9,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
+import io.github.robinphillips98.nofussflashcards.data.decks.Deck
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
 import io.github.robinphillips98.nofussflashcards.ui.AppViewModelProvider
 import kotlinx.coroutines.launch
@@ -63,4 +65,20 @@ fun FlashcardEditScreen(
             availableDecks = availableDecks
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FlashcardEditScreenPreview() {
+    val sampleDecks = listOf(
+        Deck(deckId = 1, name = "Sample Deck 1"),
+        Deck(deckId = 2, name = "Sample Deck 2")
+    )
+    FlashcardEntryBody(
+        flashcardUiState = FlashcardUiState(),
+        onFlashcardValueChange = {},
+        onImageUploaded = {},
+        onSaveClick = {},
+        availableDecks = sampleDecks
+    )
 }

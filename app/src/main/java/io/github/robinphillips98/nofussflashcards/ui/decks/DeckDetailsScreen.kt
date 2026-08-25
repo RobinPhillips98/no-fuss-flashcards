@@ -44,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
@@ -356,4 +357,80 @@ private fun ExpandableDescriptionText(text: String) {
                 .clickable { isExpanded = !isExpanded }
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DeckDetailsBodyPreview() {
+    val sampleDeck = Deck(
+        deckId = 1,
+        name = "Sample Deck",
+        description = "This is a sample deck description."
+    )
+    val sampleFlashcards = listOf(
+        Flashcard(flashcardId = 1, deckId = 1, term = "Term 1", definition = "Definition 1"),
+        Flashcard(flashcardId = 2, deckId = 1, term = "Term 2", definition = "Definition 2"),
+        Flashcard(flashcardId = 3, deckId = 1, term = "Term 3", definition = "Definition 3"),
+        Flashcard(flashcardId = 4, deckId = 1, term = "Term 4", definition = "Definition 4"),
+        Flashcard(flashcardId = 5, deckId = 1, term = "Term 5", definition = "Definition 5"),
+        Flashcard(flashcardId = 6, deckId = 1, term = "Term 6", definition = "Definition 6"),
+        Flashcard(flashcardId = 7, deckId = 1, term = "Term 7", definition = "Definition 7"),
+        Flashcard(flashcardId = 8, deckId = 1, term = "Term 8", definition = "Definition 8"),
+        Flashcard(flashcardId = 9, deckId = 1, term = "Term 9", definition = "Definition 9: " +
+                "This is a longer definition that should take up a few lines. " +
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor " +
+                "incididunt ut labore et dolore magna aliqua.")
+    )
+    DeckDetailsBody(
+        deckDetails = sampleDeck,
+        flashCards = sampleFlashcards,
+        flashcardToDelete = null,
+        navigateToFlashcards = {},
+        navigateToFlashcardWithId = {},
+        navigateToEditScreen = {},
+        navigateToFlashcardEditScreen = {},
+        onDeleteDeck = {},
+        onDeleteFlashcard = {},
+        setFlashCardToDelete = {},
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DeckDetailsBodyNoFlashcardsPreview() {
+    val sampleDeck = Deck(
+        deckId = 1,
+        name = "Sample Deck",
+        description = "This is a sample deck description."
+    )
+    DeckDetailsBody(
+        deckDetails = sampleDeck,
+        flashCards = emptyList(),
+        flashcardToDelete = null,
+        navigateToFlashcards = {},
+        navigateToFlashcardWithId = {},
+        navigateToEditScreen = {},
+        navigateToFlashcardEditScreen = {},
+        onDeleteDeck = {},
+        onDeleteFlashcard = {},
+        setFlashCardToDelete = {}
+    )
+}
+
+@Preview
+@Composable
+fun FlashcardItemPreview() {
+    val sampleFlashcard = Flashcard(
+        flashcardId = 1,
+        deckId = 1,
+        term = "Sample Term",
+        definition = "This is a sample definition for the flashcard. It can be quite long and " +
+                "should demonstrate how the text will be displayed in the UI."
+    )
+    FlashcardItem(
+        flashcard = sampleFlashcard,
+        onFlashCardClicked = {},
+        onEditClicked = {},
+        onDelete = {}
+    )
 }

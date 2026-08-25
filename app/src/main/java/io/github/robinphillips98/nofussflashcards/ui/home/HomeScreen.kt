@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
@@ -41,7 +42,7 @@ import io.github.robinphillips98.nofussflashcards.ui.AppViewModelProvider
 
 object HomeDestination: NavigationDestination {
     override val route = "home"
-    override val title = "Flashcards App"
+    override val title = "No Fuss Flashcards"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -103,7 +104,7 @@ private fun HomeBody(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Welcome to the Flashcards App!",
+            text = "Welcome to No Fuss Flashcards!",
             style = MaterialTheme.typography.titleLarge
         )
 
@@ -203,4 +204,36 @@ private fun DeckItem(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeBodyPreview() {
+    val sampleDecks = listOf(
+        Deck(deckId = 1, name = "Deck 1", description = "Description for Deck 1"),
+        Deck(deckId = 2, name = "Deck 2", description = "Description for Deck 2"),
+        Deck(deckId = 3, name = "Deck 3", description = null)
+    )
+    HomeBody(
+        deckList = sampleDecks,
+        onDeckClicked = {},
+        lastDeckId = 2
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeBodyEmptyPreview() {
+    HomeBody(
+        deckList = emptyList(),
+        onDeckClicked = {},
+        lastDeckId = null
+    )
+}
+
+@Preview()
+@Composable
+fun DeckItemPreview() {
+    val sampleDeck = Deck(deckId = 1, name = "Sample Deck", description = "This is a sample deck description.")
+    DeckItem(deck = sampleDeck, onClick = {})
 }

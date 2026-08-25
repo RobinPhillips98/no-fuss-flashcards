@@ -37,6 +37,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun FlashcardDetail(
@@ -157,4 +158,17 @@ fun FlashcardDetail(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun FlashcardDetailPreview() {
+    val sampleFlashcard = Flashcard(
+        flashcardId = 1,
+        deckId = 1,
+        term = "Sample Term",
+        definition = "Sample Definition",
+        imagePath = null
+    )
+    FlashcardDetail(flashcardData = sampleFlashcard)
 }

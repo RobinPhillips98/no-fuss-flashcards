@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
@@ -120,4 +121,14 @@ fun DeckInputForm(
         )
     }
 
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DeckEntryScreenPreview() {
+    DeckEntryBody(
+        deckUiState = DeckUiState(),
+        onDeckValueChange = {},
+        onSaveClick = {}
+    )
 }
