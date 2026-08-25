@@ -67,7 +67,11 @@ fun FlashcardsPagerScreen(
             deck = uiState.deckDetails.toDeck(),
             flashcards = uiState.flashcards,
             modifier = modifier.padding(innerPadding),
-            initialSelectedIndex = uiState.initialSelectedIndex
+            initialSelectedIndex = uiState.initialSelectedIndex,
+            hasFlippedCard = uiState.hasFlippedCard,
+            onFlashcardClicked = {
+                viewModel.updateHasFlippedCard(true)
+            }
         )
     }
 }
@@ -77,6 +81,8 @@ private fun FlashcardsPagerBody(
     deck: Deck,
     flashcards: List<Flashcard>,
     initialSelectedIndex: Int,
+    hasFlippedCard: Boolean,
+    onFlashcardClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (flashcards.isNotEmpty()) {
@@ -110,6 +116,23 @@ private fun FlashcardsPagerBody(
 
             Spacer(modifier = Modifier.height(4.dp))
             HorizontalDivider()
+
+            // If the user has never flipped a card, show a hint to flip the card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                if (!hasFlippedCard) {
+                    Text(
+                        text = stringResource(R.string.flashcard_flip_hint),
+                        style = MaterialTheme.typography.headlineSmall,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -118,6 +141,7 @@ private fun FlashcardsPagerBody(
             ) {
                 FlashcardsPager(
                     flashcards = flashcards,
+                    onFlashcardClicked = onFlashcardClicked,
                     pagerState = pagerState,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -136,6 +160,7 @@ private fun FlashcardsPagerBody(
 @Composable
 private fun FlashcardsPager(
     flashcards: List<Flashcard>,
+    onFlashcardClicked: () -> Unit,
     pagerState: PagerState,
     modifier: Modifier = Modifier
 ) {
@@ -159,6 +184,7 @@ private fun FlashcardsPager(
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 FlashcardDetail(
                     flashcardData = flashcard,
+                    onClick = onFlashcardClicked,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(cardHeight)
@@ -184,7 +210,9 @@ fun FlashcardsPagerBodyPreview() {
     FlashcardsPagerBody(
         deck = sampleDeck,
         flashcards = sampleFlashcards,
-        initialSelectedIndex = 0
+        initialSelectedIndex = 0,
+        hasFlippedCard = false,
+        onFlashcardClicked = {}
     )
 }
 
@@ -199,6 +227,8 @@ fun FlashcardPagerBodyEmptyPreview() {
     FlashcardsPagerBody(
         deck = sampleDeck,
         flashcards = emptyList(),
-        initialSelectedIndex = 0
+        initialSelectedIndex = 0,
+        hasFlippedCard = true,
+        onFlashcardClicked = {}
     )
 }

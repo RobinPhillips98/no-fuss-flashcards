@@ -3,6 +3,7 @@ package io.github.robinphillips98.nofussflashcards.data
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -34,14 +35,34 @@ class UserPreferencesRepository(
             preferences[LAST_OPENED_DECK_ID]
         }
 
+    val hasFlippedCard: Flow<Boolean> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map { preferences ->
+            preferences[HAS_FLIPPED_CARD] ?: false
+        }
+
     suspend fun saveLastOpenedDeckId(deckId: Int) {
         dataStore.edit { preferences ->
             preferences[LAST_OPENED_DECK_ID] = deckId
         }
     }
 
+    suspend fun saveHasFlippedCard(hasFlipped: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[HAS_FLIPPED_CARD] = hasFlipped
+        }
+    }
+
     private companion object {
         const val TAG = "UserPreferencesRepo"
         val LAST_OPENED_DECK_ID = intPreferencesKey("last_opened_deck_id")
+        val HAS_FLIPPED_CARD = booleanPreferencesKey("has_flipped_card")
     }
 }

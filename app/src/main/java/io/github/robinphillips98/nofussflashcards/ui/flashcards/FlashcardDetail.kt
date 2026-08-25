@@ -6,7 +6,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +42,7 @@ import io.github.robinphillips98.nofussflashcards.data.flashcards.Flashcard
 @Composable
 fun FlashcardDetail(
     flashcardData: Flashcard,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isFlipped by remember { mutableStateOf(false) }
@@ -71,6 +70,10 @@ fun FlashcardDetail(
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Card(
+            onClick = {
+                onClick()
+                isFlipped = !isFlipped
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.95f)
@@ -148,20 +151,6 @@ fun FlashcardDetail(
                         }
                     }
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 56.dp),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Button(onClick = { isFlipped = !isFlipped }) {
-                        Text(stringResource(R.string.flip_button))
-                    }
-                }
             }
         }
     }
@@ -177,5 +166,5 @@ fun FlashcardDetailPreview() {
         definition = "Sample Definition",
         imagePath = null
     )
-    FlashcardDetail(flashcardData = sampleFlashcard)
+    FlashcardDetail(flashcardData = sampleFlashcard, onClick = {})
 }

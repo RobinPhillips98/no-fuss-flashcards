@@ -43,7 +43,8 @@ object AppViewModelProvider {
             FlashcardsPagerViewModel(
                 this.createSavedStateHandle(),
                 noFussFlashcardsApplication().container.decksRepository,
-                noFussFlashcardsApplication().container.flashcardsRepository
+                noFussFlashcardsApplication().container.flashcardsRepository,
+                noFussFlashcardsApplication().container.userPreferencesRepository
             )
         }
 
