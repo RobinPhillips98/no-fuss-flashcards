@@ -57,23 +57,20 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
-    val nav_version = "2.9.8"
-    val room_version = "2.8.4"
-    val coil_version = "2.7.0"
-
     // Navigation
-    implementation("androidx.navigation:navigation-compose:${nav_version}")
+    implementation(libs.androidx.navigation.compose)
 
     // Material Icons
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.compose.material.icons.extended)
 
     // Room
-    implementation("androidx.room:room-runtime:${room_version}")
-    ksp("androidx.room:room-compiler:${room_version}")
-    implementation("androidx.room:room-ktx:${room_version}")
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
     // Coil
-    implementation("io.coil-kt:coil-compose:${coil_version}")
+    implementation(libs.coil.compose)
 
-    implementation("androidx.datastore:datastore-preferences:1.2.1")
+    // DataStore
+    implementation(libs.androidx.datastore.preferences)
 }
