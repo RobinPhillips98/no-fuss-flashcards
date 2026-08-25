@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -73,7 +74,16 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
-                is HomeUiEvent.ShowSnackbar -> snackbarHostState.showSnackbar(event.message)
+                is HomeUiEvent.ShowSnackbar -> {
+                    val result = snackbarHostState.showSnackbar(
+                        message = event.message,
+                        actionLabel = event.actionLabel,
+                        withDismissAction = true
+                    )
+                    if (result == SnackbarResult.ActionPerformed) {
+                        viewModel.retryDecksLoad()
+                    }
+                }
             }
         }
     }
@@ -105,15 +115,38 @@ fun HomeScreen(
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
-        HomeBody(
-            deckList = homeUiState.deckList,
-            onDeckClicked = { deckId ->
-                onDeckClicked(deckId)
-                viewModel.updateLastOpenedDeckId(deckId)
-            },
-            modifier = modifier.padding(innerPadding),
-            lastDeckId = homeUiState.lastOpenedDeckId
-        )
+        if (homeUiState.hasDecksLoadError) {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(R.string.deck_list_load_failed),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center
+                )
+                Button(
+                    onClick = { viewModel.retryDecksLoad() },
+                    modifier = Modifier.padding(top = 12.dp)
+                ) {
+                    Text(stringResource(R.string.retry_button))
+                }
+            }
+        } else {
+            HomeBody(
+                deckList = homeUiState.deckList,
+                onDeckClicked = { deckId ->
+                    onDeckClicked(deckId)
+                    viewModel.updateLastOpenedDeckId(deckId)
+                },
+                modifier = modifier.padding(innerPadding),
+                lastDeckId = homeUiState.lastOpenedDeckId,
+                showLastOpenedError =  homeUiState.hasLastOpenedDeckLoadError
+            )
+        }
     }
 }
 
@@ -130,7 +163,8 @@ private fun HomeBody(
     deckList: List<Deck>,
     onDeckClicked: (deckId: Int) -> Unit,
     modifier: Modifier = Modifier,
-    lastDeckId: Int? = null
+    lastDeckId: Int? = null,
+    showLastOpenedError: Boolean = false
 ) {
     Column(
         modifier = modifier
@@ -157,6 +191,17 @@ private fun HomeBody(
                     Text(stringResource(R.string.jump_in, lastDeckName))
                 }
             }
+        }
+
+        if (showLastOpenedError) {
+            Text(
+                text = stringResource(R.string.last_deck_read_failed),
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
         }
 
         HorizontalDivider()

@@ -1,0 +1,11 @@
+<resources>
+    <!-- General -->
+    <string name="error_unknown">An error occurred: %1$s.</string>
+
+    <!-- Shared -->
+    <string name="deck_list_load_failed">Error loading decks.</string>
+
+    <!-- Home Screen -->
+    <string name="last_deck_read_failed">Error loading last opened deck.</string>
+    <string name="last_deck_write_failed">Error updating last opened deck.</string>
+</resources>
