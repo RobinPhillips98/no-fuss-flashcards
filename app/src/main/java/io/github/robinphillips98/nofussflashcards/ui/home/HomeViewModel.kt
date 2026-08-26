@@ -10,6 +10,7 @@ import io.github.robinphillips98.nofussflashcards.data.decks.DecksRepository
 import io.github.robinphillips98.nofussflashcards.ui.errors.HomeError
 import io.github.robinphillips98.nofussflashcards.ui.errors.messageFor
 import io.github.robinphillips98.nofussflashcards.ui.utils.StringResolver
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,6 +23,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.IOException
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flatMapLatest
 
 /**
  * ViewModel for the Home screen of the app.
@@ -42,31 +45,40 @@ class HomeViewModel(
     private val _decksLoadError = MutableStateFlow(false)
     private val _lastOpenedDeckLoadError = MutableStateFlow(false)
 
+    private val decksReloadTrigger = MutableSharedFlow<Unit>(replay = 1)
+
+    init {
+        decksReloadTrigger.tryEmit(Unit) // initial load
+    }
 
     /**
      * Flow that emits the list of decks from the repository.
      * It handles loading errors and emits an empty list in case of failure.
      */
-    val decksFlow = decksRepository.getAllDecksStream()
-        .onStart {
-            _decksLoadError.value = false
-            emit(emptyList())
-        }
-        .onEach {
-            _decksLoadError.value = false
-        }
-        .catch { throwable ->
-            val error = throwable.toDecksLoadError()
-            _decksLoadError.value = true
-            emitError(error, throwable, shouldRetryDecks = true)
-            emit(emptyList())
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val decksFlow = decksReloadTrigger
+        .flatMapLatest {
+            decksRepository.getAllDecksStream()
+                .onStart {
+                    _decksLoadError.value = false
+                    emit(emptyList())
+                }
+                .onEach {
+                    _decksLoadError.value = false
+                }
+                .catch { throwable ->
+                    val error = throwable.toDecksLoadError()
+                    _decksLoadError.value = true
+                    emitError(error, throwable, shouldRetryDecks = true)
+                    emit(emptyList())
+                }
         }
 
     /**
      * Flow that emits the last opened deck ID from the user preferences repository.
      * It handles loading errors and emits null in case of failure.
      */
-    val lastOpenedDeckIdFlow = userPreferencesRepository.lastOpenedDeckId
+    private val lastOpenedDeckIdFlow = userPreferencesRepository.lastOpenedDeckId
         .onStart {
             _lastOpenedDeckLoadError.value = false
             emit(null)
@@ -121,19 +133,22 @@ class HomeViewModel(
     }
 
     /**
-     * Retries loading the decks by resetting the decks load error state.
+     * Retries loading the decks by emitting a trigger to reload the decks flow.
+     * Resets the decks load error state before retrying.
      */
     fun retryDecksLoad() {
         viewModelScope.launch {
             _decksLoadError.value = false
+            decksReloadTrigger.emit(Unit)
         }
     }
 
     /**
-     * Emits a HomeError event to be observed by the UI.
+     * Emits an error event to the UI, logging the error and sending a snackbar message.
      *
      * @param error The HomeError to emit.
      * @param throwable An optional Throwable associated with the error.
+     * @param shouldRetryDecks Whether the snackbar should include a retry action for loading decks.
      */
     private fun emitError(
         error: HomeError,
@@ -180,7 +195,6 @@ class HomeViewModel(
         private const val TIMEOUT_MILLIS = 5_000L
         private const val TAG = "HomeViewModel"
     }
-
 }
 
 /**

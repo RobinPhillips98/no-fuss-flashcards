@@ -8,4 +8,10 @@
     <!-- Home Screen -->
     <string name="last_deck_read_failed">Error loading last opened deck.</string>
     <string name="last_deck_write_failed">Error updating last opened deck.</string>
+
+    <!-- Deck List Screen -->
+    <string name="flashcard_list_load_failed">Error loading flashcards.</string>
+    <string name="deck_delete_failed">Error deleting deck.</string>
+    <string name="flashcard_delete_failed">Error deleting flashcard.</string>
+    <string name="image_delete_failed">Error deleting image. Flashcard deletion aborted.</string>
 </resources>

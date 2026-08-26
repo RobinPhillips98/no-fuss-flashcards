@@ -32,8 +32,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -79,6 +84,28 @@ fun DeckDetailsScreen(
     val uiState by viewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val flashcardToDelete by viewModel.flashcardToDelete.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is DeckDetailsUiEvent.ShowErrorSnackbar -> {
+                    val result = snackbarHostState.showSnackbar(
+                        message = event.message,
+                        actionLabel = event.actionLabel,
+                        withDismissAction = true
+                    )
+                    if (result == SnackbarResult.ActionPerformed) {
+                        if (event.shouldRetryDeck) viewModel.retryDeckLoad()
+                        if (event.shouldRetryFlashcards) viewModel.retryFlashcardsLoad()
+                    }
+                }
+                is DeckDetailsUiEvent.ShowDeletionSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message, withDismissAction = true)
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -103,23 +130,43 @@ fun DeckDetailsScreen(
                 )
             }
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         modifier = modifier
     ) { innerPadding ->
-        if (uiState.isDeckMissing) {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(stringResource(R.string.deck_not_found))
+         if (uiState.hasDeckLoadError) {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    stringResource(R.string.deck_details_load_failed),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center
+                )
+                Button(
+                    onClick = { viewModel.retryDeckLoad() },
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    Text(stringResource(R.string.retry_button))
+                }
             }
         } else {
             DeckDetailsBody(
                 deckDetails = uiState.deckDetails.toDeck(),
                 flashCards = uiState.flashcards,
                 flashcardToDelete = flashcardToDelete,
+                hasFlashcardsLoadError = uiState.hasFlashcardsLoadError,
                 navigateToFlashcards = navigateToFlashcards,
                 navigateToFlashcardWithId = navigateToFlashcardWithId,
+                retryLoadFlashcards = { viewModel.retryFlashcardsLoad() },
                 onDeleteDeck = {
                     coroutineScope.launch {
-                        viewModel.deleteDeck()
-                        navigateBack()
+                        val deckDeletedSuccessfully = viewModel.deleteDeck()
+                        if (deckDeletedSuccessfully)
+                            navigateBack()
                     }
                 },
                 onDeleteFlashcard = { flashcard ->
@@ -143,10 +190,12 @@ private fun DeckDetailsBody(
     deckDetails: Deck,
     flashCards: List<Flashcard>,
     flashcardToDelete: Flashcard?,
+    hasFlashcardsLoadError: Boolean,
     navigateToFlashcards: () -> Unit,
     navigateToFlashcardWithId: (id: Int) -> Unit,
     navigateToEditScreen: (id: Int) -> Unit,
     navigateToFlashcardEditScreen: (flashcardId: Int) -> Unit,
+    retryLoadFlashcards: () -> Unit,
     onDeleteDeck: () -> Unit,
     onDeleteFlashcard: (flashcard: Flashcard) -> Unit,
     setFlashCardToDelete: (flashcard: Flashcard?) -> Unit,
@@ -154,7 +203,7 @@ private fun DeckDetailsBody(
 ) {
     var deleteDeckConfirmationOpen by remember { mutableStateOf(false) }
     var deleteFlashcardConfirmationOpen by remember { mutableStateOf(false) }
-    val flashcardsAvailable = flashCards.isNotEmpty()
+    val flashcardsAvailable = flashCards.isNotEmpty() && !hasFlashcardsLoadError
 
     Column(
         modifier = modifier
@@ -223,6 +272,26 @@ private fun DeckDetailsBody(
                             deleteFlashcardConfirmationOpen = true
                         }
                     )
+                }
+            }
+        } else if (hasFlashcardsLoadError) {
+            Column(
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(R.string.flashcard_list_load_failed),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center
+                )
+                Button(
+                    onClick = { retryLoadFlashcards() },
+                    modifier = Modifier.padding(top = 12.dp)
+                ) {
+                    Text(stringResource(R.string.retry_button))
                 }
             }
         } else {
@@ -392,10 +461,12 @@ fun DeckDetailsBodyPreview() {
         deckDetails = sampleDeck,
         flashCards = sampleFlashcards,
         flashcardToDelete = null,
+        hasFlashcardsLoadError = false,
         navigateToFlashcards = {},
         navigateToFlashcardWithId = {},
         navigateToEditScreen = {},
         navigateToFlashcardEditScreen = {},
+        retryLoadFlashcards = {},
         onDeleteDeck = {},
         onDeleteFlashcard = {},
         setFlashCardToDelete = {},
@@ -414,10 +485,12 @@ fun DeckDetailsBodyNoFlashcardsPreview() {
         deckDetails = sampleDeck,
         flashCards = emptyList(),
         flashcardToDelete = null,
+        hasFlashcardsLoadError = false,
         navigateToFlashcards = {},
         navigateToFlashcardWithId = {},
         navigateToEditScreen = {},
         navigateToFlashcardEditScreen = {},
+        retryLoadFlashcards = {},
         onDeleteDeck = {},
         onDeleteFlashcard = {},
         setFlashCardToDelete = {}

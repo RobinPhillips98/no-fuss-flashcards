@@ -80,7 +80,7 @@ fun HomeScreen(
                         actionLabel = event.actionLabel,
                         withDismissAction = true
                     )
-                    if (result == SnackbarResult.ActionPerformed) {
+                    if (result == SnackbarResult.ActionPerformed && event.shouldRetryDecks) {
                         viewModel.retryDecksLoad()
                     }
                 }

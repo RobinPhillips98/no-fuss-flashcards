@@ -34,7 +34,8 @@ object AppViewModelProvider {
             DeckDetailsViewModel(
                 this.createSavedStateHandle(),
                 noFussFlashcardsApplication().container.decksRepository,
-                noFussFlashcardsApplication().container.flashcardsRepository
+                noFussFlashcardsApplication().container.flashcardsRepository,
+                noFussFlashcardsApplication().container.stringResolver
             )
         }
 
