@@ -1,16 +1,19 @@
 package io.github.robinphillips98.nofussflashcards.ui.decks
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.wrapContentSize
@@ -191,7 +194,8 @@ fun DeckDetailsScreen(
                 setFlashCardToDelete = { flashcard ->
                     viewModel.setFlashcardToDelete(flashcard)
                 },
-                modifier = modifier.padding(innerPadding)
+                innerPadding = innerPadding,
+                modifier = modifier
             )
         }
     }
@@ -211,16 +215,23 @@ private fun DeckDetailsBody(
     onDeleteDeck: () -> Unit,
     onDeleteFlashcard: (flashcard: Flashcard) -> Unit,
     setFlashCardToDelete: (flashcard: Flashcard?) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    innerPadding: PaddingValues = PaddingValues(),
 ) {
     var deleteDeckConfirmationOpen by remember { mutableStateOf(false) }
     var deleteFlashcardConfirmationOpen by remember { mutableStateOf(false) }
     val flashcardsAvailable = flashCards.isNotEmpty() && !hasFlashcardsLoadError
+    val layoutDirection = LocalLayoutDirection.current
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(
+                top = innerPadding.calculateTopPadding() + 16.dp,
+                start = innerPadding.calculateStartPadding(layoutDirection) + 16.dp,
+                end = innerPadding.calculateEndPadding(layoutDirection) + 16.dp,
+                bottom = 16.dp
+            )
     ) {
         Text(
             text = stringResource(R.string.deck_name_label, deckDetails.name),
@@ -269,10 +280,11 @@ private fun DeckDetailsBody(
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier
-                    .fillMaxSize()
+                    .weight(1f)
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(bottom = 72.dp)
             ) {
                 items(flashCards) { flashcard ->
                     FlashcardItem(
@@ -347,11 +359,9 @@ private fun FlashcardItem(
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-
     Card(
         onClick = { onFlashCardClicked(flashcard.flashcardId) },
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.height(160.dp),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -367,6 +377,8 @@ private fun FlashcardItem(
                 Text(
                     text = flashcard.term,
                     style = MaterialTheme.typography.titleSmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
                 )
                 Icon(
@@ -382,7 +394,15 @@ private fun FlashcardItem(
             )
 
             if (flashcard.definition != null) {
-                ExpandableDescriptionText(text = flashcard.definition)
+                Text(
+                    text = flashcard.definition,
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
+                )
+            } else {
+                Spacer(modifier = Modifier.weight(1f))
             }
 
             Row(
@@ -418,34 +438,6 @@ private fun FlashcardItem(
     }
 }
 
-@Composable
-private fun ExpandableDescriptionText(text: String) {
-    var isExpanded by remember { mutableStateOf(false) }
-    var hasOverflow by remember { mutableStateOf(false) }
-
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodySmall,
-        maxLines = if (isExpanded) Int.MAX_VALUE else 4,
-        overflow = TextOverflow.Ellipsis,
-        onTextLayout = { textLayoutResult ->
-            hasOverflow = textLayoutResult.hasVisualOverflow
-        }
-    )
-
-    if (hasOverflow || isExpanded) {
-        Text(
-            text =
-                if (isExpanded) stringResource(R.string.show_less_button)
-                else stringResource(R.string.show_more_button),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .padding(top = 4.dp)
-                .clickable { isExpanded = !isExpanded }
-        )
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
