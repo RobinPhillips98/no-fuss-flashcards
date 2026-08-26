@@ -80,7 +80,8 @@ object AppViewModelProvider {
             FlashcardEditViewModel(
                 this.createSavedStateHandle(),
                 noFussFlashcardsApplication().container.flashcardsRepository,
-                noFussFlashcardsApplication().container.decksRepository
+                noFussFlashcardsApplication().container.decksRepository,
+                noFussFlashcardsApplication().container.stringResolver
             )
         }
     }

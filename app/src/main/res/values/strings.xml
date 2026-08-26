@@ -51,6 +51,7 @@
     <string name="deck_deletion_success_message">Deck deleted successfully.</string>
     <string name="flashcard_deletion_success_message">Flashcard deleted successfully.</string>
     <string name="deck_details_load_failed">Failed to load deck details.</string>
+    <string name="flashcard_details_load_failed">Failed to load flashcard details.</string>
 
     <!-- Flashcard Pager Screen -->
     <string name="flashcards_pager_title">Flashcards Viewer</string>

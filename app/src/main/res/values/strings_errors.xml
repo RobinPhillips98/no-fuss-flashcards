@@ -5,6 +5,7 @@
     <!-- Shared -->
     <string name="deck_list_load_failed">Error loading decks.</string>
     <string name="deck_load_failed">Error loading deck.</string>
+    <string name="flashcard_load_failed">Error loading flashcard.</string>
     <string name="invalid_submission">Submission invalid. Please check your input.</string>
 
     <!-- Home Screen -->
@@ -23,4 +24,5 @@
     <!-- Flashcard Entry Screen -->
     <string name="flashcard_save_failed">Error saving flashcard. Please try again.</string>
     <string name="image_save_failed">Error saving image. Flashcard save aborted.</string>
+    <string name="old_image_delete_failed">Error deleting old image. Flashcard update aborted.</string>
 </resources>

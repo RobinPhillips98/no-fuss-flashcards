@@ -195,7 +195,9 @@ data class FlashcardUiState(
     val flashcardDetails: FlashcardDetails = FlashcardDetails(),
     val selectedImageUri: Uri? = null,
     val existingImageUri: Uri? = null,
-    val isEntryValid: Boolean = false
+    val isEntryValid: Boolean = false,
+    val isLoading: Boolean = false,
+    val hasLoadError: Boolean = false
 )
 
 /**
