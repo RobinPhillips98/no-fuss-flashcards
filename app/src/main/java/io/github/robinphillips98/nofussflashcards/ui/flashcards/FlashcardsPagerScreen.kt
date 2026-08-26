@@ -1,5 +1,11 @@
 package io.github.robinphillips98.nofussflashcards.ui.flashcards
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -25,9 +31,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -51,6 +57,17 @@ object FlashcardsPagerDestination: NavigationDestination {
     val routeWithArgs = "$route/{$DECK_ID_ARG}?$FLASHCARD_ID_ARG={$FLASHCARD_ID_ARG}"
 }
 
+/**
+ * Represents the state of the flashcards pager animation.
+ *
+ * @property generation The current generation of the flashcards shuffle.
+ * @property flashcards The list of flashcards to display in the pager.
+ */
+private data class FlashcardsPagerAnimationState(
+    val generation: Int,
+    val flashcards: List<Flashcard>
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashcardsPagerScreen(
@@ -70,19 +87,18 @@ fun FlashcardsPagerScreen(
         },
         modifier = modifier
     ) { innerPadding ->
-        key(uiState.shuffleGeneration) {
-            FlashcardsPagerBody(
-                deck = uiState.deckDetails.toDeck(),
-                flashcards = uiState.flashcards,
-                modifier = modifier.padding(innerPadding),
-                initialSelectedIndex = uiState.initialSelectedIndex,
-                hasFlippedCard = uiState.hasFlippedCard,
-                onFlashcardClicked = {
-                    viewModel.updateHasFlippedCard(true)
-                },
-                onReshuffleClicked = { viewModel.reshuffleFlashcards() }
-            )
-        }
+        FlashcardsPagerBody(
+            deck = uiState.deckDetails.toDeck(),
+            flashcards = uiState.flashcards,
+            modifier = modifier.padding(innerPadding),
+            initialSelectedIndex = uiState.initialSelectedIndex,
+            hasFlippedCard = uiState.hasFlippedCard,
+            shuffleGeneration = uiState.shuffleGeneration,
+            onFlashcardClicked = {
+                viewModel.updateHasFlippedCard(true)
+            },
+            onReshuffleClicked = { viewModel.reshuffleFlashcards() }
+        )
     }
 }
 
@@ -92,6 +108,7 @@ private fun FlashcardsPagerBody(
     flashcards: List<Flashcard>,
     initialSelectedIndex: Int,
     hasFlippedCard: Boolean,
+    shuffleGeneration: Int,
     onFlashcardClicked: () -> Unit,
     onReshuffleClicked: () -> Unit,
     modifier: Modifier = Modifier,
@@ -101,7 +118,13 @@ private fun FlashcardsPagerBody(
         val base = pageCount / 2
         val safeInitialIndex = initialSelectedIndex.coerceIn(0, flashcards.lastIndex)
         val startPage = base - (base % flashcards.size) + safeInitialIndex
-        val pagerState = rememberPagerState(initialPage = startPage, pageCount = { pageCount })
+        val pagerState = rememberPagerState(
+            initialPage = startPage,
+            pageCount = { pageCount }
+        )
+        LaunchedEffect(startPage, shuffleGeneration) {
+            pagerState.scrollToPage(startPage)
+        }
         val currentCard = (pagerState.currentPage % flashcards.size) + 1
 
         Column(
@@ -167,12 +190,24 @@ private fun FlashcardsPagerBody(
                     .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-                FlashcardsPager(
-                    flashcards = flashcards,
-                    onFlashcardClicked = onFlashcardClicked,
-                    pagerState = pagerState,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                AnimatedContent(
+                    targetState = FlashcardsPagerAnimationState(
+                        generation = shuffleGeneration,
+                        flashcards = flashcards
+                    ),
+                    transitionSpec = {
+                        (fadeIn() + scaleIn(initialScale = 0.96f)) togetherWith
+                                (fadeOut() + scaleOut(targetScale = 1.04f))
+                    },
+                    label = "flashcards_shuffle_animation"
+                ) { animatedState ->
+                    FlashcardsPager(
+                        flashcards = animatedState.flashcards,
+                        onFlashcardClicked = onFlashcardClicked,
+                        pagerState = pagerState,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
     } else {
@@ -240,6 +275,7 @@ fun FlashcardsPagerBodyPreview() {
         flashcards = sampleFlashcards,
         initialSelectedIndex = 0,
         hasFlippedCard = false,
+        shuffleGeneration = 0,
         onFlashcardClicked = {},
         onReshuffleClicked = {}
     )
@@ -258,6 +294,7 @@ fun FlashcardPagerBodyEmptyPreview() {
         flashcards = emptyList(),
         initialSelectedIndex = 0,
         hasFlippedCard = true,
+        shuffleGeneration = 0,
         onFlashcardClicked = {},
         onReshuffleClicked = {}
     )
