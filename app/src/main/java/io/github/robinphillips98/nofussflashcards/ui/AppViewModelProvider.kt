@@ -14,12 +14,19 @@ import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardEditVie
 import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardEntryViewModel
 import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardsPagerViewModel
 import io.github.robinphillips98.nofussflashcards.ui.home.HomeViewModel
+import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeViewModel
 
 /**
  * Provides Factory to create instance of ViewModel for the entire Flashcards app
  */
 object AppViewModelProvider {
     val Factory = viewModelFactory {
+        // Initializer for AppThemeViewModel
+        initializer {
+            AppThemeViewModel(
+                noFussFlashcardsApplication().container.userPreferencesRepository
+            )
+        }
         // Initializer for HomeViewModel
         initializer {
             HomeViewModel(

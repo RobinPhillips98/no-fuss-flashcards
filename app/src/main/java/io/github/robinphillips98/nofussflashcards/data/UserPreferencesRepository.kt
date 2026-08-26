@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
+import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeOptions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -48,6 +49,20 @@ class UserPreferencesRepository(
             preferences[HAS_FLIPPED_CARD] ?: false
         }
 
+    val selectedThemeOption: Flow<AppThemeOptions> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map { preferences ->
+            val ordinal = preferences[SELECTED_THEME_OPTION] ?: AppThemeOptions.DEFAULT.ordinal
+            AppThemeOptions.entries.getOrElse(ordinal) { AppThemeOptions.DEFAULT }
+        }
+
     suspend fun saveLastOpenedDeckId(deckId: Int) {
         dataStore.edit { preferences ->
             preferences[LAST_OPENED_DECK_ID] = deckId
@@ -60,9 +75,16 @@ class UserPreferencesRepository(
         }
     }
 
+    suspend fun saveSelectedThemeOption(themeOption: AppThemeOptions) {
+        dataStore.edit { preferences ->
+            preferences[SELECTED_THEME_OPTION] = themeOption.ordinal
+        }
+    }
+
     private companion object {
         const val TAG = "UserPreferencesRepo"
         val LAST_OPENED_DECK_ID = intPreferencesKey("last_opened_deck_id")
         val HAS_FLIPPED_CARD = booleanPreferencesKey("has_flipped_card")
+        val SELECTED_THEME_OPTION = intPreferencesKey("selected_theme_option")
     }
 }
