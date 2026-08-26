@@ -17,7 +17,13 @@
     <string name="theme_ocean">Ocean</string>
     <string name="theme_vampire">Vampire</string>
 
+    <!-- Settings Screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_theme_label">Theme</string>
+    <string name="settings_theme_summary">Select a theme for the app</string>
+
     <!-- Button Labels -->
+    <string name="settings_button">Open Settings</string>
     <string name="add_flashcard_button">Add Flashcard</string>
     <string name="open_deck_button">Open Deck</string>
     <string name="edit_deck_button">Edit Deck</string>

@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import io.github.robinphillips98.nofussflashcards.ui.AppViewModelProvider
 import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeViewModel
 import io.github.robinphillips98.nofussflashcards.ui.theme.FlashcardsTheme
@@ -25,7 +26,10 @@ class MainActivity : ComponentActivity() {
             val themeOption by appThemeViewModel.themeOption.collectAsState()
 
             FlashcardsTheme(themeOption = themeOption) {
-                NoFussFlashcardsApp()
+                NoFussFlashcardsApp(
+                    selectedThemeName = stringResource(themeOption.titleResId),
+                    onThemeSelected = appThemeViewModel::updateTheme
+                )
             }
         }
     }

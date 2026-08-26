@@ -16,20 +16,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,7 +47,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
 import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.data.decks.Deck
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
@@ -67,6 +70,7 @@ object HomeDestination: NavigationDestination {
 fun HomeScreen(
     onCreateDeckClicked: () -> Unit,
     onDeckClicked: (deckId: Int) -> Unit,
+    onSettingsClicked: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -93,9 +97,8 @@ fun HomeScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            NoFussFlashCardsTopAppBar(
-                title = stringResource(HomeDestination.titleResId),
-                canNavigateBack = false,
+            HomeScreenTopAppBar(
+                onSettingsClicked = onSettingsClicked
             )
         },
         floatingActionButton = {
@@ -349,4 +352,35 @@ fun HomeBodyEmptyPreview() {
 fun DeckItemPreview() {
     val sampleDeck = Deck(deckId = 1, name = "Sample Deck", description = "This is a sample deck description.")
     DeckItem(deck = sampleDeck, onClick = {})
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun HomeScreenTopAppBar(
+    onSettingsClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    CenterAlignedTopAppBar(
+        title = {
+                Text(
+                    text = stringResource(R.string.full_app_name),
+                    style = MaterialTheme.typography.titleLarge,
+                )
+        },
+        modifier = modifier,
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ),
+        actions = {
+            IconButton(onClick = onSettingsClicked) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Settings"
+                )
+            }
+        }
+    )
 }

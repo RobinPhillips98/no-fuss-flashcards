@@ -17,12 +17,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import io.github.robinphillips98.nofussflashcards.navigation.NoFussFlashcardsNavHost
+import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeOptions
 
 @Composable
 fun NoFussFlashcardsApp(
+    selectedThemeName: String,
+    onThemeSelected: (AppThemeOptions) -> Unit,
     navController: NavHostController = rememberNavController()
 ) {
-    NoFussFlashcardsNavHost(navController = navController)
+    NoFussFlashcardsNavHost(
+        navController = navController,
+        selectedThemeName = selectedThemeName,
+        onThemeSelected = onThemeSelected
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

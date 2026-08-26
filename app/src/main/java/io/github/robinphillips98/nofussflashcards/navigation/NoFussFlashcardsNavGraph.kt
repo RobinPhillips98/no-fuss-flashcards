@@ -24,6 +24,9 @@ import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardsPagerD
 import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardsPagerScreen
 import io.github.robinphillips98.nofussflashcards.ui.home.HomeDestination
 import io.github.robinphillips98.nofussflashcards.ui.home.HomeScreen
+import io.github.robinphillips98.nofussflashcards.ui.settings.SettingsDestination
+import io.github.robinphillips98.nofussflashcards.ui.settings.SettingsScreen
+import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeOptions
 
 /**
  * Provides Navigation graph for the application.
@@ -31,6 +34,8 @@ import io.github.robinphillips98.nofussflashcards.ui.home.HomeScreen
 @Composable
 fun NoFussFlashcardsNavHost(
     navController: NavHostController,
+    selectedThemeName: String,
+    onThemeSelected: (AppThemeOptions) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val durationMillis = 150
@@ -64,7 +69,8 @@ fun NoFussFlashcardsNavHost(
                 onCreateDeckClicked = { navController.navigate(DeckEntryDestination.route) },
                 onDeckClicked = { deckId ->
                     navController.navigate("${DeckDetailsDestination.route}/$deckId")
-                }
+                },
+                onSettingsClicked = { navController.navigate(SettingsDestination.route) }
             )
         }
 
@@ -162,6 +168,14 @@ fun NoFussFlashcardsNavHost(
             )
         }
 
-        // TODO: Implement quiz and settings screens
+        composable(route = SettingsDestination.route) {
+            SettingsScreen(
+                selectedThemeName = selectedThemeName,
+                onThemeSelect = onThemeSelected,
+                navigateBack = { navController.popBackStack() },
+            )
+        }
+
+        // TODO: Implement quiz screen
     }
 }
