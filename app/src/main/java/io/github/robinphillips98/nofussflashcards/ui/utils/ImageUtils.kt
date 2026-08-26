@@ -180,6 +180,14 @@ fun ImageUploader(
     }
 }
 
+/**
+ * Saves an image to internal storage given its URI.
+ *
+ * @param context The context used to access internal storage.
+ * @param uri The URI of the image to be saved.
+ *
+ * @return The absolute path of the saved image file, or `null` if the save operation failed.
+ */
 fun saveImageToInternalStorage(context: Context, uri: Uri): String? {
     return try {
         val fileExtension = context.contentResolver.getType(uri)
@@ -199,5 +207,26 @@ fun saveImageToInternalStorage(context: Context, uri: Uri): String? {
     } catch (e: Exception) {
         e.printStackTrace()
         null
+    }
+}
+
+/**
+ * Deletes an image file from internal storage given its path.
+ *
+ * @param imagePath The absolute path of the image file to be deleted.
+ *
+ * @return `true` if the file was successfully deleted, `false` otherwise.
+ */
+fun deleteImageFromInternalStorage(imagePath: String): Boolean {
+    return try {
+        val file = File(imagePath)
+        if (file.exists()) {
+            file.delete()
+        } else {
+            false
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        false
     }
 }

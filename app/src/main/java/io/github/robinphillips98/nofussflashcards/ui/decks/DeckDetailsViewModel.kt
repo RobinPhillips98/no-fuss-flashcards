@@ -12,6 +12,7 @@ import io.github.robinphillips98.nofussflashcards.data.flashcards.FlashcardsRepo
 import io.github.robinphillips98.nofussflashcards.ui.errors.DeckDetailsError
 import io.github.robinphillips98.nofussflashcards.ui.errors.messageFor
 import io.github.robinphillips98.nofussflashcards.ui.utils.StringResolver
+import io.github.robinphillips98.nofussflashcards.ui.utils.deleteImageFromInternalStorage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -179,13 +180,9 @@ class DeckDetailsViewModel(
         val imagePath = flashcard.imagePath
         if (imagePath != null) {
             // Delete the image from internal storage
-            try {
-                val file = java.io.File(imagePath)
-                if (file.exists()) {
-                    file.delete()
-                }
-            } catch (e: Exception) {
-                emitError(DeckDetailsError.ImageDeleteFailed, e)
+            val imageDeletedSuccessfully = deleteImageFromInternalStorage(imagePath)
+            if (!imageDeletedSuccessfully) {
+                emitError(DeckDetailsError.ImageDeleteFailed)
                 return
             }
         }
