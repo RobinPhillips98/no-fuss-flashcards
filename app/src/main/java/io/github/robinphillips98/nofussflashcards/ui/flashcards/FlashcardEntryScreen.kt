@@ -17,8 +17,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,8 +56,23 @@ fun FlashcardEntryScreen(
     viewModel: FlashcardEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val flashcardUiState = viewModel.flashcardUiState
+
+    // Collect events from the ViewModel and show snackbars for relevant events.
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is FlashcardEntryUiEvent.ShowFlashcardSavedSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message, withDismissAction = true)
+                }
+                is FlashcardEntryUiEvent.ShowErrorSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message, withDismissAction = true)
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -63,7 +81,8 @@ fun FlashcardEntryScreen(
                 canNavigateBack = true,
                 navigateUp = onNavigateUp
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         FlashcardEntryBody(
             flashcardUiState = flashcardUiState,
@@ -76,8 +95,10 @@ fun FlashcardEntryScreen(
             },
             onSaveClick = {
                 coroutineScope.launch {
-                    viewModel.saveFlashcard(context)
-                    navigateBack()
+                    val flashcardSavedSuccessfully = viewModel.saveFlashcard(context)
+                    if (flashcardSavedSuccessfully) {
+                        navigateBack()
+                    }
                 }
             },
             modifier = Modifier.padding(innerPadding)

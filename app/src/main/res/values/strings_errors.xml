@@ -19,4 +19,8 @@
 
     <!-- Deck Entry Screen -->
     <string name="deck_save_failed">Error saving deck. Please try again.</string>
+
+    <!-- Flashcard Entry Screen -->
+    <string name="flashcard_save_failed">Error saving flashcard. Please try again.</string>
+    <string name="image_save_failed">Error saving image. Flashcard save aborted.</string>
 </resources>

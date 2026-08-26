@@ -73,6 +73,7 @@
     <string name="flashcard_entry_definition_placeholder">Enter definition</string>
     <string name="flashcard_entry_invalid_message">Must provide a term and either a definition or an image.</string>
     <string name="flashcard_entry_deck_label">Deck *</string>
+    <string name="flashcard_saved_success_message">Flashcard saved successfully.</string>
 
     <!-- Image Upload -->
     <string name="image_label">Image</string>

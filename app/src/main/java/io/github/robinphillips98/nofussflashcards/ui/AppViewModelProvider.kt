@@ -70,7 +70,8 @@ object AppViewModelProvider {
         initializer {
             FlashcardEntryViewModel(
                 this.createSavedStateHandle(),
-                noFussFlashcardsApplication().container.flashcardsRepository
+                noFussFlashcardsApplication().container.flashcardsRepository,
+                noFussFlashcardsApplication().container.stringResolver
             )
         }
 
