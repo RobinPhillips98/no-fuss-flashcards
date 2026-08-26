@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
@@ -24,16 +25,22 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -76,6 +83,27 @@ fun FlashcardsPagerScreen(
     viewModel: FlashcardsPagerViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+
+    // Collect events from the ViewModel and show snackbars for relevant events.
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is FlashcardsPagerUiEvent.ShowErrorSnackbar -> {
+                    val result = snackbarHostState.showSnackbar(
+                        message = event.message,
+                        actionLabel = event.actionLabel,
+                        withDismissAction = true
+                    )
+                    if (result == SnackbarResult.ActionPerformed) {
+                        if (event.shouldRetryDeck) viewModel.retryDeckLoad()
+                        if (event.shouldRetryFlashcards) viewModel.retryFlashcardsLoad()
+                    }
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -85,20 +113,52 @@ fun FlashcardsPagerScreen(
                 navigateUp = navigateBack
             )
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         modifier = modifier
     ) { innerPadding ->
-        FlashcardsPagerBody(
-            deck = uiState.deckDetails.toDeck(),
-            flashcards = uiState.flashcards,
-            modifier = modifier.padding(innerPadding),
-            initialSelectedIndex = uiState.initialSelectedIndex,
-            hasFlippedCard = uiState.hasFlippedCard,
-            shuffleGeneration = uiState.shuffleGeneration,
-            onFlashcardClicked = {
-                viewModel.updateHasFlippedCard(true)
-            },
-            onReshuffleClicked = { viewModel.reshuffleFlashcards() }
-        )
+        if (uiState.hasDeckLoadError) {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    stringResource(R.string.deck_load_failed),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center
+                )
+                Button(
+                    onClick = { viewModel.retryDeckLoad() },
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    Text(stringResource(R.string.retry_button))
+                }
+            }
+        } else if (uiState.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center)
+            )
+        } else {
+            FlashcardsPagerBody(
+                deck = uiState.deckDetails.toDeck(),
+                flashcards = uiState.flashcards,
+                hasFlashcardsLoadError = uiState.hasFlashcardsLoadError,
+                modifier = modifier.padding(innerPadding),
+                initialSelectedIndex = uiState.initialSelectedIndex,
+                hasFlippedCard = uiState.hasFlippedCard,
+                shuffleGeneration = uiState.shuffleGeneration,
+                onFlashcardClicked = {
+                    viewModel.updateHasFlippedCard(true)
+                },
+                onReshuffleClicked = { viewModel.reshuffleFlashcards() },
+                retryLoadFlashcards = { viewModel.retryFlashcardsLoad() }
+            )
+        }
     }
 }
 
@@ -106,14 +166,31 @@ fun FlashcardsPagerScreen(
 private fun FlashcardsPagerBody(
     deck: Deck,
     flashcards: List<Flashcard>,
+    hasFlashcardsLoadError: Boolean,
     initialSelectedIndex: Int,
     hasFlippedCard: Boolean,
     shuffleGeneration: Int,
     onFlashcardClicked: () -> Unit,
     onReshuffleClicked: () -> Unit,
+    retryLoadFlashcards: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (flashcards.isNotEmpty()) {
+    if (hasFlashcardsLoadError) {
+        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.flashcard_list_load_failed),
+                    textAlign = TextAlign.Center,
+                )
+                Button(onClick = retryLoadFlashcards) {
+                    Text(stringResource(R.string.retry_button))
+                }
+            }
+        }
+    } else if (flashcards.isNotEmpty()) {
         val pageCount = flashcards.size * 400
         val base = pageCount / 2
         val safeInitialIndex = initialSelectedIndex.coerceIn(0, flashcards.lastIndex)
@@ -273,11 +350,13 @@ fun FlashcardsPagerBodyPreview() {
     FlashcardsPagerBody(
         deck = sampleDeck,
         flashcards = sampleFlashcards,
+        hasFlashcardsLoadError = false,
         initialSelectedIndex = 0,
         hasFlippedCard = false,
         shuffleGeneration = 0,
         onFlashcardClicked = {},
-        onReshuffleClicked = {}
+        onReshuffleClicked = {},
+        retryLoadFlashcards = {}
     )
 }
 
@@ -292,10 +371,12 @@ fun FlashcardPagerBodyEmptyPreview() {
     FlashcardsPagerBody(
         deck = sampleDeck,
         flashcards = emptyList(),
+        hasFlashcardsLoadError = false,
         initialSelectedIndex = 0,
         hasFlippedCard = true,
         shuffleGeneration = 0,
         onFlashcardClicked = {},
-        onReshuffleClicked = {}
+        onReshuffleClicked = {},
+        retryLoadFlashcards = {}
     )
 }

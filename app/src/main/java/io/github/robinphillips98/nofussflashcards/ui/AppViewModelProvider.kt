@@ -45,7 +45,8 @@ object AppViewModelProvider {
                 this.createSavedStateHandle(),
                 noFussFlashcardsApplication().container.decksRepository,
                 noFussFlashcardsApplication().container.flashcardsRepository,
-                noFussFlashcardsApplication().container.userPreferencesRepository
+                noFussFlashcardsApplication().container.userPreferencesRepository,
+                noFussFlashcardsApplication().container.stringResolver
             )
         }
 

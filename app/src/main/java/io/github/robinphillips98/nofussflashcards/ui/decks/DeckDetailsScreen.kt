@@ -92,6 +92,7 @@ fun DeckDetailsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val loadedSuccessfully = !uiState.isLoading && !uiState.hasDeckLoadError && !uiState.hasFlashcardsLoadError
 
+    // Collect events from the ViewModel and show snackbars for relevant events.
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
