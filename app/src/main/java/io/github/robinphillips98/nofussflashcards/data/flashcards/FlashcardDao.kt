@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FlashcardDao {
 
-    @Query("SELECT * FROM flashcards")
+    @Query("SELECT * FROM flashcards ORDER BY term ASC")
     fun getAllFlashcards(): Flow<List<Flashcard>>
 
     @Query("SELECT * FROM flashcards WHERE flashcard_id = :flashcardId")
     fun getFlashcardById(flashcardId: Int): Flow<Flashcard>
 
-    @Query("SELECT * FROM flashcards WHERE deck_id = :deckId")
+    @Query("SELECT * FROM flashcards WHERE deck_id = :deckId ORDER BY term ASC")
     fun getFlashcardsByDeckId(deckId: Int): Flow<List<Flashcard>>
 
     @Insert

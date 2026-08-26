@@ -24,6 +24,7 @@
     <string name="no_button">No</string>
     <string name="yes_button">Yes</string>
     <string name="retry_button">Retry</string>
+    <string name="reshuffle_button">Reshuffle</string>
 
     <!-- Confirmation Dialogs -->
     <string name="delete_confirmation_title">Delete %1$s</string>

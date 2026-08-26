@@ -1,9 +1,11 @@
 package io.github.robinphillips98.nofussflashcards.ui.flashcards
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,14 +15,19 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -63,16 +70,19 @@ fun FlashcardsPagerScreen(
         },
         modifier = modifier
     ) { innerPadding ->
-        FlashcardsPagerBody(
-            deck = uiState.deckDetails.toDeck(),
-            flashcards = uiState.flashcards,
-            modifier = modifier.padding(innerPadding),
-            initialSelectedIndex = uiState.initialSelectedIndex,
-            hasFlippedCard = uiState.hasFlippedCard,
-            onFlashcardClicked = {
-                viewModel.updateHasFlippedCard(true)
-            }
-        )
+        key(uiState.shuffleGeneration) {
+            FlashcardsPagerBody(
+                deck = uiState.deckDetails.toDeck(),
+                flashcards = uiState.flashcards,
+                modifier = modifier.padding(innerPadding),
+                initialSelectedIndex = uiState.initialSelectedIndex,
+                hasFlippedCard = uiState.hasFlippedCard,
+                onFlashcardClicked = {
+                    viewModel.updateHasFlippedCard(true)
+                },
+                onReshuffleClicked = { viewModel.reshuffleFlashcards() }
+            )
+        }
     }
 }
 
@@ -83,10 +93,10 @@ private fun FlashcardsPagerBody(
     initialSelectedIndex: Int,
     hasFlippedCard: Boolean,
     onFlashcardClicked: () -> Unit,
+    onReshuffleClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (flashcards.isNotEmpty()) {
-
         val pageCount = flashcards.size * 400
         val base = pageCount / 2
         val safeInitialIndex = initialSelectedIndex.coerceIn(0, flashcards.lastIndex)
@@ -104,15 +114,33 @@ private fun FlashcardsPagerBody(
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-            Text(
-                text = stringResource(
-                    R.string.flashcard_count_label,
-                    currentCard,
-                    flashcards.size
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(
+                        R.string.flashcard_count_label,
+                        currentCard,
+                        flashcards.size
+                    ),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                AssistChip(
+                    onClick = onReshuffleClicked,
+                    label = { Text(stringResource(R.string.reshuffle_button)) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = stringResource(R.string.reshuffle_button)
+                        )
+                    }
+                )
+            }
 
             Spacer(modifier = Modifier.height(4.dp))
             HorizontalDivider()
@@ -212,7 +240,8 @@ fun FlashcardsPagerBodyPreview() {
         flashcards = sampleFlashcards,
         initialSelectedIndex = 0,
         hasFlippedCard = false,
-        onFlashcardClicked = {}
+        onFlashcardClicked = {},
+        onReshuffleClicked = {}
     )
 }
 
@@ -229,6 +258,7 @@ fun FlashcardPagerBodyEmptyPreview() {
         flashcards = emptyList(),
         initialSelectedIndex = 0,
         hasFlippedCard = true,
-        onFlashcardClicked = {}
+        onFlashcardClicked = {},
+        onReshuffleClicked = {}
     )
 }
