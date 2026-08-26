@@ -9,6 +9,14 @@
     <string name="definition">Definition</string>
     <string name="image_content_description">Image for %1$s</string>
 
+    <!-- Theme Names -->
+    <string name="theme_default">Default (System Theme)</string>
+    <string name="theme_bubblegum">Bubblegum</string>
+    <string name="theme_canyon">Canyon</string>
+    <string name="theme_neon">Neon</string>
+    <string name="theme_ocean">Ocean</string>
+    <string name="theme_vampire">Vampire</string>
+
     <!-- Button Labels -->
     <string name="add_flashcard_button">Add Flashcard</string>
     <string name="open_deck_button">Open Deck</string>
