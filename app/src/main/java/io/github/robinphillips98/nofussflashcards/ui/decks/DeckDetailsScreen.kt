@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FloatingActionButton
@@ -85,6 +87,7 @@ fun DeckDetailsScreen(
     val coroutineScope = rememberCoroutineScope()
     val flashcardToDelete by viewModel.flashcardToDelete.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val loadedSuccessfully = !uiState.isLoading && !uiState.hasDeckLoadError && !uiState.hasFlashcardsLoadError
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -116,18 +119,20 @@ fun DeckDetailsScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { navigateToFlashcardEntryScreen(uiState.deckDetails.deckId) },
-                modifier = Modifier
-                    .padding(
-                        end = WindowInsets.safeDrawing.asPaddingValues()
-                            .calculateEndPadding(LocalLayoutDirection.current)
-                    ),
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.add_flashcard_button)
-                )
+            if (loadedSuccessfully) {
+                FloatingActionButton(
+                    onClick = { navigateToFlashcardEntryScreen(uiState.deckDetails.deckId) },
+                    modifier = Modifier
+                        .padding(
+                            end = WindowInsets.safeDrawing.asPaddingValues()
+                                .calculateEndPadding(LocalLayoutDirection.current)
+                        ),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(R.string.add_flashcard_button)
+                    )
+                }
             }
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -153,7 +158,14 @@ fun DeckDetailsScreen(
                     Text(stringResource(R.string.retry_button))
                 }
             }
-        } else {
+        } else if (uiState.isLoading) {
+             CircularProgressIndicator(
+                 modifier = Modifier
+                     .padding(innerPadding)
+                     .fillMaxSize()
+                     .wrapContentSize(Alignment.Center)
+             )
+         } else {
             DeckDetailsBody(
                 deckDetails = uiState.deckDetails.toDeck(),
                 flashCards = uiState.flashcards,

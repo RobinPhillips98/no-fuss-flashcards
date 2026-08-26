@@ -128,13 +128,13 @@ class DeckDetailsViewModel(
                 flashcards = flashcards,
                 hasDeckLoadError = deckLoadError,
                 hasFlashcardsLoadError = flashcardsLoadError,
-                isLoaded = false
+                isLoading = false
             )
         }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = DeckDetailsUiState()
+                initialValue = DeckDetailsUiState(isLoading = true)
             )
 
     /**
@@ -288,14 +288,14 @@ class DeckDetailsViewModel(
  * @property flashcards The list of flashcards in the deck.
  * @property hasDeckLoadError Whether there was an error loading the deck.
  * @property hasFlashcardsLoadError Whether there was an error loading the flashcards.
- * @property isLoaded Whether the deck and flashcards have been successfully loaded.
+ * @property isLoading Whether the deck and flashcards are currently being loaded.
  */
 data class DeckDetailsUiState(
     val deckDetails: DeckDetails = DeckDetails(),
     val flashcards: List<Flashcard> = emptyList(),
     val hasDeckLoadError: Boolean = false,
     val hasFlashcardsLoadError: Boolean = false,
-    val isLoaded: Boolean = false
+    val isLoading: Boolean = false
 )
 
 /**

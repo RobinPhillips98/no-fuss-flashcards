@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -68,7 +70,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val homeUiState by viewModel.homeUiState.collectAsState()
+    val uiState by viewModel.homeUiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
@@ -97,25 +99,27 @@ fun HomeScreen(
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = onCreateDeckClicked,
-                modifier = Modifier
-                    .padding(
-                        end = WindowInsets.safeDrawing.asPaddingValues()
-                            .calculateEndPadding(LocalLayoutDirection.current)
-                    ),
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = stringResource(R.string.create_deck_button)
-                    )
-                },
-                text = { Text(stringResource(R.string.create_deck_button)) }
-            )
+            if (!uiState.isLoading && !uiState.hasDecksLoadError) {
+                ExtendedFloatingActionButton(
+                    onClick = onCreateDeckClicked,
+                    modifier = Modifier
+                        .padding(
+                            end = WindowInsets.safeDrawing.asPaddingValues()
+                                .calculateEndPadding(LocalLayoutDirection.current)
+                        ),
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(R.string.create_deck_button)
+                        )
+                    },
+                    text = { Text(stringResource(R.string.create_deck_button)) }
+                )
+            }
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
-        if (homeUiState.hasDecksLoadError) {
+        if (uiState.hasDecksLoadError) {
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
@@ -135,16 +139,23 @@ fun HomeScreen(
                     Text(stringResource(R.string.retry_button))
                 }
             }
+        } else if (uiState.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center)
+            )
         } else {
             HomeBody(
-                deckList = homeUiState.deckList,
+                deckList = uiState.deckList,
                 onDeckClicked = { deckId ->
                     onDeckClicked(deckId)
                     viewModel.updateLastOpenedDeckId(deckId)
                 },
                 modifier = modifier.padding(innerPadding),
-                lastDeckId = homeUiState.lastOpenedDeckId,
-                showLastOpenedError =  homeUiState.hasLastOpenedDeckLoadError
+                lastDeckId = uiState.lastOpenedDeckId,
+                showLastOpenedError =  uiState.hasLastOpenedDeckLoadError
             )
         }
     }
