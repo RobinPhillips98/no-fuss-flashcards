@@ -43,6 +43,7 @@ fun DeckEntryScreen(
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // Collect events from the ViewModel and show snackbars for relevant events.
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
@@ -67,7 +68,7 @@ fun DeckEntryScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         DeckEntryBody(
-            deckUiState = viewModel.deckUiState,
+            uiState = viewModel.deckUiState,
             onDeckValueChange = viewModel::updateUiState,
             onSaveClick = {
                 coroutineScope.launch {
@@ -84,7 +85,7 @@ fun DeckEntryScreen(
 
 @Composable
 fun DeckEntryBody(
-    deckUiState: DeckUiState,
+    uiState: DeckUiState,
     onDeckValueChange: (DeckDetails) -> Unit,
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -94,13 +95,13 @@ fun DeckEntryBody(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         DeckInputForm(
-            deckDetails = deckUiState.deckDetails,
+            deckDetails = uiState.deckDetails,
             onValueChange = onDeckValueChange,
             modifier = Modifier.fillMaxWidth()
         )
         Button(
             onClick = onSaveClick,
-            enabled = deckUiState.isEntryValid,
+            enabled = uiState.isEntryValid,
             shape = MaterialTheme.shapes.small,
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -143,7 +144,8 @@ fun DeckInputForm(
                 disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
             ),
             modifier = Modifier.fillMaxWidth(),
-            singleLine = false
+            minLines = 3,
+            maxLines = 5
         )
     }
 }
@@ -152,7 +154,7 @@ fun DeckInputForm(
 @Composable
 fun DeckEntryScreenPreview() {
     DeckEntryBody(
-        deckUiState = DeckUiState(),
+        uiState = DeckUiState(),
         onDeckValueChange = {},
         onSaveClick = {}
     )

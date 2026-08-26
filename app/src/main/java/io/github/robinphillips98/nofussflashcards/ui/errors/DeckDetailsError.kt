@@ -25,7 +25,7 @@ sealed interface DeckDetailsError: AppError {
  */
 fun StringResolver.messageFor(error: DeckDetailsError): String {
     return when (error) {
-        is DeckDetailsError.DeckLoadFailed -> get(R.string.deck_list_load_failed)
+        is DeckDetailsError.DeckLoadFailed -> get(R.string.deck_load_failed)
         is DeckDetailsError.DeckDeleteFailed -> get(R.string.deck_delete_failed)
         is DeckDetailsError.FlashcardListLoadFailed -> get(R.string.flashcard_list_load_failed)
         is DeckDetailsError.FlashcardDeleteFailed -> get(R.string.flashcard_delete_failed)

@@ -61,7 +61,8 @@ object AppViewModelProvider {
         initializer {
             DeckEditViewModel(
                 this.createSavedStateHandle(),
-                noFussFlashcardsApplication().container.decksRepository
+                noFussFlashcardsApplication().container.decksRepository,
+                noFussFlashcardsApplication().container.stringResolver
             )
         }
 

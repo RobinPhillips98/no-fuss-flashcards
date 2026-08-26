@@ -4,6 +4,7 @@
 
     <!-- Shared -->
     <string name="deck_list_load_failed">Error loading decks.</string>
+    <string name="deck_load_failed">Error loading deck.</string>
     <string name="invalid_submission">Submission invalid. Please check your input.</string>
 
     <!-- Home Screen -->

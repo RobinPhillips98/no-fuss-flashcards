@@ -32,6 +32,7 @@ class DeckEntryViewModel(
         private set
 
     private val _events = Channel<DeckEntryUiEvent>(Channel.BUFFERED)
+
     /**
      * A flow of events that can be observed by the UI to show snackbars or other one-time events.
      */
@@ -48,14 +49,14 @@ class DeckEntryViewModel(
 
     /**
      * Inserts a [Deck] in the Room database
+     *
+     * @return `true` if the deck was successfully saved, `false` otherwise
      */
     suspend fun saveDeck(): Boolean {
         if (validateInput()) {
             try {
                 decksRepository.insertDeck(deckUiState.deckDetails.toDeck())
-                _events.send(DeckEntryUiEvent.ShowDeckSavedSnackbar(
-                    stringResolver.get(R.string.deck_saved_success_message)
-                ))
+                emitSuccessEvent()
                 return true
             } catch (e: Throwable) {
                 emitError(e.toDeckEntryError(), e)
@@ -65,6 +66,18 @@ class DeckEntryViewModel(
             emitError(DeckEntryError.InvalidSubmission)
             return false
         }
+    }
+
+    /**
+     * Emits a success event to the UI. This method sends a [DeckEntryUiEvent.ShowDeckSavedSnackbar]
+     * event to the UI with a user-friendly success message.
+     */
+    private suspend fun emitSuccessEvent() {
+        _events.send(
+            DeckEntryUiEvent.ShowDeckSavedSnackbar(
+                stringResolver.get(R.string.deck_saved_success_message)
+            )
+        )
     }
 
     /**
@@ -92,7 +105,11 @@ class DeckEntryViewModel(
         error: DeckEntryError,
         throwable: Throwable? = null
     ) {
-        Log.e(TAG, "Deck entry error: $error", throwable)
+        if (error is DeckEntryError.InvalidSubmission) {
+            Log.w(TAG, "Invalid submission: ${deckUiState.deckDetails}")
+        } else {
+            Log.e(TAG, "Deck entry error: $error", throwable)
+        }
         viewModelScope.launch {
             _events.send(
                 DeckEntryUiEvent.ShowErrorSnackbar(
@@ -124,10 +141,16 @@ class DeckEntryViewModel(
  *
  * @property deckDetails The details of the deck being created or edited.
  * @property isEntryValid A boolean indicating whether the current input values are valid.
+ * @property isLoading A boolean indicating whether a loading operation is in progress. Defaults to
+ * `false` and is only used when loading an existing deck for editing.
+ * @property hasLoadError A boolean indicating whether there was an error loading the deck for
+ * editing. Defaults to `false` and is only used when loading an existing deck for editing.
  */
 data class DeckUiState(
     val deckDetails: DeckDetails = DeckDetails(),
-    val isEntryValid: Boolean = false
+    val isEntryValid: Boolean = false,
+    val isLoading: Boolean = false,
+    val hasLoadError: Boolean = false
 )
 
 
