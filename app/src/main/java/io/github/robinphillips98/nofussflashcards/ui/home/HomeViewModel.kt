@@ -1,5 +1,6 @@
 package io.github.robinphillips98.nofussflashcards.ui.home
 
+import android.database.sqlite.SQLiteException
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -176,7 +177,7 @@ class HomeViewModel(
      */
     private fun Throwable.toDecksLoadError(): HomeError =
         when (this) {
-            is IOException -> HomeError.DecksLoadFailed
+            is SQLiteException, is IOException -> HomeError.DecksLoadFailed
             else -> HomeError.Unknown(this)
         }
 

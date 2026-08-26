@@ -63,6 +63,7 @@
     <string name="deck_entry_name_placeholder">Enter deck name</string>
     <string name="deck_entry_description_label">Description</string>
     <string name="deck_entry_description_placeholder">Enter deck description</string>
+    <string name="deck_saved_success_message">Deck saved successfully.</string>
 
     <!-- Flashcard Entry Screen -->
     <string name="flashcard_entry_title">Create Flashcard</string>

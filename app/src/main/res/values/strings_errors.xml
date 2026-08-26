@@ -4,6 +4,7 @@
 
     <!-- Shared -->
     <string name="deck_list_load_failed">Error loading decks.</string>
+    <string name="invalid_submission">Submission invalid. Please check your input.</string>
 
     <!-- Home Screen -->
     <string name="last_deck_read_failed">Error loading last opened deck.</string>
@@ -14,4 +15,7 @@
     <string name="deck_delete_failed">Error deleting deck.</string>
     <string name="flashcard_delete_failed">Error deleting flashcard.</string>
     <string name="image_delete_failed">Error deleting image. Flashcard deletion aborted.</string>
+
+    <!-- Deck Entry Screen -->
+    <string name="deck_save_failed">Error saving deck. Please try again.</string>
 </resources>

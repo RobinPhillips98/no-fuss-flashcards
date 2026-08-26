@@ -10,8 +10,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -37,6 +41,21 @@ fun DeckEntryScreen(
     viewModel: DeckEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is DeckEntryUiEvent.ShowDeckSavedSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message, withDismissAction = true)
+                }
+                is DeckEntryUiEvent.ShowErrorSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message, withDismissAction = true)
+                }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             NoFussFlashCardsTopAppBar(
@@ -44,15 +63,18 @@ fun DeckEntryScreen(
                 canNavigateBack = true,
                 navigateUp = onNavigateUp
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         DeckEntryBody(
             deckUiState = viewModel.deckUiState,
             onDeckValueChange = viewModel::updateUiState,
             onSaveClick = {
                 coroutineScope.launch {
-                    viewModel.saveDeck()
-                    navigateBack()
+                    val deckSavedSuccessfully = viewModel.saveDeck()
+                    if (deckSavedSuccessfully) {
+                        navigateBack()
+                    }
                 }
             },
             modifier = Modifier.padding(innerPadding)

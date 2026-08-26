@@ -4,6 +4,9 @@ import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.data.errors.AppError
 import io.github.robinphillips98.nofussflashcards.ui.utils.StringResolver
 
+/**
+ * Represents errors that can occur during deck details operations.
+ */
 sealed interface DeckDetailsError: AppError {
     data object DeckLoadFailed : DeckDetailsError
     data object DeckDeleteFailed : DeckDetailsError
@@ -13,6 +16,13 @@ sealed interface DeckDetailsError: AppError {
     data class Unknown(val cause: Throwable) : DeckDetailsError
 }
 
+/**
+ * Fetches a user-friendly error message for the given [DeckDetailsError].
+ *
+ * @param error The [DeckDetailsError] for which to fetch the message.
+ *
+ * @return A user-friendly error message corresponding to the [DeckDetailsError].
+ */
 fun StringResolver.messageFor(error: DeckDetailsError): String {
     return when (error) {
         is DeckDetailsError.DeckLoadFailed -> get(R.string.deck_list_load_failed)

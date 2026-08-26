@@ -1,5 +1,6 @@
 package io.github.robinphillips98.nofussflashcards.ui.decks
 
+import android.database.sqlite.SQLiteException
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -34,6 +35,11 @@ import java.io.IOException
  *
  * It retrieves the deck details and flashcards from the repositories and exposes them as a
  * [StateFlow] of [DeckDetailsUiState].
+ *
+ * @param savedStateHandle Handle to saved state passed down from the navigation component.
+ * @property decksRepository Repository for managing decks.
+ * @property flashcardsRepository Repository for managing flashcards.
+ * @property stringResolver Resolver for retrieving localized strings.
  */
 class DeckDetailsViewModel(
     savedStateHandle: SavedStateHandle,
@@ -258,7 +264,7 @@ class DeckDetailsViewModel(
      */
     private fun Throwable.toDeckLoadError(): DeckDetailsError {
         return when (this) {
-            is IOException -> DeckDetailsError.DeckLoadFailed
+            is SQLiteException, is IOException -> DeckDetailsError.DeckLoadFailed
             else -> DeckDetailsError.Unknown(this)
         }
     }
@@ -270,7 +276,7 @@ class DeckDetailsViewModel(
      */
     private fun Throwable.toFlashcardsLoadError(): DeckDetailsError {
         return when (this) {
-            is IOException -> DeckDetailsError.FlashcardListLoadFailed
+            is SQLiteException, is IOException -> DeckDetailsError.FlashcardListLoadFailed
             else -> DeckDetailsError.Unknown(this)
         }
     }

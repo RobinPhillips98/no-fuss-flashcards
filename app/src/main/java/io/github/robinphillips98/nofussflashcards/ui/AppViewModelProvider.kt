@@ -51,7 +51,10 @@ object AppViewModelProvider {
 
         // Initializer for DeckEntryViewModel
         initializer {
-            DeckEntryViewModel(noFussFlashcardsApplication().container.decksRepository)
+            DeckEntryViewModel(
+                noFussFlashcardsApplication().container.decksRepository,
+                noFussFlashcardsApplication().container.stringResolver
+            )
         }
 
         // Initializer for DeckEditViewModel
