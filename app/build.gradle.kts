@@ -73,4 +73,7 @@ dependencies {
 
     // DataStore
     implementation(libs.androidx.datastore.preferences)
+
+    // Google Fonts
+    implementation(libs.androidx.compose.ui.text.google.fonts)
 }
