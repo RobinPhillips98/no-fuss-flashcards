@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
+import io.github.robinphillips98.nofussflashcards.ui.theme.AppFontOptions
 import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeOptions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -63,6 +64,20 @@ class UserPreferencesRepository(
             AppThemeOptions.entries.getOrElse(ordinal) { AppThemeOptions.DEFAULT }
         }
 
+    val selectedFontOption: Flow<AppFontOptions> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map { preferences ->
+            val ordinal = preferences[SELECTED_FONT_OPTION] ?: AppFontOptions.DEFAULT.ordinal
+            AppFontOptions.entries.getOrElse(ordinal) { AppFontOptions.DEFAULT }
+        }
+
     suspend fun saveLastOpenedDeckId(deckId: Int) {
         dataStore.edit { preferences ->
             preferences[LAST_OPENED_DECK_ID] = deckId
@@ -81,10 +96,17 @@ class UserPreferencesRepository(
         }
     }
 
+    suspend fun saveSelectedFontOption(fontOption: AppFontOptions) {
+        dataStore.edit { preferences ->
+            preferences[SELECTED_FONT_OPTION] = fontOption.ordinal
+        }
+    }
+
     private companion object {
         const val TAG = "UserPreferencesRepo"
         val LAST_OPENED_DECK_ID = intPreferencesKey("last_opened_deck_id")
         val HAS_FLIPPED_CARD = booleanPreferencesKey("has_flipped_card")
         val SELECTED_THEME_OPTION = intPreferencesKey("selected_theme_option")
+        val SELECTED_FONT_OPTION = intPreferencesKey("selected_font_option")
     }
 }

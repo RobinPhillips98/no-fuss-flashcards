@@ -26,7 +26,7 @@ import io.github.robinphillips98.nofussflashcards.ui.home.HomeDestination
 import io.github.robinphillips98.nofussflashcards.ui.home.HomeScreen
 import io.github.robinphillips98.nofussflashcards.ui.settings.SettingsDestination
 import io.github.robinphillips98.nofussflashcards.ui.settings.SettingsScreen
-import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeOptions
+import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeViewModel
 
 /**
  * Provides Navigation graph for the application.
@@ -34,8 +34,7 @@ import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeOptions
 @Composable
 fun NoFussFlashcardsNavHost(
     navController: NavHostController,
-    selectedThemeName: String,
-    onThemeSelected: (AppThemeOptions) -> Unit,
+    appThemeViewModel: AppThemeViewModel,
     modifier: Modifier = Modifier,
 ) {
     val durationMillis = 150
@@ -170,8 +169,7 @@ fun NoFussFlashcardsNavHost(
 
         composable(route = SettingsDestination.route) {
             SettingsScreen(
-                selectedThemeName = selectedThemeName,
-                onThemeSelect = onThemeSelected,
+                viewModel = appThemeViewModel,
                 navigateBack = { navController.popBackStack() },
             )
         }

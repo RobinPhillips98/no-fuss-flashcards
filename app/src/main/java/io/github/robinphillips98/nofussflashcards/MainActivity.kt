@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.res.stringResource
 import io.github.robinphillips98.nofussflashcards.ui.AppViewModelProvider
 import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeViewModel
 import io.github.robinphillips98.nofussflashcards.ui.theme.FlashcardsTheme
@@ -24,12 +23,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val themeOption by appThemeViewModel.themeOption.collectAsState()
+            val fontOption by appThemeViewModel.fontOption.collectAsState()
 
-            FlashcardsTheme(themeOption = themeOption) {
-                NoFussFlashcardsApp(
-                    selectedThemeName = stringResource(themeOption.titleResId),
-                    onThemeSelected = appThemeViewModel::updateTheme
-                )
+            FlashcardsTheme(themeOption = themeOption, fontOption = fontOption) {
+                NoFussFlashcardsApp(appThemeViewModel = appThemeViewModel)
             }
         }
     }

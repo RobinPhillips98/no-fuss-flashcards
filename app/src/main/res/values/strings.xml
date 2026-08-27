@@ -20,8 +20,8 @@
     <!-- Settings Screen -->
     <string name="settings_title">Settings</string>
     <string name="settings_theme_label">Theme</string>
-    <string name="settings_theme_summary">Select a theme for the app</string>
-
+    <string name="settings_font_label">Font</string>
+    <string name="settings_font_download_warning">Fonts may take a moment to display correctly as they must be downloaded.</string>
     <!-- Button Labels -->
     <string name="settings_button">Open Settings</string>
     <string name="add_flashcard_button">Add Flashcard</string>

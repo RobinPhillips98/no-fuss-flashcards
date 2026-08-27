@@ -51,6 +51,7 @@ import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.data.decks.Deck
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
 import io.github.robinphillips98.nofussflashcards.ui.AppViewModelProvider
+import io.github.robinphillips98.nofussflashcards.ui.theme.PlayfairDisplay
 
 object HomeDestination: NavigationDestination {
     override val route = "home"
@@ -365,6 +366,7 @@ private fun HomeScreenTopAppBar(
                 Text(
                     text = stringResource(R.string.full_app_name),
                     style = MaterialTheme.typography.titleLarge,
+                    fontFamily = PlayfairDisplay
                 )
         },
         modifier = modifier,

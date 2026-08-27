@@ -14,6 +14,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.ui.theme.colors.bubblegum.BubbleGumDarkColorScheme
 import io.github.robinphillips98.nofussflashcards.ui.theme.colors.bubblegum.BubbleGumDarkHighContrastColorScheme
@@ -74,14 +75,16 @@ fun FlashcardsTheme(
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     themeOption: AppThemeOptions = AppThemeOptions.DEFAULT,
+    fontOption: AppFontOptions = AppFontOptions.DEFAULT,
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
     val colorScheme = getColorScheme(context, darkTheme, dynamicColor, themeOption)
+    val typography = buildTypography(fontOption.fontFamily)
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = typography,
         content = content
     )
 }
@@ -235,4 +238,94 @@ enum class AppThemeContrastOptions {
     DEFAULT,
     MEDIUM_CONTRAST,
     HIGH_CONTRAST
+}
+
+enum class AppFontOptions(
+    val title: String,
+    val fontFamily: FontFamily
+) {
+    DEFAULT(
+        title = "Default (System Font)",
+        fontFamily = FontFamily.Default
+    ),
+    CHAKRA_PETCH(
+        title = "Chakra Petch",
+        fontFamily = ChakraPetch
+    ),
+    COMFORTAA(
+        title = "Comfortaa",
+        fontFamily = Comfortaa
+    ),
+    DM_SANS(
+        title = "DM Sans",
+        fontFamily = DMSans
+    ),
+    IM_FELL_ENGLISH(
+        title = "IM Fell English",
+        fontFamily = IMFellEnglish
+    ),
+    INTER(
+        title = "Inter",
+        fontFamily = Inter
+    ),
+    JOSEFIN_SANS(
+        title = "Josefin Sans",
+        fontFamily = JosefinSans
+    ),
+    MANROPE(
+        title = "Manrope",
+        fontFamily = Manrope
+    ),
+    MONTSERRAT(
+        title = "Montserrat",
+        fontFamily = Montserrat
+    ),
+    NUNITO(
+        title = "Nunito",
+        fontFamily = Nunito
+    ),
+    OPEN_DYSLEXIC(
+    title = "Open Dyslexic",
+    fontFamily = OpenDyslexic
+    ),
+    OPEN_SANS(
+        title = "Open Sans",
+        fontFamily = OpenSans
+    ),
+    PLAYFAIR_DISPLAY(
+        title = "Playfair Display",
+        fontFamily = PlayfairDisplay
+    ),
+    POPPINS(
+        title = "Poppins",
+        fontFamily = Poppins
+    ),
+    PUBLIC_SANS(
+        title = "Public Sans",
+        fontFamily = PublicSans
+    ),
+    RUBIK(
+        title = "Rubik",
+        fontFamily = Rubik
+    ),
+    SHANTELL_SANS(
+        title = "Shantell Sans",
+        fontFamily = ShantellSans
+    ),
+    SOURCE_SANS_PRO(
+        title = "Source Sans Pro",
+        fontFamily = SourceSansPro
+    ),
+    QUICKSAND(
+        title = "Quicksand",
+        fontFamily = Quicksand
+    ),
+    UBUNTU(
+        title = "Ubuntu",
+        fontFamily = Ubuntu
+    ),
+    WINKY_ROUGH(
+        title = "Winky Rough",
+        fontFamily = WinkyRough
+    )
 }

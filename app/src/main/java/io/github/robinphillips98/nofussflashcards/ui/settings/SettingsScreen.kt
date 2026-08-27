@@ -26,7 +26,11 @@ import androidx.compose.ui.unit.dp
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
 import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
+import io.github.robinphillips98.nofussflashcards.ui.theme.AppFontOptions
 import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeOptions
+import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.tooling.preview.Preview
 
 object SettingsDestination: NavigationDestination {
     override val route = "settings"
@@ -36,11 +40,13 @@ object SettingsDestination: NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    selectedThemeName: String,
-    onThemeSelect: (AppThemeOptions) -> Unit,
+    viewModel: AppThemeViewModel,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val themeOption by viewModel.themeOption.collectAsState()
+    val fontOption by viewModel.fontOption.collectAsState()
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -52,8 +58,10 @@ fun SettingsScreen(
         }
     ) { innerPadding ->
         SettingsContent(
-            selectedThemeName = selectedThemeName,
-            onThemeSelect = onThemeSelect,
+            selectedThemeName = stringResource(themeOption.titleResId),
+            selectedFontName = fontOption.title,
+            onThemeSelect = viewModel::updateTheme,
+            onFontSelect = viewModel::updateFont,
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -62,9 +70,12 @@ fun SettingsScreen(
 @Composable
 private fun SettingsContent(
     selectedThemeName: String,
+    selectedFontName: String,
     onThemeSelect: (AppThemeOptions) -> Unit,
+    onFontSelect: (AppFontOptions) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     Column(
         modifier = modifier
             .padding(16.dp),
@@ -81,6 +92,12 @@ private fun SettingsContent(
         ThemeDropdownMenu(
             selectedThemeName = selectedThemeName,
             onThemeSelect = onThemeSelect,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+
+        FontDropdownMenu(
+            selectedFontName = selectedFontName,
+            onFontSelect = onFontSelect,
             modifier = Modifier.padding(top = 16.dp)
         )
     }
@@ -130,4 +147,71 @@ private fun ThemeDropdownMenu(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FontDropdownMenu(
+    selectedFontName: String,
+    onFontSelect: (AppFontOptions) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Column(modifier = modifier) {
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded },
+        ) {
+            OutlinedTextField(
+                value = selectedFontName,
+                onValueChange = {},
+                label = { Text(stringResource(R.string.settings_font_label)) },
+                readOnly = true,
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                ),
+                modifier = Modifier
+                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                    .fillMaxWidth()
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                AppFontOptions.entries.forEach { fontOption ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = fontOption.title,
+                                fontFamily = fontOption.fontFamily
+                            )
+                        },
+                        onClick = {
+                            onFontSelect(fontOption)
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+        Text(
+            text = stringResource(R.string.settings_font_download_warning),
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsScreenPreview() {
+    SettingsContent(
+        selectedThemeName = stringResource(AppThemeOptions.DEFAULT.titleResId),
+        selectedFontName = AppFontOptions.DEFAULT.title,
+        onThemeSelect = {},
+        onFontSelect = {}
+    )
 }
