@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+    id("com.mikepenz.aboutlibraries.plugin")
 }
 
 android {
@@ -79,4 +80,9 @@ dependencies {
 
     // Google Fonts
     implementation(libs.androidx.compose.ui.text.google.fonts)
+
+    // About Libraries
+    implementation(libs.aboutlibraries.compose.core)
+    implementation(libs.aboutlibraries.compose.m3)
+
 }

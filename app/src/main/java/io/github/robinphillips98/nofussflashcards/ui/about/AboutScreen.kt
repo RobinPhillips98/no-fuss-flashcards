@@ -36,6 +36,7 @@ fun AboutScreen(
     navigateToLicense: () -> Unit,
     navigateToPrivacyPolicy: () -> Unit,
     navigateToTermsOfService: () -> Unit,
+    navigateToOpenSourceLibraries: () -> Unit,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -53,6 +54,7 @@ fun AboutScreen(
             navigateToLicense = navigateToLicense,
             navigateToPrivacyPolicy = navigateToPrivacyPolicy,
             navigateToTermsOfService = navigateToTermsOfService,
+            navigateToOpenSourceLibraries = navigateToOpenSourceLibraries,
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -63,6 +65,7 @@ private fun AboutContent(
     navigateToLicense: () -> Unit,
     navigateToPrivacyPolicy: () -> Unit,
     navigateToTermsOfService: () -> Unit,
+    navigateToOpenSourceLibraries: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -73,7 +76,8 @@ private fun AboutContent(
         LegalDocuments(
             navigateToLicense = navigateToLicense,
             navigateToPrivacyPolicy = navigateToPrivacyPolicy,
-            navigateToTermsOfService = navigateToTermsOfService
+            navigateToTermsOfService = navigateToTermsOfService,
+            navigateToOpenSourceLibraries = navigateToOpenSourceLibraries,
         )
     }
 }
@@ -138,6 +142,7 @@ private fun LegalDocuments(
     navigateToLicense: () -> Unit,
     navigateToPrivacyPolicy: () -> Unit,
     navigateToTermsOfService: () -> Unit,
+    navigateToOpenSourceLibraries: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -158,6 +163,10 @@ private fun LegalDocuments(
             text = stringResource(R.string.license_title),
             onClick = navigateToLicense
         )
+        ClickableTextRow(
+            text = stringResource(R.string.open_source_licenses_title),
+            onClick = navigateToOpenSourceLibraries
+        )
     }
 }
 
@@ -167,6 +176,7 @@ fun AboutScreenPreview() {
     AboutContent(
         navigateToLicense = {},
         navigateToPrivacyPolicy = {},
-        navigateToTermsOfService = {}
+        navigateToTermsOfService = {},
+        navigateToOpenSourceLibraries = {}
     )
 }

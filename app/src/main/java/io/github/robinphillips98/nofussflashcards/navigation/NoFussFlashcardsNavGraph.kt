@@ -14,6 +14,8 @@ import io.github.robinphillips98.nofussflashcards.ui.about.AboutDestination
 import io.github.robinphillips98.nofussflashcards.ui.about.AboutScreen
 import io.github.robinphillips98.nofussflashcards.ui.about.LicenseDestination
 import io.github.robinphillips98.nofussflashcards.ui.about.LicenseScreen
+import io.github.robinphillips98.nofussflashcards.ui.about.OpenSourceLicensesDestination
+import io.github.robinphillips98.nofussflashcards.ui.about.OpenSourceLicensesScreen
 import io.github.robinphillips98.nofussflashcards.ui.about.PrivacyPolicyDestination
 import io.github.robinphillips98.nofussflashcards.ui.about.PrivacyPolicyScreen
 import io.github.robinphillips98.nofussflashcards.ui.about.TermsOfServiceDestination
@@ -188,6 +190,7 @@ fun NoFussFlashcardsNavHost(
                 navigateToLicense = { navController.navigate(LicenseDestination.route) },
                 navigateToPrivacyPolicy = { navController.navigate(PrivacyPolicyDestination.route) },
                 navigateToTermsOfService = { navController.navigate(TermsOfServiceDestination.route) },
+                navigateToOpenSourceLibraries = { navController.navigate(OpenSourceLicensesDestination.route) },
                 navigateBack = { navController.navigateUp() }
             )
         }
@@ -202,6 +205,10 @@ fun NoFussFlashcardsNavHost(
 
         composable(route = TermsOfServiceDestination.route) {
             TermsOfServiceScreen(navigateUp = { navController.navigateUp() })
+        }
+
+        composable(route = OpenSourceLicensesDestination.route) {
+            OpenSourceLicensesScreen(navigateBack = { navController.navigateUp() })
         }
 
         // TODO: Implement quiz screen

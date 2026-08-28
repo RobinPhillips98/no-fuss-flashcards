@@ -36,6 +36,7 @@
     <string name="license_title">License</string>
     <string name="privacy_policy_title">Privacy Policy</string>
     <string name="terms_of_service_title">Terms of Service</string>
+    <string name="open_source_licenses_title">Open Source Licenses</string>
     <string name="developer_info_title">Developer Info</string>
     <string name="github_title">GitHub Repository</string>
     <string name="bug_report_title">Report a Bug</string>
