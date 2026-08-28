@@ -1,4 +1,4 @@
-package io.github.robinphillips98.nofussflashcards.ui.decks
+package io.github.robinphillips98.nofussflashcards.ui.decks.forms
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -10,9 +10,11 @@ import androidx.sqlite.SQLiteException
 import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.data.decks.Deck
 import io.github.robinphillips98.nofussflashcards.data.decks.DecksRepository
+import io.github.robinphillips98.nofussflashcards.ui.decks.DeckDetails
+import io.github.robinphillips98.nofussflashcards.ui.decks.toDeck
 import io.github.robinphillips98.nofussflashcards.ui.errors.DeckEntryError
 import io.github.robinphillips98.nofussflashcards.ui.errors.messageFor
-import io.github.robinphillips98.nofussflashcards.ui.utils.StringResolver
+import io.github.robinphillips98.nofussflashcards.utils.StringResolver
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch

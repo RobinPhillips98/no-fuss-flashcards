@@ -1,7 +1,7 @@
 package io.github.robinphillips98.nofussflashcards.ui.errors
 
 import io.github.robinphillips98.nofussflashcards.R
-import io.github.robinphillips98.nofussflashcards.ui.utils.StringResolver
+import io.github.robinphillips98.nofussflashcards.utils.StringResolver
 
 /**
  * Represents errors that can occur during deck entry operations.

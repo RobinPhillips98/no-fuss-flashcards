@@ -11,7 +11,7 @@ import io.github.robinphillips98.nofussflashcards.data.flashcards.Flashcard
 import io.github.robinphillips98.nofussflashcards.data.flashcards.FlashcardsRepository
 import io.github.robinphillips98.nofussflashcards.ui.errors.DeckDetailsError
 import io.github.robinphillips98.nofussflashcards.ui.errors.messageFor
-import io.github.robinphillips98.nofussflashcards.ui.utils.StringResolver
+import io.github.robinphillips98.nofussflashcards.utils.StringResolver
 import io.github.robinphillips98.nofussflashcards.ui.utils.deleteImageFromInternalStorage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel

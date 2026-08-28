@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import io.github.robinphillips98.nofussflashcards.R
+import io.github.robinphillips98.nofussflashcards.utils.toTitleCase
 
 @Composable
 fun DeleteConfirmationDialog(

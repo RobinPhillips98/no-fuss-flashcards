@@ -1,4 +1,4 @@
-package io.github.robinphillips98.nofussflashcards.ui.utils
+package io.github.robinphillips98.nofussflashcards.utils
 
 import android.content.Context
 

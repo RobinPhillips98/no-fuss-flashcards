@@ -1,4 +1,4 @@
-package io.github.robinphillips98.nofussflashcards.ui.decks
+package io.github.robinphillips98.nofussflashcards.ui.decks.forms
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +26,7 @@ import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
 import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
 import io.github.robinphillips98.nofussflashcards.ui.AppViewModelProvider
+import io.github.robinphillips98.nofussflashcards.ui.decks.DeckDetails
 import kotlinx.coroutines.launch
 
 object DeckEntryDestination: NavigationDestination {

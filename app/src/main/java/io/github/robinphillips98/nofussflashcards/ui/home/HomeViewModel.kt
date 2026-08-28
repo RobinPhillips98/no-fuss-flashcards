@@ -10,7 +10,7 @@ import io.github.robinphillips98.nofussflashcards.data.decks.Deck
 import io.github.robinphillips98.nofussflashcards.data.decks.DecksRepository
 import io.github.robinphillips98.nofussflashcards.ui.errors.HomeError
 import io.github.robinphillips98.nofussflashcards.ui.errors.messageFor
-import io.github.robinphillips98.nofussflashcards.ui.utils.StringResolver
+import io.github.robinphillips98.nofussflashcards.utils.StringResolver
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -8,10 +8,10 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import io.github.robinphillips98.nofussflashcards.NoFussFlashcardsApplication
 import io.github.robinphillips98.nofussflashcards.ui.decks.DeckDetailsViewModel
-import io.github.robinphillips98.nofussflashcards.ui.decks.DeckEditViewModel
-import io.github.robinphillips98.nofussflashcards.ui.decks.DeckEntryViewModel
-import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardEditViewModel
-import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardEntryViewModel
+import io.github.robinphillips98.nofussflashcards.ui.decks.forms.DeckEditViewModel
+import io.github.robinphillips98.nofussflashcards.ui.decks.forms.DeckEntryViewModel
+import io.github.robinphillips98.nofussflashcards.ui.flashcards.forms.FlashcardEditViewModel
+import io.github.robinphillips98.nofussflashcards.ui.flashcards.forms.FlashcardEntryViewModel
 import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardsPagerViewModel
 import io.github.robinphillips98.nofussflashcards.ui.home.HomeViewModel
 import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeViewModel

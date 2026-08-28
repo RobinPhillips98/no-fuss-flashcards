@@ -1,4 +1,4 @@
-package io.github.robinphillips98.nofussflashcards.ui.decks
+package io.github.robinphillips98.nofussflashcards.ui.decks.forms
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -1,4 +1,4 @@
-package io.github.robinphillips98.nofussflashcards.ui.flashcards
+package io.github.robinphillips98.nofussflashcards.ui.flashcards.forms
 
 import android.content.Context
 import android.net.Uri
@@ -15,7 +15,7 @@ import io.github.robinphillips98.nofussflashcards.data.flashcards.Flashcard
 import io.github.robinphillips98.nofussflashcards.data.flashcards.FlashcardsRepository
 import io.github.robinphillips98.nofussflashcards.ui.errors.FlashcardEntryError
 import io.github.robinphillips98.nofussflashcards.ui.errors.messageFor
-import io.github.robinphillips98.nofussflashcards.ui.utils.StringResolver
+import io.github.robinphillips98.nofussflashcards.utils.StringResolver
 import io.github.robinphillips98.nofussflashcards.ui.utils.deleteImageFromInternalStorage
 import io.github.robinphillips98.nofussflashcards.ui.utils.saveImageToInternalStorage
 import kotlinx.coroutines.channels.Channel

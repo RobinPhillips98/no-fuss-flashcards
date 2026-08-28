@@ -14,7 +14,7 @@ import io.github.robinphillips98.nofussflashcards.ui.decks.DeckDetails
 import io.github.robinphillips98.nofussflashcards.ui.decks.toDeckDetails
 import io.github.robinphillips98.nofussflashcards.ui.errors.FlashcardsPagerError
 import io.github.robinphillips98.nofussflashcards.ui.errors.messageFor
-import io.github.robinphillips98.nofussflashcards.ui.utils.StringResolver
+import io.github.robinphillips98.nofussflashcards.utils.StringResolver
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow

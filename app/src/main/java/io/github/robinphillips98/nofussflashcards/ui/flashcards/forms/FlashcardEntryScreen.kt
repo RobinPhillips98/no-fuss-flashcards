@@ -1,4 +1,4 @@
-package io.github.robinphillips98.nofussflashcards.ui.flashcards
+package io.github.robinphillips98.nofussflashcards.ui.flashcards.forms
 
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement

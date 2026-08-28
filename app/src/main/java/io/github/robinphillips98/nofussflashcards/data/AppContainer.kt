@@ -8,8 +8,8 @@ import io.github.robinphillips98.nofussflashcards.data.decks.DecksRepository
 import io.github.robinphillips98.nofussflashcards.data.decks.RoomDeckRepository
 import io.github.robinphillips98.nofussflashcards.data.flashcards.FlashcardsRepository
 import io.github.robinphillips98.nofussflashcards.data.flashcards.RoomFlashcardsRepository
-import io.github.robinphillips98.nofussflashcards.ui.utils.AndroidStringResolver
-import io.github.robinphillips98.nofussflashcards.ui.utils.StringResolver
+import io.github.robinphillips98.nofussflashcards.utils.AndroidStringResolver
+import io.github.robinphillips98.nofussflashcards.utils.StringResolver
 
 private const val PREFERENCES_NAME = "user_preferences"
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
