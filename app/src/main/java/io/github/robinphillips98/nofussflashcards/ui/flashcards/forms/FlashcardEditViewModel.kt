@@ -63,6 +63,9 @@ class FlashcardEditViewModel(
      */
     val hasOriginalImage: Boolean get() = originalImageUri != null
 
+    /**
+     * A flow of all available decks, which can be used to populate a dropdown menu in the UI.
+     */
     val availableDecks: StateFlow<List<Deck>> =
         decksRepository.getAllDecksStream().map { it }
             .stateIn(
@@ -86,11 +89,7 @@ class FlashcardEditViewModel(
                 val loadedFlashcard = flashcardsRepository.getFlashcardStream(flashcardId)
                     .filterNotNull()
                     .first()
-                val loadedFlashcardUiState = loadedFlashcard.toFlashcardUiState(
-                    isEntryValid = true,
-                    isLoading = false,
-                    hasLoadError = false
-                )
+                val loadedFlashcardUiState = loadedFlashcard.toFlashcardUiState()
                 originalImageUri = loadedFlashcardUiState.existingImageUri
                 loadedFlashcardUiState
             } catch (throwable: Throwable) {
@@ -205,6 +204,12 @@ class FlashcardEditViewModel(
         )
     }
 
+    /**
+     * Updates the [flashcardUiState] with the selected image URI. This method also triggers a
+     * validation for input values.
+     *
+     * @param uri The URI of the selected image, or null if the image was cleared.
+     */
     fun onImageSelected(uri: Uri?) {
         val newExistingUri = if (uri == null) null else flashcardUiState.existingImageUri
         flashcardUiState = flashcardUiState.copy(
@@ -215,6 +220,10 @@ class FlashcardEditViewModel(
         )
     }
 
+    /**
+     * Restores the original image URI to the [flashcardUiState]. This method is called when the
+     * user clicks the "Restore" button.
+     */
     fun restoreExistingImage() {
         flashcardUiState = flashcardUiState.copy(
             selectedImageUri = null,
@@ -261,6 +270,9 @@ class FlashcardEditViewModel(
         }
     }
 
+    /**
+     * Converts a [Throwable] thrown while saving to a user-friendly [FlashcardEditError].
+     */
     private fun Throwable.toFlashcardSaveError(): FlashcardEditError {
         return when (this) {
             is IOException, is SQLiteException -> FlashcardEditError.FlashcardSaveFailed
@@ -268,6 +280,9 @@ class FlashcardEditViewModel(
         }
     }
 
+    /**
+     * Converts a [Throwable] thrown while loading to a user-friendly [FlashcardEditError].
+     */
     private fun Throwable.toFlashcardLoadError(): FlashcardEditError {
         return when (this) {
             is IOException, is SQLiteException -> FlashcardEditError.FlashcardLoadFailed
@@ -275,6 +290,9 @@ class FlashcardEditViewModel(
         }
     }
 
+    /**
+     * Converts a [Throwable] thrown while saving an image to a user-friendly [FlashcardEditError].
+     */
     private fun Throwable.toImageSaveError(): FlashcardEditError {
         return when (this) {
             is IOException -> FlashcardEditError.ImageSaveFailed
@@ -282,6 +300,10 @@ class FlashcardEditViewModel(
         }
     }
 
+    /**
+     * Validates the input fields for the flashcard. The term must be non-blank, and at least one of
+     * the definition, selected image URI, or existing image URI must be non-null and non-blank.
+     */
     private fun validateInput(
         uiState: FlashcardDetails = flashcardUiState.flashcardDetails,
         imageUri: Uri? = flashcardUiState.selectedImageUri,
@@ -292,17 +314,16 @@ class FlashcardEditViewModel(
     }
 }
 
-private fun Flashcard.toFlashcardUiState(
-    isEntryValid: Boolean = false,
-    isLoading: Boolean = false,
-    hasLoadError: Boolean = false
-): FlashcardUiState =
+/**
+ * Converts a [Flashcard] to a [FlashcardUiState] for use in the UI.
+ */
+private fun Flashcard.toFlashcardUiState(): FlashcardUiState =
     FlashcardUiState(
         flashcardDetails = this.toFlashcardDetails(),
-        isEntryValid = isEntryValid,
+        isEntryValid = true,
         existingImageUri = this.imagePath?.toUri(),
-        isLoading = isLoading,
-        hasLoadError = hasLoadError
+        isLoading = false,
+        hasLoadError = false
     )
 
 /**

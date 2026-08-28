@@ -479,12 +479,9 @@ fun DeckDetailsBodyPreview() {
         Flashcard(flashcardId = 4, deckId = 1, term = "Term 4", definition = "Definition 4"),
         Flashcard(flashcardId = 5, deckId = 1, term = "Term 5", definition = "Definition 5"),
         Flashcard(flashcardId = 6, deckId = 1, term = "Term 6", definition = "Definition 6"),
-        Flashcard(flashcardId = 7, deckId = 1, term = "Term 7", definition = "Definition 7"),
-        Flashcard(flashcardId = 8, deckId = 1, term = "Term 8", definition = "Definition 8"),
-        Flashcard(flashcardId = 9, deckId = 1, term = "Term 9", definition = "Definition 9: " +
-                "This is a longer definition that should take up a few lines. " +
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.")
+        Flashcard(flashcardId = 7, deckId = 1, term = "Term 7", definition = "Definition 7: " +
+                "This is a longer definition that should take up a few lines. Text should overflow " +
+                "with ellipsis if it exceeds the maximum number of lines allowed in the UI."),
     )
     DeckDetailsBody(
         deckDetails = sampleDeck,

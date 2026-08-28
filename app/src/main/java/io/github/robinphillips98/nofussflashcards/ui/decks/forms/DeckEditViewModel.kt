@@ -62,7 +62,7 @@ class DeckEditViewModel(
                 decksRepository.getDeckStream(deckId)
                     .filterNotNull()
                     .first()
-                    .toDeckUiState(isEntryValid = true, isLoading = false)
+                    .toDeckUiState()
             } catch (throwable: Throwable) {
                 emitError(
                     throwable.toDeckLoadError(),
@@ -179,24 +179,16 @@ class DeckEditViewModel(
 }
 
 /**
- * Converts a [Deck] to a [DeckUiState] with optional parameters for entry validity and loading state.
- *
- * @param isEntryValid Indicates whether the deck entry is valid. Defaults to false.
- * @param isLoading Indicates whether the deck is currently loading. Defaults to false.
- * @param hasLoadError Indicates whether there was an error loading the deck. Defaults to false.
+ * Converts a [Deck] to a [DeckUiState].
  *
  * @return A [DeckUiState] representing the current state of the deck.
  */
-private fun Deck.toDeckUiState(
-    isEntryValid: Boolean = false,
-    isLoading: Boolean = false,
-    hasLoadError: Boolean = false
-): DeckUiState =
+private fun Deck.toDeckUiState(): DeckUiState =
     DeckUiState(
         deckDetails = this.toDeckDetails(),
-        isEntryValid = isEntryValid,
-        isLoading = isLoading,
-        hasLoadError = hasLoadError
+        isEntryValid = true,
+        isLoading = false,
+        hasLoadError = false
     )
 
 /**

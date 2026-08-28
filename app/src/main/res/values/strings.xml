@@ -27,9 +27,6 @@
     <string name="open_flashcard_button">Open Flashcard</string>
     <string name="edit_flashcard_button">Edit Flashcard</string>
     <string name="delete_flashcard_button">Delete Flashcard</string>
-    <string name="show_less_button">Show Less</string>
-    <string name="show_more_button">Show More</string>
-    <string name="flip_button">Flip</string>
     <string name="save_button">Save</string>
     <string name="no_button">No</string>
     <string name="yes_button">Yes</string>

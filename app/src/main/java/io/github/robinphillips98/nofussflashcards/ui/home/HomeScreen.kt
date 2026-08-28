@@ -397,7 +397,7 @@ private fun HomeScreenTopAppBar(
             IconButton(onClick = onSettingsClicked) {
                 Icon(
                     imageVector = Icons.Default.Settings,
-                    contentDescription = "Settings"
+                    contentDescription = stringResource(R.string.settings_button)
                 )
             }
         }

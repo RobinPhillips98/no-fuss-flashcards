@@ -11,14 +11,12 @@
 
     <!-- Home Screen -->
     <string name="create_deck_button">Create Deck</string>
-    <string name="home_welcome_text">Welcome to %1$s!</string>
     <string name="jump_in">Jump back into "%1$s"</string>
     <string name="deck_list_header">Available Decks</string>
     <string name="deck_list_empty">No decks available. Please create a deck to get started.</string>
 
     <!-- Deck Detail Screen -->
     <string name="deck_detail_title">Deck Details</string>
-    <string name="deck_not_found">Deck not found.</string>
     <string name="deck_deletion_success_message">Deck deleted successfully.</string>
     <string name="flashcard_deletion_success_message">Flashcard deleted successfully.</string>
     <string name="deck_details_load_failed">Failed to load deck details.</string>
@@ -55,11 +53,9 @@
     <string name="settings_font_label">Font</string>
     <string name="settings_font_download_warning">Fonts may take a moment to display correctly as they must be downloaded.</string>
     <string name="settings_other_title">Other</string>
-    <string name="settings_about_button">About the app</string>
 
     <!-- About Screen -->
     <string name="about_title">About</string>
-    <string name="about_description">Description WIP</string>
     <string name="about_version_label">Version:</string>
     <string name="about_the_app_title">About the App</string>
     <string name="about_the_app_description">No Fuss Flashcards is a simple, easy-to-use flashcards app built to be free forever, with no ads, ever.</string>

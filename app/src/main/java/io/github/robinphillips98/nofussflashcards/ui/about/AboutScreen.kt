@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import io.github.robinphillips98.nofussflashcards.BuildConfig
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
 import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
@@ -112,7 +111,7 @@ private fun AboutTheApp(modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(end = dimensionResource(R.dimen.padding_small))
             )
             Text(
-                text = BuildConfig.VERSION_NAME,
+                text = stringResource(R.string.version_name),
                 style = MaterialTheme.typography.labelLarge,
             )
         }
