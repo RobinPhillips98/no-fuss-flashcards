@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Flashcards"
+rootProject.name = "no-fuss-flashcards"
 include(":app")
