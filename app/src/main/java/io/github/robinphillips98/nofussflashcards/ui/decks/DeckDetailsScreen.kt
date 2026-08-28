@@ -30,8 +30,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -124,19 +124,21 @@ fun DeckDetailsScreen(
         },
         floatingActionButton = {
             if (loadedSuccessfully) {
-                FloatingActionButton(
+                ExtendedFloatingActionButton(
                     onClick = { navigateToFlashcardEntryScreen(uiState.deckDetails.deckId) },
                     modifier = Modifier
                         .padding(
                             end = WindowInsets.safeDrawing.asPaddingValues()
                                 .calculateEndPadding(LocalLayoutDirection.current)
                         ),
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = stringResource(R.string.add_flashcard_button)
-                    )
-                }
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(R.string.add_flashcard_button)
+                        )
+                    },
+                    text = { Text(stringResource(R.string.add_flashcard_button)) }
+                )
             }
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -285,7 +287,7 @@ private fun DeckDetailsBody(
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(bottom = 72.dp)
+                contentPadding = PaddingValues(bottom = 84.dp)
             ) {
                 items(flashCards) { flashcard ->
                     FlashcardItem(

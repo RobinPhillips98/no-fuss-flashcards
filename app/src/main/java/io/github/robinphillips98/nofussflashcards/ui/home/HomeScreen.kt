@@ -1,6 +1,7 @@
 package io.github.robinphillips98.nofussflashcards.ui.home
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -41,7 +43,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -184,24 +188,15 @@ private fun HomeBody(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp, vertical = 24.dp),
+            .padding(horizontal = 20.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = stringResource(
-                R.string.home_welcome_text,
-                stringResource(R.string.full_app_name)
-            ),
-            style = MaterialTheme.typography.titleLarge
-        )
-
         if (lastDeckId != null) {
             val lastDeckName = deckList.find { it.deckId == lastDeckId }?.name
             lastDeckName?.let {
                 Button(
-                    onClick = { onDeckClicked(lastDeckId) },
-                    modifier = Modifier.padding(top = 16.dp)
+                    onClick = { onDeckClicked(lastDeckId) }
                 ) {
                     Text(stringResource(R.string.jump_in, lastDeckName))
                 }
@@ -363,11 +358,21 @@ private fun HomeScreenTopAppBar(
 ) {
     CenterAlignedTopAppBar(
         title = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .padding(8.dp),
+                    painter = painterResource(R.drawable.no_fuss_flashcards_icon),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit
+                )
                 Text(
                     text = stringResource(R.string.full_app_name),
                     style = MaterialTheme.typography.titleLarge,
                     fontFamily = PlayfairDisplay
                 )
+            }
         },
         modifier = modifier,
         colors = TopAppBarDefaults.topAppBarColors(
