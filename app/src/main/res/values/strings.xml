@@ -19,9 +19,28 @@
 
     <!-- Settings Screen -->
     <string name="settings_title">Settings</string>
+    <string name="settings_app_settings_title">App Settings</string>
     <string name="settings_theme_label">Theme</string>
     <string name="settings_font_label">Font</string>
     <string name="settings_font_download_warning">Fonts may take a moment to display correctly as they must be downloaded.</string>
+    <string name="settings_other_title">Other</string>
+    <string name="settings_about_button">About the app</string>
+
+    <!-- About Screen -->
+    <string name="about_title">About</string>
+    <string name="about_description">Description WIP</string>
+    <string name="about_version_label">Version:</string>
+    <string name="about_the_app_title">About the App</string>
+    <string name="about_the_app_description">No Fuss Flashcards is a simple, easy-to-use flashcards app built to be free forever, with no ads, ever.</string>
+    <string name="legal_documents_title">Legal Documents</string>
+    <string name="license_title">License</string>
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="terms_of_service_title">Terms of Service</string>
+    <string name="developer_info_title">Developer Info</string>
+    <string name="github_title">GitHub Repository</string>
+    <string name="bug_report_title">Report a Bug</string>
+    <string name="kofi_title">Support the Developer</string>
+
     <!-- Button Labels -->
     <string name="settings_button">Open Settings</string>
     <string name="add_flashcard_button">Add Flashcard</string>

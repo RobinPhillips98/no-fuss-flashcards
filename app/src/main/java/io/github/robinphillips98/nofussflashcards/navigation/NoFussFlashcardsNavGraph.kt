@@ -10,6 +10,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import io.github.robinphillips98.nofussflashcards.ui.about.AboutDestination
+import io.github.robinphillips98.nofussflashcards.ui.about.AboutScreen
+import io.github.robinphillips98.nofussflashcards.ui.about.LicenseDestination
+import io.github.robinphillips98.nofussflashcards.ui.about.LicenseScreen
+import io.github.robinphillips98.nofussflashcards.ui.about.PrivacyPolicyDestination
+import io.github.robinphillips98.nofussflashcards.ui.about.PrivacyPolicyScreen
+import io.github.robinphillips98.nofussflashcards.ui.about.TermsOfServiceDestination
+import io.github.robinphillips98.nofussflashcards.ui.about.TermsOfServiceScreen
 import io.github.robinphillips98.nofussflashcards.ui.decks.DeckDetailsDestination
 import io.github.robinphillips98.nofussflashcards.ui.decks.DeckDetailsScreen
 import io.github.robinphillips98.nofussflashcards.ui.decks.DeckEditDestination
@@ -170,8 +178,30 @@ fun NoFussFlashcardsNavHost(
         composable(route = SettingsDestination.route) {
             SettingsScreen(
                 viewModel = appThemeViewModel,
+                navigateToAbout = { navController.navigate(AboutDestination.route) },
                 navigateBack = { navController.popBackStack() },
             )
+        }
+
+        composable(route = AboutDestination.route) {
+            AboutScreen(
+                navigateToLicense = { navController.navigate(LicenseDestination.route) },
+                navigateToPrivacyPolicy = { navController.navigate(PrivacyPolicyDestination.route) },
+                navigateToTermsOfService = { navController.navigate(TermsOfServiceDestination.route) },
+                navigateBack = { navController.navigateUp() }
+            )
+        }
+
+        composable(route = LicenseDestination.route) {
+            LicenseScreen(navigateUp = { navController.navigateUp() })
+        }
+
+        composable(route = PrivacyPolicyDestination.route) {
+            PrivacyPolicyScreen(navigateUp = { navController.navigateUp() })
+        }
+
+        composable(route = TermsOfServiceDestination.route) {
+            TermsOfServiceScreen(navigateUp = { navController.navigateUp() })
         }
 
         // TODO: Implement quiz screen
