@@ -14,8 +14,9 @@ android {
         applicationId = "io.github.robinphillips98.nofussflashcards"
         minSdk = 24
         targetSdk = 37
-        versionCode = 6
-        versionName = "1.0-beta"
+        versionCode = 7
+        versionName = "Beta 1.0.0"
+        resValue("string", "version_name", versionName ?: "Version not found")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -37,6 +38,8 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+        resValues = true
     }
 }
 

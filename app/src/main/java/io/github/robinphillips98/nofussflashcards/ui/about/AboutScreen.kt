@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import io.github.robinphillips98.nofussflashcards.BuildConfig
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
 import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
@@ -100,7 +101,7 @@ private fun AboutTheApp(modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text(
-                text = "1.0.0 Beta",
+                text = BuildConfig.VERSION_NAME,
                 style = MaterialTheme.typography.labelLarge,
             )
         }
