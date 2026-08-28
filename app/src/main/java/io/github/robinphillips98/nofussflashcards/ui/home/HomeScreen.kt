@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -142,7 +143,9 @@ fun HomeScreen(
                 )
                 Button(
                     onClick = { viewModel.retryDecksLoad() },
-                    modifier = Modifier.padding(top = 12.dp)
+                    modifier = Modifier.padding(
+                        top = dimensionResource(R.dimen.padding_medium_small)
+                    )
                 ) {
                     Text(stringResource(R.string.retry_button))
                 }
@@ -188,8 +191,11 @@ private fun HomeBody(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+            .padding(
+                horizontal = dimensionResource(R.dimen.padding_large),
+                vertical = dimensionResource(R.dimen.padding_small)
+            ),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (lastDeckId != null) {
@@ -208,7 +214,7 @@ private fun HomeBody(
                 text = stringResource(R.string.last_deck_read_failed),
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
-                    .padding(top = 8.dp)
+                    .padding(top = dimensionResource(R.dimen.padding_small))
                     .fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
@@ -241,7 +247,7 @@ private fun DeckList(
                     text = stringResource(R.string.deck_list_header),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(dimensionResource(R.dimen.padding_medium))
                         .fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
@@ -256,7 +262,7 @@ private fun DeckList(
             text = stringResource(R.string.deck_list_empty),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier
-                .padding(16.dp)
+                .padding(dimensionResource(R.dimen.padding_medium))
                 .fillMaxWidth(),
             textAlign = TextAlign.Center
         )
@@ -280,11 +286,11 @@ private fun DeckItem(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(dimensionResource(R.dimen.padding_small)),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -302,12 +308,14 @@ private fun DeckItem(
             }
 
             deck.description?.let {
-                HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(
+                    top = dimensionResource(R.dimen.padding_small))
+                )
 
                 Text(
                     text = it,
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(top = 12.dp)
+                    modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium_small))
                 )
             }
         }
@@ -346,7 +354,11 @@ fun HomeBodyEmptyPreview() {
 @Preview
 @Composable
 fun DeckItemPreview() {
-    val sampleDeck = Deck(deckId = 1, name = "Sample Deck", description = "This is a sample deck description.")
+    val sampleDeck = Deck(
+        deckId = 1,
+        name = "Sample Deck",
+        description = "This is a sample deck description."
+    )
     DeckItem(deck = sampleDeck, onClick = {})
 }
 
@@ -361,8 +373,8 @@ private fun HomeScreenTopAppBar(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     modifier = Modifier
-                        .size(64.dp)
-                        .padding(8.dp),
+                        .size(dimensionResource(R.dimen.image_size))
+                        .padding(dimensionResource(R.dimen.padding_small)),
                     painter = painterResource(R.drawable.no_fuss_flashcards_icon),
                     contentDescription = null,
                     contentScale = ContentScale.Fit

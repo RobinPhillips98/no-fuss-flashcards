@@ -11,9 +11,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
 import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
@@ -44,7 +44,7 @@ fun PrivacyPolicyScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp)
+                .padding(dimensionResource(R.dimen.padding_medium))
         ) {
             Text(
                 text = "Privacy Policy",
@@ -53,27 +53,27 @@ fun PrivacyPolicyScreen(
             Text(
                 text = "Last updated: August 27, 2026",
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
             Text(
                 text = "No Fuss Flashcards does not collect, store, or share any personal information or user data.",
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(top = 16.dp)
+                modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
             )
             Text(
                 text = "\u2022 Data Collection: We do not track, collect, or transmit any data from your device. All app operations run locally.",
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(top = 12.dp)
+                modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium_small))
             )
             Text(
                 text = "\u2022 Third-Party Services: We do not use third-party analytics, advertising networks, or data miners.",
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
             Text(
                 text = "\u2022 Contact Us: If you have any questions about this privacy policy, please contact us at nofussflashcards.app@gmail.com.",
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
         }
     }

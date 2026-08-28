@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -91,7 +92,7 @@ fun FlashcardDetail(
                     .graphicsLayer {
                         rotationY = if (showBackSide) 180f else 0f
                     }
-                    .padding(16.dp)
+                    .padding(dimensionResource(R.dimen.padding_medium))
             ) {
                 Text(
                     text = sideLabel,
@@ -99,7 +100,7 @@ fun FlashcardDetail(
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
 
                 Column(
                     modifier = Modifier
@@ -119,18 +120,22 @@ fun FlashcardDetail(
 
                     // Show image only on definition/front side.
                     if (!showBackSide && flashcardData.imagePath != null) {
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(
+                            dimensionResource(R.dimen.padding_medium_small)
+                        ))
 
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth(0.86f)
                                 .heightIn(min = 120.dp, max = 220.dp)
                                 .aspectRatio(1.35f),
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(dimensionResource(R.dimen.padding_medium)),
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surface
                             ),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                            elevation = CardDefaults.cardElevation(
+                                defaultElevation = dimensionResource(R.dimen.padding_small)
+                            )
                         ) {
                             Box(
                                 modifier = Modifier

@@ -25,9 +25,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
 import io.github.robinphillips98.nofussflashcards.R
@@ -101,7 +101,7 @@ fun DeckEditScreen(
                 )
                 Button(
                     onClick = { viewModel.loadDeck() },
-                    modifier = Modifier.padding(top = 16.dp)
+                    modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
                 ) {
                     Text(stringResource(R.string.retry_button))
                 }

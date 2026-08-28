@@ -12,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import io.github.robinphillips98.nofussflashcards.BuildConfig
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
 import io.github.robinphillips98.nofussflashcards.R
@@ -69,7 +69,7 @@ private fun AboutContent(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        AboutTheApp(modifier = Modifier.padding(top = 8.dp))
+        AboutTheApp(modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small)))
         HorizontalDivider()
         DeveloperInfo()
         HorizontalDivider()
@@ -88,21 +88,28 @@ private fun AboutTheApp(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(R.string.about_the_app_title),
             style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)
+            modifier = Modifier.padding(
+                top = dimensionResource(R.dimen.padding_small),
+                start = dimensionResource(R.dimen.padding_medium),
+                end = dimensionResource(R.dimen.padding_medium))
         )
         Text(
             text = stringResource(R.string.about_the_app_description),
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
         )
         Row(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            modifier = Modifier.padding(
+                start = dimensionResource(R.dimen.padding_medium),
+                end = dimensionResource(R.dimen.padding_medium),
+                bottom = dimensionResource(R.dimen.padding_medium)
+            ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(R.string.about_version_label),
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(end = 8.dp)
+                modifier = Modifier.padding(end = dimensionResource(R.dimen.padding_small))
             )
             Text(
                 text = BuildConfig.VERSION_NAME,
@@ -120,7 +127,11 @@ private fun DeveloperInfo(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(R.string.developer_info_title),
             style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)
+            modifier = Modifier.padding(
+                top = dimensionResource(R.dimen.padding_small),
+                start = dimensionResource(R.dimen.padding_medium),
+                end = dimensionResource(R.dimen.padding_medium)
+            )
         )
         ClickableTextRow(
             text = stringResource(R.string.github_title),
@@ -149,7 +160,11 @@ private fun LegalDocuments(
         Text(
             text = stringResource(R.string.legal_documents_title),
             style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)
+            modifier = Modifier.padding(
+                top = dimensionResource(R.dimen.padding_small),
+                start = dimensionResource(R.dimen.padding_medium),
+                end = dimensionResource(R.dimen.padding_medium)
+            )
         )
         ClickableTextRow(
             text = stringResource(R.string.privacy_policy_title),

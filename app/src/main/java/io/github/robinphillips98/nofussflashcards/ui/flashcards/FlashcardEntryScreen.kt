@@ -29,9 +29,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
 import io.github.robinphillips98.nofussflashcards.R
@@ -118,9 +118,9 @@ fun FlashcardEntryBody(
 ) {
     Column(
         modifier = modifier
-            .padding(16.dp)
+            .padding(dimensionResource(R.dimen.padding_medium))
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_large))
     ) {
         FlashcardInputForm(
             flashcardDetails = flashcardUiState.flashcardDetails,
@@ -165,7 +165,7 @@ fun FlashcardInputForm(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
     ) {
         OutlinedTextField(
             value = flashcardDetails.term,

@@ -6,9 +6,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
 import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
@@ -58,7 +58,7 @@ private fun LicenseContent(
                 "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. " +
                 "See the License for the specific language governing permissions and " +
                 "limitations under the License.",
-        modifier = modifier.padding(16.dp)
+        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium))
     )
 }
 

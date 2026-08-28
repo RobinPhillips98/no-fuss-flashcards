@@ -25,9 +25,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
 import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
@@ -85,13 +85,13 @@ private fun SettingsContent(
 
     Column(
         modifier = modifier
-            .padding(16.dp),
+            .padding(dimensionResource(R.dimen.padding_medium)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = stringResource((R.string.settings_title)),
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_small))
         )
 
         HorizontalDivider()
@@ -116,18 +116,22 @@ private fun AppSettings(
         Text(
             text = stringResource(R.string.settings_app_settings_title),
             style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)
+            modifier = Modifier.padding(
+                top = dimensionResource(R.dimen.padding_small),
+                start = dimensionResource(R.dimen.padding_medium),
+                end = dimensionResource(R.dimen.padding_medium)
+            )
         )
         ThemeDropdownMenu(
             selectedThemeName = selectedThemeName,
             onThemeSelect = onThemeSelect,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
         )
 
         FontDropdownMenu(
             selectedFontName = selectedFontName,
             onFontSelect = onFontSelect,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
         )
     }
 }
@@ -141,7 +145,11 @@ private fun Other(
         Text(
             text = stringResource(R.string.settings_other_title),
             style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)
+            modifier = Modifier.padding(
+                top = dimensionResource(R.dimen.padding_small),
+                start = dimensionResource(R.dimen.padding_medium),
+                end = dimensionResource(R.dimen.padding_medium)
+            )
         )
         ClickableTextRow(
             text = stringResource(R.string.about_title),
@@ -149,11 +157,11 @@ private fun Other(
                 Icon(
                     imageVector = Icons.Outlined.Info,
                     contentDescription = null,
-                    modifier = Modifier.padding(end = 8.dp)
+                    modifier = Modifier.padding(end = dimensionResource(R.dimen.padding_small))
                 )
             },
             onClick = navigateToAbout,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
         )
     }
 }
@@ -255,7 +263,7 @@ private fun FontDropdownMenu(
         Text(
             text = stringResource(R.string.settings_font_download_warning),
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
         )
     }
 }

@@ -52,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -159,7 +160,7 @@ fun DeckDetailsScreen(
                 )
                 Button(
                     onClick = { viewModel.retryDeckLoad() },
-                    modifier = Modifier.padding(top = 16.dp)
+                    modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
                 ) {
                     Text(stringResource(R.string.retry_button))
                 }
@@ -230,10 +231,10 @@ private fun DeckDetailsBody(
         modifier = modifier
             .fillMaxSize()
             .padding(
-                top = innerPadding.calculateTopPadding() + 16.dp,
-                start = innerPadding.calculateStartPadding(layoutDirection) + 16.dp,
-                end = innerPadding.calculateEndPadding(layoutDirection) + 16.dp,
-                bottom = 16.dp
+                top = innerPadding.calculateTopPadding() + dimensionResource(R.dimen.padding_medium),
+                start = innerPadding.calculateStartPadding(layoutDirection) + dimensionResource(R.dimen.padding_medium),
+                end = innerPadding.calculateEndPadding(layoutDirection) + dimensionResource(R.dimen.padding_medium),
+                bottom = dimensionResource(R.dimen.padding_medium)
             )
     ) {
         Text(
@@ -245,21 +246,21 @@ private fun DeckDetailsBody(
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
         }
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 12.dp),
+                .padding(top = dimensionResource(R.dimen.padding_medium)),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(
                 onClick = navigateToFlashcards,
                 enabled = flashcardsAvailable,
-                modifier = Modifier.padding(vertical = 8.dp)
+                modifier = Modifier.padding(vertical = dimensionResource(R.dimen.padding_small))
             ) {
                 Text(stringResource(R.string.open_deck_button))
             }
@@ -284,10 +285,10 @@ private fun DeckDetailsBody(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(bottom = 84.dp)
+                    .padding(dimensionResource(R.dimen.padding_small)),
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
+                contentPadding = PaddingValues(bottom = dimensionResource(R.dimen.footer_height))
             ) {
                 items(flashCards) { flashcard ->
                     FlashcardItem(
@@ -304,7 +305,7 @@ private fun DeckDetailsBody(
         } else if (hasFlashcardsLoadError) {
             Column(
                 modifier = Modifier
-                    .padding(top = 16.dp)
+                    .padding(top = dimensionResource(R.dimen.padding_medium))
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -316,7 +317,7 @@ private fun DeckDetailsBody(
                 )
                 Button(
                     onClick = { retryLoadFlashcards() },
-                    modifier = Modifier.padding(top = 12.dp)
+                    modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium_small))
                 ) {
                     Text(stringResource(R.string.retry_button))
                 }
@@ -336,7 +337,7 @@ private fun DeckDetailsBody(
                 onDeleteDeck()
             },
             onDeleteCancel = { deleteDeckConfirmationOpen = false },
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
         )
     }
 
@@ -349,7 +350,7 @@ private fun DeckDetailsBody(
                 setFlashCardToDelete(null)
             },
             onDeleteCancel = { deleteFlashcardConfirmationOpen = false },
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
         )
     }
 }
@@ -364,13 +365,13 @@ private fun FlashcardItem(
 ) {
     Card(
         onClick = { onFlashCardClicked(flashcard.flashcardId) },
-        modifier = modifier.height(160.dp),
+        modifier = modifier.height(dimensionResource(R.dimen.flashcard_item_height)),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier
-                .padding(8.dp)
+                .padding(dimensionResource(R.dimen.padding_small))
                 .fillMaxSize()
         ) {
             Row(
@@ -393,7 +394,10 @@ private fun FlashcardItem(
 
             HorizontalDivider(
                 thickness = 2.dp,
-                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
+                modifier = Modifier.padding(
+                    top = dimensionResource(R.dimen.padding_small),
+                    bottom = dimensionResource(R.dimen.padding_small)
+                )
             )
 
             if (flashcard.definition != null) {

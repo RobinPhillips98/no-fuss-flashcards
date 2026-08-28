@@ -43,6 +43,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -131,7 +132,7 @@ fun FlashcardsPagerScreen(
                 )
                 Button(
                     onClick = { viewModel.retryDeckLoad() },
-                    modifier = Modifier.padding(top = 16.dp)
+                    modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
                 ) {
                     Text(stringResource(R.string.retry_button))
                 }
@@ -179,7 +180,9 @@ private fun FlashcardsPagerBody(
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(
+                    dimensionResource(R.dimen.padding_medium_small)
+                )
             ) {
                 Text(
                     text = stringResource(R.string.flashcard_list_load_failed),
@@ -207,17 +210,20 @@ private fun FlashcardsPagerBody(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(top = 8.dp)
+                .padding(top = dimensionResource(R.dimen.padding_small))
         ) {
             Text(
                 text = stringResource(R.string.deck_name_label, deck.name),
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_medium))
             )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                    .padding(
+                        horizontal = dimensionResource(R.dimen.padding_medium),
+                        vertical = dimensionResource(R.dimen.padding_extra_small)
+                    ),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -242,7 +248,7 @@ private fun FlashcardsPagerBody(
                 )
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_extra_small)))
             HorizontalDivider()
 
             // If the user has never flipped a card, show a hint to flip the card
@@ -309,16 +315,21 @@ private fun FlashcardsPager(
         val availableHeight = maxHeight
         val pageWidth = (availableWidth * 0.88f).coerceIn(280.dp, 560.dp)
         val cardHeight = (availableHeight * 0.67f).coerceIn(320.dp, 600.dp)
-        val horizontalInset = ((availableWidth - pageWidth) / 2).coerceAtLeast(8.dp)
+        val horizontalInset =
+            ((availableWidth - pageWidth) / 2)
+                .coerceAtLeast(dimensionResource(R.dimen.padding_small))
 
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 12.dp, bottom = 8.dp),
+                .padding(
+                    top = dimensionResource(R.dimen.padding_medium_small),
+                    bottom = dimensionResource(R.dimen.padding_small)
+                ),
             pageSize = PageSize.Fixed(pageWidth),
             contentPadding = PaddingValues(horizontal = horizontalInset),
-            pageSpacing = 12.dp
+            pageSpacing = dimensionResource(R.dimen.padding_medium_small)
         ) { page ->
             val flashcard = flashcards[page % flashcards.size]
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
