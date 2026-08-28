@@ -43,6 +43,7 @@ import io.github.robinphillips98.nofussflashcards.data.flashcards.Flashcard
 @Composable
 fun FlashcardDetail(
     flashcardData: Flashcard,
+    flashcardIndex: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -146,8 +147,8 @@ fun FlashcardDetail(
                                 AsyncImage(
                                     model = flashcardData.imagePath,
                                     contentDescription = stringResource(
-                                        R.string.image_content_description,
-                                        flashcardData.term
+                                        R.string.flashcard_image_content_description,
+                                        flashcardIndex
                                     ),
                                     modifier = Modifier.fillMaxSize(),
                                     contentScale = ContentScale.Fit
@@ -171,5 +172,5 @@ fun FlashcardDetailPreview() {
         definition = "Sample Definition",
         imagePath = null
     )
-    FlashcardDetail(flashcardData = sampleFlashcard, onClick = {})
+    FlashcardDetail(flashcardData = sampleFlashcard, flashcardIndex = 1, onClick = {})
 }

@@ -5,6 +5,10 @@
     <string name="deck_edit_title">Edit Deck</string>
     <string name="flashcard_edit_title">Edit Flashcard</string>
 
+    <!-- Shared -->
+    <string name="deck_name_label">Deck: %1$s</string>
+    <string name="deck_empty">No flashcards in this deck. Please add a flashcard to get started.</string>
+
     <!-- Home Screen -->
     <string name="create_deck_button">Create Deck</string>
     <string name="home_welcome_text">Welcome to %1$s!</string>
@@ -24,6 +28,7 @@
     <string name="flashcards_pager_title">Flashcards Viewer</string>
     <string name="flashcard_count_label">Card %1$d/%2$d</string>
     <string name="flashcard_flip_hint">Tap a flashcard to flip it over.</string>
+    <string name="flashcard_image_content_description">Image for flashcard number %1$d</string>
 
     <!-- Deck Entry Screen -->
     <string name="deck_entry_title">Create Deck</string>

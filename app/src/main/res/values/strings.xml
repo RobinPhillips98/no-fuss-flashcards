@@ -40,10 +40,6 @@
     <string name="delete_confirmation_title">Delete %1$s</string>
     <string name="delete_confirmation_message">Are you sure you want to delete this %1$s? This action cannot be undone</string>
 
-    <!-- Shared Labels -->
-    <string name="deck_name_label">Deck: %1$s</string>
-    <string name="deck_empty">No flashcards in this deck. Please add a flashcard to get started.</string>
-
     <!-- Image Upload -->
     <string name="image_label">Image</string>
     <string name="image_upload_instructions">Select a JPEG or PNG image to represent this %1$s</string>

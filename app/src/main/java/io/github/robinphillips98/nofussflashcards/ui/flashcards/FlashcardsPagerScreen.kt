@@ -335,6 +335,7 @@ private fun FlashcardsPager(
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 FlashcardDetail(
                     flashcardData = flashcard,
+                    flashcardIndex = page + 1,
                     onClick = onFlashcardClicked,
                     modifier = Modifier
                         .fillMaxWidth()
