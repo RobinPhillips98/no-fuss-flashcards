@@ -63,6 +63,17 @@ class FlashcardEntryViewModel(
                 existingImageUri = flashcardUiState.existingImageUri,
                 isEntryValid = validateInput(flashcardDetails, finalImageUri)
             )
+    }/**
+     * Updates the [flashcardUiState] with the selected image URI. This method also triggers a
+     * validation for input values.
+     *
+     * @param uri The URI of the selected image, or null if the image was cleared.
+     */
+    fun onImageSelected(uri: Uri?) {
+        flashcardUiState = flashcardUiState.copy(
+            selectedImageUri = uri,
+            isEntryValid = validateInput(imageUri = uri)
+        )
     }
 
     /**

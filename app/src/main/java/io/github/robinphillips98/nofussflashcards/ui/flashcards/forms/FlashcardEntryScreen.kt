@@ -87,12 +87,7 @@ fun FlashcardEntryScreen(
         FlashcardEntryBody(
             flashcardUiState = flashcardUiState,
             onFlashcardValueChange = viewModel::updateUiState,
-            onImageUploaded = {
-                imageUri -> viewModel.updateUiState(
-                    flashcardUiState.flashcardDetails,
-                    imageUri
-                )
-            },
+            onImageUploaded = viewModel::onImageSelected,
             onSaveClick = {
                 coroutineScope.launch {
                     val flashcardSavedSuccessfully = viewModel.saveFlashcard(context)

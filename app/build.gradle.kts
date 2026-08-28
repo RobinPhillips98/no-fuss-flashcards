@@ -15,8 +15,8 @@ android {
         applicationId = "io.github.robinphillips98.nofussflashcards"
         minSdk = 24
         targetSdk = 37
-        versionCode = 8
-        versionName = "1.0.0-beta"
+        versionCode = 9
+        versionName = "1.0.0-beta.3"
         resValue("string", "version_name", versionName ?: "Version not found")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
