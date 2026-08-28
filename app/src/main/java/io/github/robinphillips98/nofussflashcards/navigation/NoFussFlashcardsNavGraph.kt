@@ -179,7 +179,7 @@ fun NoFussFlashcardsNavHost(
 
         composable(route = SettingsDestination.route) {
             SettingsScreen(
-                viewModel = appThemeViewModel,
+                appThemeViewModel = appThemeViewModel,
                 navigateToAbout = { navController.navigate(AboutDestination.route) },
                 navigateBack = { navController.popBackStack() },
             )

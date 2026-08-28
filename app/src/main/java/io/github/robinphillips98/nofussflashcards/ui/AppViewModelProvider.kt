@@ -14,6 +14,7 @@ import io.github.robinphillips98.nofussflashcards.ui.flashcards.forms.FlashcardE
 import io.github.robinphillips98.nofussflashcards.ui.flashcards.forms.FlashcardEntryViewModel
 import io.github.robinphillips98.nofussflashcards.ui.flashcards.FlashcardsPagerViewModel
 import io.github.robinphillips98.nofussflashcards.ui.home.HomeViewModel
+import io.github.robinphillips98.nofussflashcards.ui.settings.SettingsViewModel
 import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeViewModel
 
 /**
@@ -89,6 +90,15 @@ object AppViewModelProvider {
                 this.createSavedStateHandle(),
                 noFussFlashcardsApplication().container.flashcardsRepository,
                 noFussFlashcardsApplication().container.decksRepository,
+                noFussFlashcardsApplication().container.stringResolver
+            )
+        }
+
+        // Initializer for SettingsViewModel
+        initializer {
+            SettingsViewModel(
+                noFussFlashcardsApplication().container.decksRepository,
+                noFussFlashcardsApplication().container.flashcardsRepository,
                 noFussFlashcardsApplication().container.stringResolver
             )
         }

@@ -1,10 +1,22 @@
 package io.github.robinphillips98.nofussflashcards.ui.settings
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.FileDownload
+import androidx.compose.material.icons.outlined.FileUpload
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
@@ -16,21 +28,30 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
 import io.github.robinphillips98.nofussflashcards.R
 import io.github.robinphillips98.nofussflashcards.navigation.NavigationDestination
+import io.github.robinphillips98.nofussflashcards.ui.AppViewModelProvider
 import io.github.robinphillips98.nofussflashcards.ui.theme.AppFontOptions
 import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeOptions
 import io.github.robinphillips98.nofussflashcards.ui.theme.AppThemeViewModel
@@ -44,13 +65,42 @@ object SettingsDestination: NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    viewModel: AppThemeViewModel,
+    appThemeViewModel: AppThemeViewModel,
     navigateToAbout: () -> Unit,
     navigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    settingsViewModel: SettingsViewModel = viewModel(factory = AppViewModelProvider.Factory),
 ) {
-    val themeOption by viewModel.themeOption.collectAsState()
-    val fontOption by viewModel.fontOption.collectAsState()
+    val themeOption by appThemeViewModel.themeOption.collectAsState()
+    val fontOption by appThemeViewModel.fontOption.collectAsState()
+    val uiState by settingsViewModel.uiState.collectAsState()
+
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Collect one-shot events and show snackbars
+    LaunchedEffect(Unit) {
+        settingsViewModel.events.collect { event ->
+            when (event) {
+                is SettingsUiEvent.ShowSuccessSnackbar ->
+                    snackbarHostState.showSnackbar(event.message, withDismissAction = true)
+                is SettingsUiEvent.ShowErrorSnackbar ->
+                    snackbarHostState.showSnackbar(event.message, withDismissAction = true)
+            }
+        }
+    }
+
+    val exportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        uri?.let { settingsViewModel.exportData(context, it) }
+    }
+
+    val importLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        uri?.let { settingsViewModel.importData(context, it) }
+    }
 
     Scaffold(
         modifier = modifier,
@@ -60,13 +110,22 @@ fun SettingsScreen(
                 canNavigateBack = true,
                 navigateUp = navigateBack
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         SettingsContent(
             selectedThemeName = stringResource(themeOption.titleResId),
             selectedFontName = fontOption.title,
-            onThemeSelect = viewModel::updateTheme,
-            onFontSelect = viewModel::updateFont,
+            isBackupLoading = uiState.isBackupLoading,
+            exportWarningMessage = uiState.exportWarningMessage,
+            onThemeSelect = appThemeViewModel::updateTheme,
+            onFontSelect = appThemeViewModel::updateFont,
+            onExportClick = {
+                exportLauncher.launch("nofuss_flashcards_backup.json")
+            },
+            onImportClick = {
+                importLauncher.launch(arrayOf("application/json"))
+            },
             navigateToAbout = navigateToAbout,
             modifier = Modifier.padding(innerPadding)
         )
@@ -77,12 +136,15 @@ fun SettingsScreen(
 private fun SettingsContent(
     selectedThemeName: String,
     selectedFontName: String,
+    isBackupLoading: Boolean,
+    exportWarningMessage: String?,
     onThemeSelect: (AppThemeOptions) -> Unit,
     onFontSelect: (AppFontOptions) -> Unit,
+    onExportClick: () -> Unit,
+    onImportClick: () -> Unit,
     navigateToAbout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     Column(
         modifier = modifier
             .padding(dimensionResource(R.dimen.padding_medium)),
@@ -100,7 +162,118 @@ private fun SettingsContent(
 
         HorizontalDivider()
 
+        DataSettings(
+            isLoading = isBackupLoading,
+            exportWarningMessage = exportWarningMessage,
+            onExportClick = onExportClick,
+            onImportClick = onImportClick
+        )
+
+        HorizontalDivider()
+
         Other(navigateToAbout = navigateToAbout)
+    }
+}
+
+@Composable
+private fun DataSettings(
+    isLoading: Boolean,
+    exportWarningMessage: String?,
+    onExportClick: () -> Unit,
+    onImportClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var contentHeightPx by remember { mutableIntStateOf(0) }
+    val density = LocalDensity.current
+
+    Box(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.onGloballyPositioned { coordinates ->
+                contentHeightPx = coordinates.size.height
+            }
+        ) {
+            Text(
+                text = stringResource(R.string.settings_data_title),
+                style = MaterialTheme.typography.labelLarge,
+                modifier = Modifier.padding(
+                    top = dimensionResource(R.dimen.padding_small),
+                    start = dimensionResource(R.dimen.padding_medium),
+                    end = dimensionResource(R.dimen.padding_medium)
+                )
+            )
+            Text(
+                text = stringResource(R.string.settings_images_not_exported_note),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(
+                    top = dimensionResource(R.dimen.padding_small),
+                    start = dimensionResource(R.dimen.padding_medium),
+                    end = dimensionResource(R.dimen.padding_medium)
+                )
+            )
+            ClickableTextRow(
+                text = stringResource(R.string.settings_export_label),
+                icon = {
+                    Icon(
+                        imageVector = Icons.Outlined.FileUpload,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = dimensionResource(R.dimen.padding_small))
+                    )
+                },
+                onClick = onExportClick,
+                modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
+            )
+            exportWarningMessage?.let { warningMessage ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(
+                        top = dimensionResource(R.dimen.padding_small),
+                        start = dimensionResource(R.dimen.padding_medium),
+                        end = dimensionResource(R.dimen.padding_medium)
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Warning,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(end = dimensionResource(R.dimen.padding_small))
+                    )
+                    Text(
+                        text = warningMessage,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+            ClickableTextRow(
+                text = stringResource(R.string.settings_import_label),
+                icon = {
+                    Icon(
+                        imageVector = Icons.Outlined.FileDownload,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = dimensionResource(R.dimen.padding_small))
+                    )
+                },
+                onClick = onImportClick
+            )
+        }
+
+        if (isLoading) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(with(density) { contentHeightPx.toDp() })
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f))
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = {}
+                    )
+            ) {
+                CircularProgressIndicator()
+            }
+        }
     }
 }
 
@@ -274,8 +447,12 @@ fun SettingsScreenPreview() {
     SettingsContent(
         selectedThemeName = stringResource(AppThemeOptions.DEFAULT.titleResId),
         selectedFontName = AppFontOptions.DEFAULT.title,
+        isBackupLoading = false,
+        exportWarningMessage = null,
         onThemeSelect = {},
         onFontSelect = {},
+        onExportClick = {},
+        onImportClick = {},
         navigateToAbout = {}
     )
 }

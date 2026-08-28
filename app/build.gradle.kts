@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     id("com.google.devtools.ksp")
     id("com.mikepenz.aboutlibraries.plugin")
 }
@@ -15,8 +16,8 @@ android {
         applicationId = "io.github.robinphillips98.nofussflashcards"
         minSdk = 24
         targetSdk = 37
-        versionCode = 9
-        versionName = "1.0.0-beta.3"
+        versionCode = 10
+        versionName = "1.0.0-beta.4"
         resValue("string", "version_name", versionName ?: "Version not found")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -84,5 +85,8 @@ dependencies {
     // About Libraries
     implementation(libs.aboutlibraries.compose.core)
     implementation(libs.aboutlibraries.compose.m3)
+
+    // Kotlin Serialization
+    implementation(libs.kotlinx.serialization.json)
 
 }

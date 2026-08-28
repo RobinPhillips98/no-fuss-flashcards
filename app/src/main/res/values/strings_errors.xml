@@ -25,4 +25,15 @@
     <string name="flashcard_save_failed">Error saving flashcard. Please try again.</string>
     <string name="image_save_failed">Error saving image. Flashcard save aborted.</string>
     <string name="old_image_delete_failed">Error deleting old image. Flashcard update aborted.</string>
+
+    <!-- Settings Screen -->
+    <string name="export_failed">Export failed. Please try again.</string>
+    <string name="import_failed">Import failed. Please check the file and try again.</string>
+    <string name="flashcards_excluded">Some flashcards were excluded from export because they have no definition.</string>
+    <string name="flashcards_images_cannot_be_exported">Some flashcards have images. Images cannot be exported.</string>
+    <string name="no_data_to_export">No data to export.</string>
+    <string name="settings_export_warning_excluded_single">1 flashcard was excluded because it does not have a text definition.</string>
+    <string name="settings_export_warning_excluded_plural">%1$d flashcards were excluded because they do not have text definitions.</string>
+    <string name="settings_export_warning_images_single">1 exported flashcard had its image removed.</string>
+    <string name="settings_export_warning_images_plural">%1$d exported flashcards had their images removed.</string>
 </resources>

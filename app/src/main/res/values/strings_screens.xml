@@ -52,6 +52,12 @@
     <string name="settings_theme_label">Theme</string>
     <string name="settings_font_label">Font</string>
     <string name="settings_font_download_warning">Fonts may take a moment to display correctly as they must be downloaded.</string>
+    <string name="settings_data_title">Data</string>
+    <string name="settings_images_not_exported_note">Flashcard images cannot be exported.</string>
+    <string name="settings_export_label">Export Data</string>
+    <string name="settings_import_label">Import Data</string>
+    <string name="export_success">Data exported successfully.</string>
+    <string name="import_success">Data imported successfully.</string>
     <string name="settings_other_title">Other</string>
 
     <!-- About Screen -->

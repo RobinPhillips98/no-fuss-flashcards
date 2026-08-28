@@ -13,6 +13,7 @@ composeBom = "2026.08.00"
 navigationCompose = "2.10.0"
 roomVersion = "2.8.4"
 aboutLibraries = "15.1.1"
+kotlinxSerialization = "1.11.0"
 
 [libraries]
 # Non-Android Dependencies
@@ -57,6 +58,10 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose"
 aboutlibraries-compose-core = { module = "com.mikepenz:aboutlibraries-compose-core", version.ref = "aboutLibraries" }
 aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 
+# Kotlin Serialization Dependency
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

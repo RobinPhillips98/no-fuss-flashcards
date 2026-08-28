@@ -3,6 +3,8 @@ package io.github.robinphillips98.nofussflashcards.data.flashcards
 import kotlinx.coroutines.flow.Flow
 
 class RoomFlashcardsRepository(private val flashcardDao: FlashcardDao) : FlashcardsRepository {
+    override suspend fun getAllFlashcards(): List<Flashcard> = flashcardDao.getAllFlashcardsOnce()
+
     override fun getAllFlashcardsStream(): Flow<List<Flashcard>> = flashcardDao.getAllFlashcards()
 
     override fun getFlashcardStream(flashcardId: Int): Flow<Flashcard?> = flashcardDao.getFlashcardById(flashcardId)

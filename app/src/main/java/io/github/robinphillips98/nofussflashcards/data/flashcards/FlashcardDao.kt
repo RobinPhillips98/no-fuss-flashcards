@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FlashcardDao {
+    @Query("SELECT * FROM flashcards")
+    suspend fun getAllFlashcardsOnce(): List<Flashcard>
 
     @Query("SELECT * FROM flashcards ORDER BY term ASC")
     fun getAllFlashcards(): Flow<List<Flashcard>>
