@@ -129,7 +129,9 @@ fun TermsOfServiceScreen(
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
             )
             Text(
-                text = "Subject to your compliance with these Terms, the Developer grants you a limited, non-exclusive, non-transferable, revocable license to download, install, and use the App for your personal, non-commercial purposes.",
+                text = "Subject to your compliance with these Terms, the Developer grants you a " +
+                        "limited, non-exclusive, non-transferable, revocable license to download, " +
+                        "install, and use the App for your personal, non-commercial purposes.",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
@@ -151,7 +153,11 @@ fun TermsOfServiceScreen(
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
             )
             Text(
-                text = "THE APP IS PROVIDED \"AS IS\" AND \"AS AVAILABLE,\" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. THE DEVELOPER DOES NOT WARRANT THAT THE APP WILL BE UNINTERRUPTED, ERROR-FREE, OR COMPLETELY SECURE.",
+                text = "THE APP IS PROVIDED \"AS IS\" AND \"AS AVAILABLE,\" WITHOUT WARRANTIES OF " +
+                        "ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF " +
+                        "MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. " +
+                        "THE DEVELOPER DOES NOT WARRANT THAT THE APP WILL BE UNINTERRUPTED, " +
+                        "ERROR-FREE, OR COMPLETELY SECURE.",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
@@ -162,7 +168,10 @@ fun TermsOfServiceScreen(
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
             )
             Text(
-                text = "TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE DEVELOPER SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL, OR EXEMPLARY DAMAGES ARISING OUT OF OR IN CONNECTION WITH THE USE OF THE APP, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.",
+                text = "TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE DEVELOPER SHALL NOT " +
+                        "BE LIABLE FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL, OR " +
+                        "EXEMPLARY DAMAGES ARISING OUT OF OR IN CONNECTION WITH THE USE OF THE APP, " +
+                        "EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
@@ -173,7 +182,8 @@ fun TermsOfServiceScreen(
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
             )
             Text(
-                text = "These Terms shall be governed by and construed in accordance with the laws of the United States, without regard to its conflict of laws principles.",
+                text = "These Terms shall be governed by and construed in accordance with the laws " +
+                        "of the United States, without regard to its conflict of laws principles.",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
@@ -184,7 +194,9 @@ fun TermsOfServiceScreen(
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
             )
             Text(
-                text = "The Developer reserves the right to modify these Terms at any time, in its sole discretion. Your continued use of the App following any modification constitutes your acceptance of the modified Terms.",
+                text = "The Developer reserves the right to modify these Terms at any time, in its " +
+                        "sole discretion. Your continued use of the App following any modification " +
+                        "constitutes your acceptance of the modified Terms.",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
@@ -195,7 +207,8 @@ fun TermsOfServiceScreen(
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
             )
             Text(
-                text = "If you have any questions or concerns about these Terms or the App, please contact the Developer at nofussflashcards.app@gmail.com.",
+                text = "If you have any questions or concerns about these Terms or the App, please " +
+                        "contact the Developer at ${stringResource(R.string.support_email)}.",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(
                     top = dimensionResource(R.dimen.padding_small),

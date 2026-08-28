@@ -2,6 +2,7 @@
     <!-- App Info -->
     <string name="app_name">Flashcards</string>
     <string name="full_app_name">No Fuss Flashcards</string>
+    <string name="support_email">support@nofussflashcards.com</string>
 
     <!-- Short Descriptions -->
     <string name="deck_object_type">deck</string>

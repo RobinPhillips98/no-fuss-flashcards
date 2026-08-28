@@ -99,7 +99,7 @@ fun PrivacyPolicyScreen(
                         append("Contact Us: ")
                     }
                     append("If you have any questions about this privacy policy, please contact us " +
-                            "at nofussflashcards.app@gmail.com.")
+                            "at ${stringResource(R.string.support_email)}.")
                 },
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
