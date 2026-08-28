@@ -1,4 +1,5 @@
 <resources>
+    <!-- App Info -->
     <string name="app_name">Flashcards</string>
     <string name="full_app_name">No Fuss Flashcards</string>
 
@@ -16,31 +17,6 @@
     <string name="theme_neon">Neon</string>
     <string name="theme_ocean">Ocean</string>
     <string name="theme_vampire">Vampire</string>
-
-    <!-- Settings Screen -->
-    <string name="settings_title">Settings</string>
-    <string name="settings_app_settings_title">App Settings</string>
-    <string name="settings_theme_label">Theme</string>
-    <string name="settings_font_label">Font</string>
-    <string name="settings_font_download_warning">Fonts may take a moment to display correctly as they must be downloaded.</string>
-    <string name="settings_other_title">Other</string>
-    <string name="settings_about_button">About the app</string>
-
-    <!-- About Screen -->
-    <string name="about_title">About</string>
-    <string name="about_description">Description WIP</string>
-    <string name="about_version_label">Version:</string>
-    <string name="about_the_app_title">About the App</string>
-    <string name="about_the_app_description">No Fuss Flashcards is a simple, easy-to-use flashcards app built to be free forever, with no ads, ever.</string>
-    <string name="legal_documents_title">Legal Documents</string>
-    <string name="license_title">License</string>
-    <string name="privacy_policy_title">Privacy Policy</string>
-    <string name="terms_of_service_title">Terms of Service</string>
-    <string name="open_source_licenses_title">Open Source Licenses</string>
-    <string name="developer_info_title">Developer Info</string>
-    <string name="github_title">GitHub Repository</string>
-    <string name="bug_report_title">Report a Bug</string>
-    <string name="kofi_title">Support the Developer</string>
 
     <!-- Button Labels -->
     <string name="settings_button">Open Settings</string>
@@ -67,48 +43,6 @@
     <!-- Shared Labels -->
     <string name="deck_name_label">Deck: %1$s</string>
     <string name="deck_empty">No flashcards in this deck. Please add a flashcard to get started.</string>
-
-    <!-- Screen Titles -->
-    <string name="deck_edit_title">Edit Deck</string>
-    <string name="flashcard_edit_title">Edit Flashcard</string>
-
-    <!-- Home Screen -->
-    <string name="create_deck_button">Create Deck</string>
-    <string name="home_welcome_text">Welcome to %1$s!</string>
-    <string name="jump_in">Jump back into "%1$s"</string>
-    <string name="deck_list_header">Available Decks</string>
-    <string name="deck_list_empty">No decks available. Please create a deck to get started.</string>
-
-    <!-- Deck Detail Screen -->
-    <string name="deck_detail_title">Deck Details</string>
-    <string name="deck_not_found">Deck not found.</string>
-    <string name="deck_deletion_success_message">Deck deleted successfully.</string>
-    <string name="flashcard_deletion_success_message">Flashcard deleted successfully.</string>
-    <string name="deck_details_load_failed">Failed to load deck details.</string>
-    <string name="flashcard_details_load_failed">Failed to load flashcard details.</string>
-
-    <!-- Flashcard Pager Screen -->
-    <string name="flashcards_pager_title">Flashcards Viewer</string>
-    <string name="flashcard_count_label">Card %1$d/%2$d</string>
-    <string name="flashcard_flip_hint">Tap a flashcard to flip it over.</string>
-
-    <!-- Deck Entry Screen -->
-    <string name="deck_entry_title">Create Deck</string>
-    <string name="deck_entry_name_label">Name *</string>
-    <string name="deck_entry_name_placeholder">Enter deck name</string>
-    <string name="deck_entry_description_label">Description</string>
-    <string name="deck_entry_description_placeholder">Enter deck description</string>
-    <string name="deck_saved_success_message">Deck saved successfully.</string>
-
-    <!-- Flashcard Entry Screen -->
-    <string name="flashcard_entry_title">Create Flashcard</string>
-    <string name="flashcard_entry_term_label">Term *</string>
-    <string name="flashcard_entry_term_placeholder">Enter term</string>
-    <string name="flashcard_entry_definition_label">Definition</string>
-    <string name="flashcard_entry_definition_placeholder">Enter definition</string>
-    <string name="flashcard_entry_invalid_message">Must provide a term and either a definition or an image.</string>
-    <string name="flashcard_entry_deck_label">Deck *</string>
-    <string name="flashcard_saved_success_message">Flashcard saved successfully.</string>
 
     <!-- Image Upload -->
     <string name="image_label">Image</string>
