@@ -13,6 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
 import io.github.robinphillips98.nofussflashcards.R
@@ -39,6 +43,10 @@ fun PrivacyPolicyScreen(
         },
         modifier = modifier,
     ) { innerPadding ->
+        val boldStyle = MaterialTheme.typography.bodyLarge.toSpanStyle().copy(
+            fontWeight = FontWeight.Bold
+        )
+        val bulletPoint = "\u2022 "
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -53,6 +61,7 @@ fun PrivacyPolicyScreen(
             Text(
                 text = "Last updated: August 27, 2026",
                 style = MaterialTheme.typography.bodyMedium,
+                fontStyle = FontStyle.Italic,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
             Text(
@@ -61,17 +70,37 @@ fun PrivacyPolicyScreen(
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
             )
             Text(
-                text = "\u2022 Data Collection: We do not track, collect, or transmit any data from your device. All app operations run locally.",
+                text = buildAnnotatedString {
+                    append(bulletPoint)
+                    withStyle(style = boldStyle) {
+                        append("Data Collection: ")
+                    }
+                    append("We do not track, collect, or transmit any data from your device. All " +
+                            "app operations run locally.")
+                    },
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium_small))
             )
             Text(
-                text = "\u2022 Third-Party Services: We do not use third-party analytics, advertising networks, or data miners.",
+                text = buildAnnotatedString {
+                    append(bulletPoint)
+                    withStyle(style = boldStyle) {
+                        append("Third-Party Services: ")
+                    }
+                    append("We do not use third-party analytics, advertising networks, or data miners.")
+                },
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
             Text(
-                text = "\u2022 Contact Us: If you have any questions about this privacy policy, please contact us at nofussflashcards.app@gmail.com.",
+                text = buildAnnotatedString {
+                    append(bulletPoint)
+                    withStyle(style = boldStyle) {
+                        append("Contact Us: ")
+                    }
+                    append("If you have any questions about this privacy policy, please contact us " +
+                            "at nofussflashcards.app@gmail.com.")
+                },
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )

@@ -13,6 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import io.github.robinphillips98.nofussflashcards.NoFussFlashCardsTopAppBar
 import io.github.robinphillips98.nofussflashcards.R
@@ -39,6 +43,10 @@ fun TermsOfServiceScreen(
         },
         modifier = modifier,
     ) { innerPadding ->
+        val boldStyle = MaterialTheme.typography.bodyLarge.toSpanStyle().copy(
+            fontWeight = FontWeight.Bold
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -53,10 +61,23 @@ fun TermsOfServiceScreen(
             Text(
                 text = "Last Updated: August 27, 2026",
                 style = MaterialTheme.typography.bodyMedium,
+                fontStyle = FontStyle.Italic,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
             Text(
-                text = "These Terms of Service (\"Terms\") govern your use of No Fuss Flashcards (\"App\"), developed by Robin Phillips (\"Developer\"). By downloading, installing, or using the App, you agree to be bound by these Terms. If you do not agree to these Terms, do not use the App.",
+                text = buildAnnotatedString {
+                    append("These terms of service (\"")
+                    withStyle(style = boldStyle) {
+                        append("Terms")
+                    }
+                    append("\") govern your use of No Fuss Flashcards (\"")
+                    withStyle(style = boldStyle) {
+                        append("App")
+                    }
+                    append("\"). By downloading, installing, or using the App, you agree to be " +
+                            "bound by these Terms. If you do not agree to these Terms, do not use " +
+                            "the App.")
+                },
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
             )
@@ -67,12 +88,37 @@ fun TermsOfServiceScreen(
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
             )
             Text(
-                text = "1. \"User\" refers to any person who downloads, installs, or uses the App.",
+                text = buildAnnotatedString {
+                  append("1. \"")
+                    withStyle(style = boldStyle) {
+                            append("User")
+                        }
+                        append("\" refers to any person who downloads, installs, or uses the App.")
+                },
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
             Text(
-                text = "2. \"Content\" refers to any text, images, video, audio, or other media available through the App.",
+                text = buildAnnotatedString {
+                  append("2. \"")
+                    withStyle(style = boldStyle) {
+                            append("Content")
+                        }
+                        append("\" refers to any text, images, video, audio, or other media " +
+                                "available through the App.")
+                },
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
+            )
+            Text(
+                text = buildAnnotatedString {
+                  append("3. \"")
+                    withStyle(style = boldStyle) {
+                            append("Developer")
+                        }
+                        append("\" refers to the individual or entity responsible for creating and " +
+                                "maintaining the App.")
+                },
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
