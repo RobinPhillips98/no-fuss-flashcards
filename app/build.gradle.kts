@@ -7,17 +7,17 @@ plugins {
 }
 
 android {
-    namespace = "io.github.robinphillips98.nofussflashcards"
+    namespace = "com.nofussflashcards.app"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "io.github.robinphillips98.nofussflashcards"
+        applicationId = "com.nofussflashcards.app"
         minSdk = 24
         targetSdk = 37
-        versionCode = 10
-        versionName = "1.0.0-beta.4"
+        versionCode = 1
+        versionName = "1.0.0-beta"
         resValue("string", "version_name", versionName ?: "Version not found")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

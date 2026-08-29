@@ -1,0 +1,284 @@
+package com.nofussflashcards.app.ui.flashcards.forms
+
+import android.net.Uri
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nofussflashcards.app.NoFussFlashCardsTopAppBar
+import com.nofussflashcards.app.R
+import com.nofussflashcards.app.data.decks.Deck
+import com.nofussflashcards.app.navigation.NavigationDestination
+import com.nofussflashcards.app.ui.AppViewModelProvider
+import com.nofussflashcards.app.ui.utils.ImageUploader
+import kotlinx.coroutines.launch
+
+object FlashcardEntryDestination: NavigationDestination {
+    override val route = "flashcard_entry"
+    override val titleResId = R.string.flashcard_entry_title
+    const val DECK_ID_ARG = "deckId"
+    val routeWithArgs = "$route/{$DECK_ID_ARG}"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FlashcardEntryScreen(
+    navigateBack: () -> Unit,
+    onNavigateUp: () -> Unit,
+    viewModel: FlashcardEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+    val flashcardUiState = viewModel.flashcardUiState
+
+    // Collect events from the ViewModel and show snackbars for relevant events.
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is FlashcardEntryUiEvent.ShowFlashcardSavedSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message, withDismissAction = true)
+                }
+                is FlashcardEntryUiEvent.ShowErrorSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message, withDismissAction = true)
+                }
+            }
+        }
+    }
+
+    Scaffold(
+        topBar = {
+            NoFussFlashCardsTopAppBar(
+                title = stringResource(FlashcardEntryDestination.titleResId),
+                canNavigateBack = true,
+                navigateUp = onNavigateUp
+            )
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { innerPadding ->
+        FlashcardEntryBody(
+            flashcardUiState = flashcardUiState,
+            onFlashcardValueChange = viewModel::updateUiState,
+            onImageUploaded = viewModel::onImageSelected,
+            onSaveClick = {
+                coroutineScope.launch {
+                    val flashcardSavedSuccessfully = viewModel.saveFlashcard(context)
+                    if (flashcardSavedSuccessfully) {
+                        navigateBack()
+                    }
+                }
+            },
+            modifier = Modifier.padding(innerPadding)
+        )
+    }
+}
+
+@Composable
+fun FlashcardEntryBody(
+    flashcardUiState: FlashcardUiState,
+    onFlashcardValueChange: (FlashcardDetails) -> Unit,
+    onImageUploaded: (imageUri: Uri?) -> Unit,
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    availableDecks: List<Deck>? = null,
+    onImageRestored: (() -> Unit)? = null,
+) {
+    Column(
+        modifier = modifier
+            .padding(dimensionResource(R.dimen.padding_medium))
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_large))
+    ) {
+        FlashcardInputForm(
+            flashcardDetails = flashcardUiState.flashcardDetails,
+            availableDecks = availableDecks,
+            selectedImageUri = flashcardUiState.selectedImageUri,
+            existingImageUri = flashcardUiState.existingImageUri,
+            onValueChange = onFlashcardValueChange,
+            onImageUploaded = onImageUploaded,
+            onImageRestored = onImageRestored,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Button(
+            onClick = onSaveClick,
+            enabled = flashcardUiState.isEntryValid,
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.save_button))
+        }
+
+        if (!flashcardUiState.isEntryValid) {
+            Text(
+                text = stringResource(R.string.flashcard_entry_invalid_message),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+}
+
+@Composable
+fun FlashcardInputForm(
+    flashcardDetails: FlashcardDetails,
+    availableDecks: List<Deck>?,
+    selectedImageUri: Uri?,
+    existingImageUri: Uri?,
+    onValueChange: (FlashcardDetails) -> Unit,
+    onImageUploaded: (imageUri: Uri?) -> Unit,
+    modifier: Modifier = Modifier,
+    onImageRestored: (() -> Unit)? = null,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+    ) {
+        OutlinedTextField(
+            value = flashcardDetails.term,
+            onValueChange = { onValueChange(flashcardDetails.copy(term = it)) },
+            label = { Text(stringResource(R.string.flashcard_entry_term_label)) },
+            placeholder = { Text(stringResource(R.string.flashcard_entry_term_placeholder)) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+        OutlinedTextField(
+            value = flashcardDetails.definition ?: "",
+            onValueChange = { onValueChange(flashcardDetails.copy(definition = it)) },
+            label = { Text(stringResource(R.string.flashcard_entry_definition_label)) },
+            placeholder = { Text(stringResource(R.string.flashcard_entry_definition_placeholder)) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            minLines = 3,
+            maxLines = 5
+        )
+
+        /*
+        By making availableDecks null by default, we can make the deck selection optional. If
+        availableDecks is provided, the dropdown will be displayed; otherwise, it will be omitted.
+
+        For example, when creating a new flashcard, the card is simply associated with the deck
+        that was selected when navigating to the FlashcardEntryScreen. In this case, we don't need
+        to show the dropdown, so we can leave availableDecks as null. However, when editing an
+        existing flashcard, we want to allow the user to change the deck, so we provide the list of
+        available decks and display the dropdown.
+         */
+        if (availableDecks != null) {
+            FlashcardDeckDropdown(
+                selectedDeck = flashcardDetails.deckId,
+                availableDecks = availableDecks,
+                onDeckSelected = { onValueChange(flashcardDetails.copy(deckId = it)) },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        ImageUploader(
+            objectDescription = stringResource(R.string.flashcard_object_type),
+            onImageUploaded = onImageUploaded,
+            selectedImageUri = selectedImageUri,
+            existingImageUri = existingImageUri,
+            onImageRestored = onImageRestored,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FlashcardDeckDropdown(
+    selectedDeck: Int,
+    availableDecks: List<Deck>,
+    onDeckSelected: (id: Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    val selectedDeckName = availableDecks
+        .firstOrNull { it.deckId == selectedDeck }
+        ?.name
+        .orEmpty()
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = modifier
+    ) {
+        OutlinedTextField(
+            value = selectedDeckName,
+            onValueChange = {},
+            label = { Text(stringResource(R.string.flashcard_entry_deck_label)) },
+            readOnly = true,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+            modifier = Modifier
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                .fillMaxWidth()
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            availableDecks.forEach { deck ->
+                DropdownMenuItem(
+                    text = { Text(deck.name) },
+                    onClick = {
+                        onDeckSelected(deck.deckId)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FlashcardEntryScreenPreview() {
+    FlashcardEntryBody(
+        flashcardUiState = FlashcardUiState(),
+        onFlashcardValueChange = {},
+        onImageUploaded = {},
+        onSaveClick = {}
+    )
+}

@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Flashcards">
         <activity
-            android:name="io.github.robinphillips98.nofussflashcards.MainActivity"
+            android:name="com.nofussflashcards.app.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Flashcards"
             android:windowSoftInputMode="adjustResize">
