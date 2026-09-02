@@ -59,13 +59,14 @@ fun PrivacyPolicyScreen(
                 style = MaterialTheme.typography.headlineSmall
             )
             Text(
-                text = "Last updated: August 27, 2026",
+                text = "Last updated: September 2, 2026",
                 style = MaterialTheme.typography.bodyMedium,
                 fontStyle = FontStyle.Italic,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
             Text(
-                text = "No Fuss Flashcards does not collect, store, or share any personal information or user data.",
+                text = "No Fuss Flashcards does not collect, store, or share any personal " +
+                        "information or user data.",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
             )

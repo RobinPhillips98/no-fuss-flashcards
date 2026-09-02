@@ -59,7 +59,7 @@ fun TermsOfServiceScreen(
                 style = MaterialTheme.typography.headlineSmall
             )
             Text(
-                text = "Last Updated: August 27, 2026",
+                text = "Last Updated: September 2, 2026",
                 style = MaterialTheme.typography.bodyMedium,
                 fontStyle = FontStyle.Italic,
                 modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
