@@ -16,8 +16,8 @@ android {
         applicationId = "com.nofussflashcards.app"
         minSdk = 24
         targetSdk = 37
-        versionCode = 1
-        versionName = "1.0.0-beta"
+        versionCode = 2
+        versionName = "1.0.0-beta.2"
         resValue("string", "version_name", versionName ?: "Version not found")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
