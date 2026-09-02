@@ -24,7 +24,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonDecodingException
 import java.io.IOException
 
 class SettingsViewModel(
@@ -196,7 +198,9 @@ class SettingsViewModel(
      *
      * @return A [SettingsError] representing the error that occurred during import.
      */
+    @OptIn(ExperimentalSerializationApi::class)
     private fun Throwable.toImportError(): SettingsError = when (this) {
+        is JsonDecodingException -> SettingsError.InvalidImportFile
         is IOException, is SQLiteException -> SettingsError.ImportFailed
         else -> SettingsError.Unknown(this)
     }

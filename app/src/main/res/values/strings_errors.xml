@@ -29,6 +29,7 @@
     <!-- Settings Screen -->
     <string name="export_failed">Export failed. Please try again.</string>
     <string name="import_failed">Import failed. Please check the file and try again.</string>
+    <string name="invalid_import_file">Invalid import file. Please check the file and try again.</string>
     <string name="flashcards_excluded">Some flashcards were excluded from export because they have no definition.</string>
     <string name="flashcards_images_cannot_be_exported">Some flashcards have images. Images cannot be exported.</string>
     <string name="no_data_to_export">No data to export.</string>
