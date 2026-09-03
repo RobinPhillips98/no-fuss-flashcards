@@ -14,6 +14,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,16 +46,20 @@ object FlashcardEditDestination: NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashcardEditScreen(
+    windowSize: WindowWidthSizeClass,
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: FlashcardEditViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val uiState = viewModel.flashcardUiState
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
+
+    val uiState = viewModel.flashcardUiState
     val availableDecks by viewModel.availableDecks.collectAsState()
+
+    val isTablet = windowSize == WindowWidthSizeClass.Expanded || windowSize == WindowWidthSizeClass.Medium
 
     // Collect events from the ViewModel and show snackbars for relevant events.
     LaunchedEffect(Unit) {
@@ -118,6 +123,7 @@ fun FlashcardEditScreen(
         } else {
             FlashcardEntryBody(
                 flashcardUiState = uiState,
+                isTablet = isTablet,
                 onFlashcardValueChange = viewModel::updateUiState,
                 onImageUploaded = viewModel::onImageSelected,
                 onImageRestored = if (viewModel.hasOriginalImage) {
@@ -149,6 +155,7 @@ fun FlashcardEditScreenPreview() {
     )
     FlashcardEntryBody(
         flashcardUiState = FlashcardUiState(),
+        isTablet = false,
         onFlashcardValueChange = {},
         onImageUploaded = {},
         onSaveClick = {},

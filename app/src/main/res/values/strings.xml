@@ -49,4 +49,5 @@
     <string name="image_no_image_selected_message">No image selected</string>
     <string name="image_preview_label">Image Preview</string>
     <string name="image_preview_content_description">Preview of selected image</string>
+    <string name="image_preview_placeholder">No image selected</string>
 </resources>

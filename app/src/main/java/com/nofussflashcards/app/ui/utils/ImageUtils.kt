@@ -6,10 +6,12 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement.spacedBy
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -20,9 +22,12 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.nofussflashcards.app.R
@@ -155,26 +160,45 @@ fun ImageUploader(
             }
         }
 
-        // Show selected image preview if there is a selected or existing image URI
-        previewImage?.let { model ->
-            Card(
-                colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceVariant),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Text(
-                    text = stringResource(R.string.image_preview_label),
-                    modifier = Modifier.padding(start = 12.dp, top = 12.dp),
-                    style = MaterialTheme.typography.labelLarge
-                )
+        Card(
+            colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceVariant),
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(dimensionResource(R.dimen.image_preview_height))
+        ) {
+            Text(
+                text = stringResource(R.string.image_preview_label),
+                modifier = Modifier.padding(start = 12.dp, top = 12.dp),
+                style = MaterialTheme.typography.labelLarge
+            )
+            if (previewImage != null) {
                 AsyncImage(
-                    model = model,
+                    model = previewImage,
                     contentDescription = stringResource(R.string.image_preview_content_description),
                     modifier = Modifier
                         .fillMaxSize()
+//                        .fillMaxWidth()
+//                        .height(dimensionResource(R.dimen.image_preview_height))
                         .padding(12.dp),
                     contentScale = ContentScale.Crop
                 )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+//                        .fillMaxWidth()
+//                        .height(dimensionResource(R.dimen.image_preview_height))
+                        .padding(12.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.image_preview_placeholder),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
             }
         }
     }
