@@ -55,6 +55,7 @@ object DeckDetailsDestination: NavigationDestination {
 @Composable
 fun DeckDetailsScreen(
     windowSize: WindowWidthSizeClass,
+    isTablet: Boolean,
     navigateToFlashcards: () -> Unit,
     navigateToFlashcardWithId: (id: Int) -> Unit,
     navigateToEditScreen: (id: Int) -> Unit,
@@ -72,7 +73,6 @@ fun DeckDetailsScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     val loadedSuccessfully = !uiState.isLoading && !uiState.hasDeckLoadError && !uiState.hasFlashcardsLoadError
-    val isTablet = windowSize == WindowWidthSizeClass.Medium || windowSize == WindowWidthSizeClass.Expanded
 
     fun onDeleteDeck() {
         coroutineScope.launch {

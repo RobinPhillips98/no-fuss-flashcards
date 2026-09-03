@@ -23,7 +23,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -56,7 +55,7 @@ object HomeDestination: NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    windowSize: WindowWidthSizeClass,
+    isTablet: Boolean,
     onCreateDeckClicked: () -> Unit,
     onDeckClicked: (deckId: Int) -> Unit,
     onSettingsClicked: () -> Unit,
@@ -66,8 +65,6 @@ fun HomeScreen(
     val uiState by viewModel.homeUiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val layoutDirection = LocalLayoutDirection.current
-
-    val isTablet = windowSize == WindowWidthSizeClass.Expanded || windowSize == WindowWidthSizeClass.Medium
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
