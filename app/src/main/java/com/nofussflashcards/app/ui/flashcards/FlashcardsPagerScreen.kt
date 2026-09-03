@@ -36,6 +36,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -79,6 +80,7 @@ private data class FlashcardsPagerAnimationState(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashcardsPagerScreen(
+    windowSize: WindowWidthSizeClass,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: FlashcardsPagerViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -149,15 +151,16 @@ fun FlashcardsPagerScreen(
                 deck = uiState.deckDetails.toDeck(),
                 flashcards = uiState.flashcards,
                 hasFlashcardsLoadError = uiState.hasFlashcardsLoadError,
-                modifier = modifier.padding(innerPadding),
                 initialSelectedIndex = uiState.initialSelectedIndex,
                 hasFlippedCard = uiState.hasFlippedCard,
                 shuffleGeneration = uiState.shuffleGeneration,
+                windowSize = windowSize,
                 onFlashcardClicked = {
                     viewModel.updateHasFlippedCard(true)
                 },
                 onReshuffleClicked = { viewModel.reshuffleFlashcards() },
-                retryLoadFlashcards = { viewModel.retryFlashcardsLoad() }
+                retryLoadFlashcards = { viewModel.retryFlashcardsLoad() },
+                modifier = modifier.padding(innerPadding)
             )
         }
     }
@@ -171,6 +174,7 @@ private fun FlashcardsPagerBody(
     initialSelectedIndex: Int,
     hasFlippedCard: Boolean,
     shuffleGeneration: Int,
+    windowSize: WindowWidthSizeClass,
     onFlashcardClicked: () -> Unit,
     onReshuffleClicked: () -> Unit,
     retryLoadFlashcards: () -> Unit,
@@ -286,8 +290,9 @@ private fun FlashcardsPagerBody(
                 ) { animatedState ->
                     FlashcardsPager(
                         flashcards = animatedState.flashcards,
-                        onFlashcardClicked = onFlashcardClicked,
                         pagerState = pagerState,
+                        windowSize = windowSize,
+                        onFlashcardClicked = onFlashcardClicked,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -306,18 +311,29 @@ private fun FlashcardsPagerBody(
 @Composable
 private fun FlashcardsPager(
     flashcards: List<Flashcard>,
-    onFlashcardClicked: () -> Unit,
     pagerState: PagerState,
+    windowSize: WindowWidthSizeClass,
+    onFlashcardClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val availableWidth = maxWidth
         val availableHeight = maxHeight
-        val pageWidth = (availableWidth * 0.88f).coerceIn(280.dp, 560.dp)
-        val cardHeight = (availableHeight * 0.67f).coerceIn(320.dp, 600.dp)
-        val horizontalInset =
-            ((availableWidth - pageWidth) / 2)
-                .coerceAtLeast(dimensionResource(R.dimen.padding_small))
+
+        val sidePeek = when (windowSize) {
+            WindowWidthSizeClass.Compact -> 20.dp
+            WindowWidthSizeClass.Medium -> 32.dp
+            WindowWidthSizeClass.Expanded -> 48.dp
+            else -> 32.dp
+        }
+
+        val pageWidth = (availableWidth - sidePeek * 2)
+            .coerceAtLeast(280.dp)
+
+        val cardHeight = minOf(
+            pageWidth * 1.4f,
+            availableHeight * 0.82f
+        )
 
         HorizontalPager(
             state = pagerState,
@@ -328,11 +344,14 @@ private fun FlashcardsPager(
                     bottom = dimensionResource(R.dimen.padding_small)
                 ),
             pageSize = PageSize.Fixed(pageWidth),
-            contentPadding = PaddingValues(horizontal = horizontalInset),
+            contentPadding = PaddingValues(horizontal = sidePeek),
             pageSpacing = dimensionResource(R.dimen.padding_medium_small)
         ) { page ->
             val flashcard = flashcards[page % flashcards.size]
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
                 FlashcardDetail(
                     flashcardData = flashcard,
                     flashcardIndex = page + 1,
@@ -366,6 +385,7 @@ fun FlashcardsPagerBodyPreview() {
         initialSelectedIndex = 0,
         hasFlippedCard = false,
         shuffleGeneration = 0,
+        windowSize = WindowWidthSizeClass.Compact,
         onFlashcardClicked = {},
         onReshuffleClicked = {},
         retryLoadFlashcards = {}
@@ -387,6 +407,7 @@ fun FlashcardPagerBodyEmptyPreview() {
         initialSelectedIndex = 0,
         hasFlippedCard = true,
         shuffleGeneration = 0,
+        windowSize = WindowWidthSizeClass.Compact,
         onFlashcardClicked = {},
         onReshuffleClicked = {},
         retryLoadFlashcards = {}
