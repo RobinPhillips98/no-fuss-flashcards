@@ -77,6 +77,7 @@ fun NoFussFlashcardsNavHost(
     ) {
         composable(route = HomeDestination.route) {
             HomeScreen(
+                windowSize = windowSize,
                 onCreateDeckClicked = { navController.navigate(DeckEntryDestination.route) },
                 onDeckClicked = { deckId ->
                     navController.navigate("${DeckDetailsDestination.route}/$deckId")
