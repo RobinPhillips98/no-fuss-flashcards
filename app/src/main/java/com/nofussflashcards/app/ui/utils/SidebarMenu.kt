@@ -15,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nofussflashcards.app.R
 
@@ -39,8 +38,9 @@ fun SidebarMenu(
             modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
         ) {
             Text(
-                text = stringResource(R.string.deck_name_label, headerTitle),
-                style = MaterialTheme.typography.titleMedium
+                text = headerTitle,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
             )
 
             headerSubtitle?.let { subTitle ->

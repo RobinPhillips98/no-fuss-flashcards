@@ -10,6 +10,7 @@
     <string name="deck_empty">No flashcards in this deck. Please add a flashcard to get started.</string>
 
     <!-- Home Screen -->
+    <string name="home_sidebar_title">Options</string>
     <string name="create_deck_button">Create Deck</string>
     <string name="jump_in">Jump back into "%1$s"</string>
     <string name="deck_list_header">Available Decks</string>
