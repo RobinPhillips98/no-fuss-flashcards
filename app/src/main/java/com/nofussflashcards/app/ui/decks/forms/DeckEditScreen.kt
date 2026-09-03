@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -131,7 +129,6 @@ fun DeckEditScreen(
                         top = innerPadding.calculateTopPadding(),
                         end = innerPadding.calculateEndPadding(LocalLayoutDirection.current),
                     )
-                    .verticalScroll(rememberScrollState())
             )
         }
     }
