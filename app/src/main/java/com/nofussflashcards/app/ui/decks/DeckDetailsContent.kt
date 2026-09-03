@@ -2,12 +2,8 @@ package com.nofussflashcards.app.ui.decks
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -22,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,7 +47,6 @@ import com.nofussflashcards.app.ui.utils.SidebarMenu
  * @param onDeleteFlashcard A callback function to handle the deletion of a specific flashcard.
  * @param setFlashCardToDelete A callback function to set the flashcard that is currently selected for deletion.
  * @param modifier An optional [Modifier] for styling and layout adjustments.
- * @param innerPadding An optional [PaddingValues] for inner padding adjustments.
  */
 @Composable
 fun DeckDetailsBody(
@@ -69,23 +63,12 @@ fun DeckDetailsBody(
     onDeleteFlashcard: (flashcard: Flashcard) -> Unit,
     setFlashCardToDelete: (flashcard: Flashcard?) -> Unit,
     modifier: Modifier = Modifier,
-    innerPadding: PaddingValues = PaddingValues(),
 ) {
     var deleteDeckConfirmationOpen by remember { mutableStateOf(false) }
     var deleteFlashcardConfirmationOpen by remember { mutableStateOf(false) }
     val flashcardsAvailable = flashCards.isNotEmpty() && !hasFlashcardsLoadError
-    val layoutDirection = LocalLayoutDirection.current
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(
-                top = innerPadding.calculateTopPadding() + dimensionResource(R.dimen.padding_medium),
-                start = innerPadding.calculateStartPadding(layoutDirection) + dimensionResource(R.dimen.padding_medium),
-                end = innerPadding.calculateEndPadding(layoutDirection) + dimensionResource(R.dimen.padding_medium),
-                bottom = dimensionResource(R.dimen.padding_medium)
-            )
-    ) {
+    Column(modifier = modifier) {
         Text(
             text = stringResource(R.string.deck_name_label, deckDetails.name),
             style = MaterialTheme.typography.titleMedium
@@ -189,7 +172,6 @@ fun DeckDetailsBody(
  * @param onDeleteFlashcard A callback function to handle the deletion of a specific flashcard.
  * @param setFlashCardToDelete A callback function to set the flashcard that is currently selected for deletion.
  * @param modifier An optional [Modifier] for styling and layout adjustments.
- * @param innerPadding An optional [PaddingValues] for inner padding adjustments.
  */
 @Composable
 fun DeckDetailsBodyTablet(
@@ -208,24 +190,13 @@ fun DeckDetailsBodyTablet(
     onDeleteFlashcard: (flashcard: Flashcard) -> Unit,
     setFlashCardToDelete: (flashcard: Flashcard?) -> Unit,
     modifier: Modifier = Modifier,
-    innerPadding: PaddingValues = PaddingValues(),
 ) {
     var deleteDeckConfirmationOpen by remember { mutableStateOf(false) }
     var deleteFlashcardConfirmationOpen by remember { mutableStateOf(false) }
     val flashcardsAvailable = flashCards.isNotEmpty() && !hasFlashcardsLoadError
-    val layoutDirection = LocalLayoutDirection.current
     val numOfColumns = if (windowSize == WindowWidthSizeClass.Expanded) 3 else 2
 
-    Row(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(
-                top = innerPadding.calculateTopPadding() + dimensionResource(R.dimen.padding_medium),
-                start = innerPadding.calculateStartPadding(layoutDirection) + dimensionResource(R.dimen.padding_medium),
-                end = innerPadding.calculateEndPadding(layoutDirection) + dimensionResource(R.dimen.padding_medium),
-                bottom = dimensionResource(R.dimen.padding_medium)
-            )
-    ) {
+    Row(modifier = modifier) {
         DeckDetailsSidebar(
             deckName = deckDetails.name,
             deckDescription = deckDetails.description,
@@ -233,7 +204,8 @@ fun DeckDetailsBodyTablet(
             navigateToFlashcards = navigateToFlashcards,
             navigateToEditScreen = { navigateToEditScreen(deckDetails.deckId) },
             navigateToFlashcardEntryScreen = { navigateToFlashcardEntryScreen(deckDetails.deckId) },
-            onDeleteDeck = { deleteDeckConfirmationOpen = true }
+            onDeleteDeck = { deleteDeckConfirmationOpen = true },
+            modifier = Modifier.weight(1f)
         )
 
         FlashcardsGrid(
@@ -290,7 +262,7 @@ private fun DeckDetailsSidebar(
     modifier: Modifier = Modifier
 ) {
     SidebarMenu(
-        headerTitle = deckName,
+        headerTitle = stringResource(R.string.deck_name_label, deckName),
         modifier = modifier,
         headerSubtitle = deckDescription,
     ) {
