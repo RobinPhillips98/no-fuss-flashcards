@@ -9,9 +9,10 @@ import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -160,45 +161,50 @@ fun ImageUploader(
             }
         }
 
-        Card(
-            colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceVariant),
-            shape = RoundedCornerShape(12.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(dimensionResource(R.dimen.image_preview_height))
-        ) {
-            Text(
-                text = stringResource(R.string.image_preview_label),
-                modifier = Modifier.padding(start = 12.dp, top = 12.dp),
-                style = MaterialTheme.typography.labelLarge
+        ImagePreviewContainer(previewImage)
+    }
+}
+
+@Composable
+private fun ImagePreviewContainer(previewImage: Uri?) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceVariant),
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(16f / 9f)
+            .heightIn(
+                min = dimensionResource(R.dimen.image_preview_min_height),
+                max = dimensionResource(R.dimen.image_preview_max_height)
             )
-            if (previewImage != null) {
-                AsyncImage(
-                    model = previewImage,
-                    contentDescription = stringResource(R.string.image_preview_content_description),
-                    modifier = Modifier
-                        .fillMaxSize()
-//                        .fillMaxWidth()
-//                        .height(dimensionResource(R.dimen.image_preview_height))
-                        .padding(12.dp),
-                    contentScale = ContentScale.Crop
+    ) {
+        Text(
+            text = stringResource(R.string.image_preview_label),
+            modifier = Modifier.padding(start = 12.dp, top = 12.dp),
+            style = MaterialTheme.typography.labelLarge
+        )
+        if (previewImage != null) {
+            AsyncImage(
+                model = previewImage,
+                contentDescription = stringResource(R.string.image_preview_content_description),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.image_preview_placeholder),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.align(Alignment.Center)
                 )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-//                        .fillMaxWidth()
-//                        .height(dimensionResource(R.dimen.image_preview_height))
-                        .padding(12.dp),
-                ) {
-                    Text(
-                        text = stringResource(R.string.image_preview_placeholder),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
             }
         }
     }

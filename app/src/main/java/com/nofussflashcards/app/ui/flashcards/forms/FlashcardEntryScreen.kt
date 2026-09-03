@@ -127,10 +127,12 @@ fun FlashcardEntryBody(
             FlashcardInputFormTablet(
                 flashcardDetails = flashcardUiState.flashcardDetails,
                 availableDecks = availableDecks,
+                isEntryValid = flashcardUiState.isEntryValid,
                 selectedImageUri = flashcardUiState.selectedImageUri,
                 existingImageUri = flashcardUiState.existingImageUri,
                 onValueChange = onFlashcardValueChange,
                 onImageUploaded = onImageUploaded,
+                onSaveClick = onSaveClick,
                 onImageRestored = onImageRestored,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -138,29 +140,14 @@ fun FlashcardEntryBody(
             FlashcardInputForm(
                 flashcardDetails = flashcardUiState.flashcardDetails,
                 availableDecks = availableDecks,
+                isEntryValid = flashcardUiState.isEntryValid,
                 selectedImageUri = flashcardUiState.selectedImageUri,
                 existingImageUri = flashcardUiState.existingImageUri,
                 onValueChange = onFlashcardValueChange,
                 onImageUploaded = onImageUploaded,
+                onSaveClick = onSaveClick,
                 onImageRestored = onImageRestored,
                 modifier = Modifier.fillMaxWidth(),
-            )
-        }
-
-        Button(
-            onClick = onSaveClick,
-            enabled = flashcardUiState.isEntryValid,
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(R.string.save_button))
-        }
-
-        if (!flashcardUiState.isEntryValid) {
-            Text(
-                text = stringResource(R.string.flashcard_entry_invalid_message),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.bodySmall
             )
         }
     }
@@ -170,10 +157,12 @@ fun FlashcardEntryBody(
 fun FlashcardInputForm(
     flashcardDetails: FlashcardDetails,
     availableDecks: List<Deck>?,
+    isEntryValid: Boolean,
     selectedImageUri: Uri?,
     existingImageUri: Uri?,
     onValueChange: (FlashcardDetails) -> Unit,
     onImageUploaded: (imageUri: Uri?) -> Unit,
+    onSaveClick: () -> Unit,
     modifier: Modifier = Modifier,
     onImageRestored: (() -> Unit)? = null,
 ) {
@@ -195,6 +184,23 @@ fun FlashcardInputForm(
             onImageRestored = onImageRestored,
             modifier = Modifier.fillMaxWidth()
         )
+
+        Button(
+            onClick = onSaveClick,
+            enabled = isEntryValid,
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.save_button))
+        }
+
+        if (!isEntryValid) {
+            Text(
+                text = stringResource(R.string.flashcard_entry_invalid_message),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
     }
 }
 
@@ -202,23 +208,45 @@ fun FlashcardInputForm(
 fun FlashcardInputFormTablet(
     flashcardDetails: FlashcardDetails,
     availableDecks: List<Deck>?,
+    isEntryValid: Boolean,
     selectedImageUri: Uri?,
     existingImageUri: Uri?,
     onValueChange: (FlashcardDetails) -> Unit,
     onImageUploaded: (imageUri: Uri?) -> Unit,
     modifier: Modifier = Modifier,
     onImageRestored: (() -> Unit)? = null,
+    onSaveClick: () -> Unit
 ) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
     ) {
-        FlashcardInputFields(
-            flashcardDetails = flashcardDetails,
-            onValueChange = onValueChange,
-            availableDecks = availableDecks,
-            modifier = Modifier.weight(1f)
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            FlashcardInputFields(
+                flashcardDetails = flashcardDetails,
+                onValueChange = onValueChange,
+                availableDecks = availableDecks,
+            )
+
+            Button(
+                onClick = onSaveClick,
+                enabled = isEntryValid,
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = dimensionResource(R.dimen.padding_medium))
+            ) {
+                Text(stringResource(R.string.save_button))
+            }
+
+            if (!isEntryValid) {
+                Text(
+                    text = stringResource(R.string.flashcard_entry_invalid_message),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
 
         VerticalDivider()
 
