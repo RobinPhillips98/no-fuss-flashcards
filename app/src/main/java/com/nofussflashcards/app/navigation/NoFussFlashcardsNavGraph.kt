@@ -3,6 +3,7 @@ package com.nofussflashcards.app.navigation
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.tween
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -45,6 +46,7 @@ import com.nofussflashcards.app.ui.theme.AppThemeViewModel
 fun NoFussFlashcardsNavHost(
     navController: NavHostController,
     appThemeViewModel: AppThemeViewModel,
+    windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
 ) {
     val durationMillis = 150
@@ -92,6 +94,7 @@ fun NoFussFlashcardsNavHost(
             val deckId = it.arguments?.getInt(DeckDetailsDestination.DECK_ID_ARG) ?: 0
 
             DeckDetailsScreen(
+                windowSize = windowSize,
                 navigateToFlashcards = {
                     navController.navigate("${FlashcardsPagerDestination.route}/$deckId")
                 },
