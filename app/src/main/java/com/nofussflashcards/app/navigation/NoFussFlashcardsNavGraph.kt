@@ -162,6 +162,7 @@ fun NoFussFlashcardsNavHost(
             })
         ) {
             FlashcardEntryScreen(
+                windowSize = windowSize,
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() }
             )
@@ -176,6 +177,7 @@ fun NoFussFlashcardsNavHost(
             )
         ) {
             FlashcardEditScreen(
+                windowSize = windowSize,
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() }
             )

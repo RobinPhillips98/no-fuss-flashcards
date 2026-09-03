@@ -3,6 +3,7 @@ package com.nofussflashcards.app.ui.flashcards.forms
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -20,6 +21,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -51,6 +54,7 @@ object FlashcardEntryDestination: NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashcardEntryScreen(
+    windowSize: WindowWidthSizeClass,
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     viewModel: FlashcardEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -58,7 +62,10 @@ fun FlashcardEntryScreen(
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
+
     val flashcardUiState = viewModel.flashcardUiState
+
+    val isTablet = windowSize == WindowWidthSizeClass.Expanded || windowSize == WindowWidthSizeClass.Medium
 
     // Collect events from the ViewModel and show snackbars for relevant events.
     LaunchedEffect(Unit) {
@@ -86,6 +93,7 @@ fun FlashcardEntryScreen(
     ) { innerPadding ->
         FlashcardEntryBody(
             flashcardUiState = flashcardUiState,
+            isTablet = isTablet,
             onFlashcardValueChange = viewModel::updateUiState,
             onImageUploaded = viewModel::onImageSelected,
             onSaveClick = {
@@ -104,6 +112,7 @@ fun FlashcardEntryScreen(
 @Composable
 fun FlashcardEntryBody(
     flashcardUiState: FlashcardUiState,
+    isTablet: Boolean,
     onFlashcardValueChange: (FlashcardDetails) -> Unit,
     onImageUploaded: (imageUri: Uri?) -> Unit,
     onSaveClick: () -> Unit,
@@ -117,16 +126,29 @@ fun FlashcardEntryBody(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_large))
     ) {
-        FlashcardInputForm(
-            flashcardDetails = flashcardUiState.flashcardDetails,
-            availableDecks = availableDecks,
-            selectedImageUri = flashcardUiState.selectedImageUri,
-            existingImageUri = flashcardUiState.existingImageUri,
-            onValueChange = onFlashcardValueChange,
-            onImageUploaded = onImageUploaded,
-            onImageRestored = onImageRestored,
-            modifier = Modifier.fillMaxWidth(),
-        )
+        if (isTablet) {
+            FlashcardInputFormTablet(
+                flashcardDetails = flashcardUiState.flashcardDetails,
+                availableDecks = availableDecks,
+                selectedImageUri = flashcardUiState.selectedImageUri,
+                existingImageUri = flashcardUiState.existingImageUri,
+                onValueChange = onFlashcardValueChange,
+                onImageUploaded = onImageUploaded,
+                onImageRestored = onImageRestored,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        } else {
+            FlashcardInputForm(
+                flashcardDetails = flashcardUiState.flashcardDetails,
+                availableDecks = availableDecks,
+                selectedImageUri = flashcardUiState.selectedImageUri,
+                existingImageUri = flashcardUiState.existingImageUri,
+                onValueChange = onFlashcardValueChange,
+                onImageUploaded = onImageUploaded,
+                onImageRestored = onImageRestored,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
 
         Button(
             onClick = onSaveClick,
@@ -162,6 +184,66 @@ fun FlashcardInputForm(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
     ) {
+        FlashcardInputFields(
+            flashcardDetails = flashcardDetails,
+            onValueChange = onValueChange,
+            availableDecks = availableDecks
+        )
+
+        ImageUploader(
+            objectDescription = stringResource(R.string.flashcard_object_type),
+            onImageUploaded = onImageUploaded,
+            selectedImageUri = selectedImageUri,
+            existingImageUri = existingImageUri,
+            onImageRestored = onImageRestored,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+fun FlashcardInputFormTablet(
+    flashcardDetails: FlashcardDetails,
+    availableDecks: List<Deck>?,
+    selectedImageUri: Uri?,
+    existingImageUri: Uri?,
+    onValueChange: (FlashcardDetails) -> Unit,
+    onImageUploaded: (imageUri: Uri?) -> Unit,
+    modifier: Modifier = Modifier,
+    onImageRestored: (() -> Unit)? = null,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+    ) {
+        FlashcardInputFields(
+            flashcardDetails = flashcardDetails,
+            onValueChange = onValueChange,
+            availableDecks = availableDecks,
+            modifier = Modifier.weight(1f)
+        )
+
+        VerticalDivider()
+
+        ImageUploader(
+            objectDescription = stringResource(R.string.flashcard_object_type),
+            onImageUploaded = onImageUploaded,
+            selectedImageUri = selectedImageUri,
+            existingImageUri = existingImageUri,
+            onImageRestored = onImageRestored,
+            modifier = Modifier.fillMaxWidth().weight(1f)
+        )
+    }
+}
+
+@Composable
+private fun FlashcardInputFields(
+    flashcardDetails: FlashcardDetails,
+    onValueChange: (FlashcardDetails) -> Unit,
+    availableDecks: List<Deck>?,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
         OutlinedTextField(
             value = flashcardDetails.term,
             onValueChange = { onValueChange(flashcardDetails.copy(term = it)) },
@@ -191,15 +273,15 @@ fun FlashcardInputForm(
         )
 
         /*
-        By making availableDecks null by default, we can make the deck selection optional. If
-        availableDecks is provided, the dropdown will be displayed; otherwise, it will be omitted.
+            By making availableDecks null by default, we can make the deck selection optional. If
+            availableDecks is provided, the dropdown will be displayed; otherwise, it will be omitted.
 
-        For example, when creating a new flashcard, the card is simply associated with the deck
-        that was selected when navigating to the FlashcardEntryScreen. In this case, we don't need
-        to show the dropdown, so we can leave availableDecks as null. However, when editing an
-        existing flashcard, we want to allow the user to change the deck, so we provide the list of
-        available decks and display the dropdown.
-         */
+            For example, when creating a new flashcard, the card is simply associated with the deck
+            that was selected when navigating to the FlashcardEntryScreen. In this case, we don't need
+            to show the dropdown, so we can leave availableDecks as null. However, when editing an
+            existing flashcard, we want to allow the user to change the deck, so we provide the list of
+            available decks and display the dropdown.
+             */
         if (availableDecks != null) {
             FlashcardDeckDropdown(
                 selectedDeck = flashcardDetails.deckId,
@@ -208,15 +290,6 @@ fun FlashcardInputForm(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-
-        ImageUploader(
-            objectDescription = stringResource(R.string.flashcard_object_type),
-            onImageUploaded = onImageUploaded,
-            selectedImageUri = selectedImageUri,
-            existingImageUri = existingImageUri,
-            onImageRestored = onImageRestored,
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
 
@@ -277,6 +350,7 @@ private fun FlashcardDeckDropdown(
 fun FlashcardEntryScreenPreview() {
     FlashcardEntryBody(
         flashcardUiState = FlashcardUiState(),
+        isTablet = false,
         onFlashcardValueChange = {},
         onImageUploaded = {},
         onSaveClick = {}
