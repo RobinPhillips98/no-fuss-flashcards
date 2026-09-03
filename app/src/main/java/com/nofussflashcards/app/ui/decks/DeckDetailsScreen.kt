@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -63,10 +64,13 @@ fun DeckDetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: DeckDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
-    val flashcardToDelete by viewModel.flashcardToDelete.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val layoutDirection = LocalLayoutDirection.current
+
+    val flashcardToDelete by viewModel.flashcardToDelete.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+
     val loadedSuccessfully = !uiState.isLoading && !uiState.hasDeckLoadError && !uiState.hasFlashcardsLoadError
     val isTablet = windowSize == WindowWidthSizeClass.Medium || windowSize == WindowWidthSizeClass.Expanded
 
@@ -121,7 +125,7 @@ fun DeckDetailsScreen(
                     modifier = Modifier
                         .padding(
                             end = WindowInsets.safeDrawing.asPaddingValues()
-                                .calculateEndPadding(LocalLayoutDirection.current)
+                                .calculateEndPadding(layoutDirection)
                         ),
                     icon = {
                         Icon(
@@ -136,6 +140,14 @@ fun DeckDetailsScreen(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         modifier = modifier
     ) { innerPadding ->
+        val bodyModifier = Modifier
+            .padding(
+                top = innerPadding.calculateTopPadding() + dimensionResource(R.dimen.padding_medium),
+                start = innerPadding.calculateStartPadding(layoutDirection) + dimensionResource(R.dimen.padding_medium),
+                end = innerPadding.calculateEndPadding(layoutDirection) + dimensionResource(R.dimen.padding_medium),
+                bottom = dimensionResource(R.dimen.padding_medium)
+            )
+
          if (uiState.hasDeckLoadError) {
             Column(
                 modifier = Modifier
@@ -179,8 +191,7 @@ fun DeckDetailsScreen(
                  navigateToFlashcardEntryScreen = navigateToFlashcardEntryScreen,
                  navigateToFlashcardEditScreen = navigateToFlashcardEditScreen,
                  setFlashCardToDelete = viewModel::setFlashcardToDelete,
-                 innerPadding = innerPadding,
-                 modifier = modifier
+                 modifier = bodyModifier
              )
          } else {
              DeckDetailsBody(
@@ -196,8 +207,7 @@ fun DeckDetailsScreen(
                  navigateToEditScreen = navigateToEditScreen,
                  navigateToFlashcardEditScreen = navigateToFlashcardEditScreen,
                  setFlashCardToDelete = viewModel::setFlashcardToDelete,
-                 innerPadding = innerPadding,
-                 modifier = modifier
+                 modifier = bodyModifier
              )
          }
     }
