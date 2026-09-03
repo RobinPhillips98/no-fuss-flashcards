@@ -61,11 +61,12 @@ fun FlashcardsGrid(
     onEditClicked: (id: Int) -> Unit,
     onDelete: (flashcard: Flashcard) -> Unit,
     onRetryLoad: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    numOfColumns: Int = 2
 ) {
     if (flashcardsAvailable) {
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+            columns = GridCells.Fixed(numOfColumns),
             modifier = modifier.padding(dimensionResource(R.dimen.padding_small)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),

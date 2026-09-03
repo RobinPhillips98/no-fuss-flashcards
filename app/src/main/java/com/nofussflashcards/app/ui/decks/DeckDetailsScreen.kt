@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nofussflashcards.app.NoFussFlashCardsTopAppBar
 import com.nofussflashcards.app.R
+import com.nofussflashcards.app.data.flashcards.Flashcard
 import com.nofussflashcards.app.navigation.NavigationDestination
 import com.nofussflashcards.app.ui.AppViewModelProvider
 import kotlinx.coroutines.launch
@@ -68,6 +69,20 @@ fun DeckDetailsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val loadedSuccessfully = !uiState.isLoading && !uiState.hasDeckLoadError && !uiState.hasFlashcardsLoadError
     val isTablet = windowSize == WindowWidthSizeClass.Medium || windowSize == WindowWidthSizeClass.Expanded
+
+    fun onDeleteDeck() {
+        coroutineScope.launch {
+            val deckDeletedSuccessfully = viewModel.deleteDeck()
+            if (deckDeletedSuccessfully)
+                navigateBack()
+        }
+    }
+
+    fun onDeleteFlashcard(flashcard: Flashcard) {
+        coroutineScope.launch {
+            viewModel.deleteFlashcard(flashcard)
+        }
+    }
 
     // Collect events from the ViewModel and show snackbars for relevant events.
     LaunchedEffect(Unit) {
@@ -148,67 +163,42 @@ fun DeckDetailsScreen(
                      .fillMaxSize()
                      .wrapContentSize(Alignment.Center)
              )
+         } else if (isTablet) {
+             DeckDetailsBodyTablet(
+                 deckDetails = uiState.deckDetails.toDeck(),
+                 flashCards = uiState.flashcards,
+                 windowSize = windowSize,
+                 flashcardToDelete = flashcardToDelete,
+                 hasFlashcardsLoadError = uiState.hasFlashcardsLoadError,
+                 navigateToFlashcards = navigateToFlashcards,
+                 navigateToFlashcardWithId = navigateToFlashcardWithId,
+                 retryLoadFlashcards = viewModel::retryFlashcardsLoad,
+                 onDeleteDeck = ::onDeleteDeck,
+                 onDeleteFlashcard = ::onDeleteFlashcard,
+                 navigateToEditScreen = navigateToEditScreen,
+                 navigateToFlashcardEntryScreen = navigateToFlashcardEntryScreen,
+                 navigateToFlashcardEditScreen = navigateToFlashcardEditScreen,
+                 setFlashCardToDelete = viewModel::setFlashcardToDelete,
+                 innerPadding = innerPadding,
+                 modifier = modifier
+             )
          } else {
-             if (isTablet) {
-                 DeckDetailsBodyTablet(
-                     deckDetails = uiState.deckDetails.toDeck(),
-                     flashCards = uiState.flashcards,
-                     flashcardToDelete = flashcardToDelete,
-                     hasFlashcardsLoadError = uiState.hasFlashcardsLoadError,
-                     navigateToFlashcards = navigateToFlashcards,
-                     navigateToFlashcardWithId = navigateToFlashcardWithId,
-                     retryLoadFlashcards = { viewModel.retryFlashcardsLoad() },
-                     onDeleteDeck = {
-                         coroutineScope.launch {
-                             val deckDeletedSuccessfully = viewModel.deleteDeck()
-                             if (deckDeletedSuccessfully)
-                                 navigateBack()
-                         }
-                     },
-                     onDeleteFlashcard = { flashcard ->
-                         coroutineScope.launch {
-                             viewModel.deleteFlashcard(flashcard)
-                         }
-                     },
-                     navigateToEditScreen = navigateToEditScreen,
-                     navigateToFlashcardEntryScreen = navigateToFlashcardEntryScreen,
-                     navigateToFlashcardEditScreen = navigateToFlashcardEditScreen,
-                     setFlashCardToDelete = { flashcard ->
-                         viewModel.setFlashcardToDelete(flashcard)
-                     },
-                     innerPadding = innerPadding,
-                     modifier = modifier
-                 )
-             } else {
-                 DeckDetailsBody(
-                     deckDetails = uiState.deckDetails.toDeck(),
-                     flashCards = uiState.flashcards,
-                     flashcardToDelete = flashcardToDelete,
-                     hasFlashcardsLoadError = uiState.hasFlashcardsLoadError,
-                     navigateToFlashcards = navigateToFlashcards,
-                     navigateToFlashcardWithId = navigateToFlashcardWithId,
-                     retryLoadFlashcards = { viewModel.retryFlashcardsLoad() },
-                     onDeleteDeck = {
-                         coroutineScope.launch {
-                             val deckDeletedSuccessfully = viewModel.deleteDeck()
-                             if (deckDeletedSuccessfully)
-                                 navigateBack()
-                         }
-                     },
-                     onDeleteFlashcard = { flashcard ->
-                         coroutineScope.launch {
-                             viewModel.deleteFlashcard(flashcard)
-                         }
-                     },
-                     navigateToEditScreen = navigateToEditScreen,
-                     navigateToFlashcardEditScreen = navigateToFlashcardEditScreen,
-                     setFlashCardToDelete = { flashcard ->
-                         viewModel.setFlashcardToDelete(flashcard)
-                     },
-                     innerPadding = innerPadding,
-                     modifier = modifier
-                 )
-             }
+             DeckDetailsBody(
+                 deckDetails = uiState.deckDetails.toDeck(),
+                 flashCards = uiState.flashcards,
+                 flashcardToDelete = flashcardToDelete,
+                 hasFlashcardsLoadError = uiState.hasFlashcardsLoadError,
+                 navigateToFlashcards = navigateToFlashcards,
+                 navigateToFlashcardWithId = navigateToFlashcardWithId,
+                 retryLoadFlashcards = viewModel::retryFlashcardsLoad,
+                 onDeleteDeck = ::onDeleteDeck,
+                 onDeleteFlashcard = ::onDeleteFlashcard,
+                 navigateToEditScreen = navigateToEditScreen,
+                 navigateToFlashcardEditScreen = navigateToFlashcardEditScreen,
+                 setFlashCardToDelete = viewModel::setFlashcardToDelete,
+                 innerPadding = innerPadding,
+                 modifier = modifier
+             )
          }
     }
 }
