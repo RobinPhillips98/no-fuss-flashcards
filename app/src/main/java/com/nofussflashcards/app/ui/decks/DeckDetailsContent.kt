@@ -20,6 +20,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -199,6 +200,7 @@ fun DeckDetailsBody(
 fun DeckDetailsBodyTablet(
     deckDetails: Deck,
     flashCards: List<Flashcard>,
+    windowSize: WindowWidthSizeClass,
     flashcardToDelete: Flashcard?,
     hasFlashcardsLoadError: Boolean,
     navigateToFlashcards: () -> Unit,
@@ -217,6 +219,8 @@ fun DeckDetailsBodyTablet(
     var deleteFlashcardConfirmationOpen by remember { mutableStateOf(false) }
     val flashcardsAvailable = flashCards.isNotEmpty() && !hasFlashcardsLoadError
     val layoutDirection = LocalLayoutDirection.current
+    val numOfColumns = if (windowSize == WindowWidthSizeClass.Expanded) 3 else 2
+
     Row(
         modifier = modifier
             .fillMaxSize()
@@ -240,6 +244,7 @@ fun DeckDetailsBodyTablet(
         FlashcardsGrid(
             flashcards = flashCards,
             flashcardsAvailable = flashcardsAvailable,
+            numOfColumns = numOfColumns,
             hasFlashcardsLoadError = hasFlashcardsLoadError,
             onFlashCardClicked = navigateToFlashcardWithId,
             onEditClicked = navigateToFlashcardEditScreen,
