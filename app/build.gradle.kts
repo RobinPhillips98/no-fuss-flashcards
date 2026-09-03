@@ -68,6 +68,9 @@ dependencies {
     // Material Icons
     implementation(libs.androidx.compose.material.icons.extended)
 
+    // Window Sizing
+    implementation(libs.androidx.compose.material3.window.size.class1)
+
     // Room
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
@@ -88,5 +91,7 @@ dependencies {
 
     // Kotlin Serialization
     implementation(libs.kotlinx.serialization.json)
+
+
 
 }
