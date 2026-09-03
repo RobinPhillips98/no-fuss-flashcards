@@ -1,6 +1,5 @@
 package com.nofussflashcards.app.ui.decks
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,17 +7,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -32,11 +26,12 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.nofussflashcards.app.R
 import com.nofussflashcards.app.data.decks.Deck
 import com.nofussflashcards.app.data.flashcards.Flashcard
 import com.nofussflashcards.app.ui.utils.DeleteConfirmationDialog
+import com.nofussflashcards.app.ui.utils.SidebarActionButton
+import com.nofussflashcards.app.ui.utils.SidebarMenu
 
 
 /**
@@ -294,90 +289,34 @@ private fun DeckDetailsSidebar(
     onDeleteDeck: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        shape = MaterialTheme.shapes.large,
-        tonalElevation = 4.dp,
-        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)),
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
-        modifier = modifier
-            .widthIn(min = 240.dp, max = 320.dp)
-            .fillMaxHeight()
+    SidebarMenu(
+        headerTitle = deckName,
+        modifier = modifier,
+        headerSubtitle = deckDescription,
     ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
-        ) {
-            Text(
-                text = stringResource(R.string.deck_name_label, deckName),
-                style = MaterialTheme.typography.titleMedium
-            )
+        SidebarActionButton(
+            text = stringResource(R.string.open_deck_button),
+            onClick = navigateToFlashcards,
+            enabled = flashcardsAvailable
+        )
 
-            deckDescription?.let { description ->
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
-                )
-            }
+        SidebarActionButton(
+            text = stringResource(R.string.edit_deck_button),
+            onClick = navigateToEditScreen
+        )
 
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = dimensionResource(R.dimen.padding_medium)),
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-            )
+        SidebarActionButton(
+            text = stringResource(R.string.add_flashcard_button),
+            onClick = navigateToFlashcardEntryScreen
+        )
 
-            SidebarActionButton(
-                text = stringResource(R.string.open_deck_button),
-                onClick = navigateToFlashcards,
-                enabled = flashcardsAvailable
-            )
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)))
 
-            SidebarActionButton(
-                text = stringResource(R.string.edit_deck_button),
-                onClick = navigateToEditScreen
-            )
-
-            SidebarActionButton(
-                text = stringResource(R.string.add_flashcard_button),
-                onClick = navigateToFlashcardEntryScreen
-            )
-
-            Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)))
-
-            SidebarActionButton(
-                text = stringResource(R.string.delete_deck_button),
-                onClick = onDeleteDeck,
-                isDangerous = true
-            )
-        }
-    }
-}
-
-@Composable
-private fun SidebarActionButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    isDangerous: Boolean = false,
-    icon: @Composable (() -> Unit)? = null
-) {
-    FilledTonalButton(
-        onClick = onClick,
-        enabled = enabled,
-        colors = if (isDangerous) {
-            ButtonDefaults.filledTonalButtonColors(
-                containerColor = MaterialTheme.colorScheme.errorContainer,
-                contentColor = MaterialTheme.colorScheme.onErrorContainer
-            )
-        } else {
-            ButtonDefaults.filledTonalButtonColors()
-        },
-        modifier = modifier.fillMaxWidth()
-    ) {
-        if (icon != null) {
-            icon()
-        }
-        Text(text)
+        SidebarActionButton(
+            text = stringResource(R.string.delete_deck_button),
+            onClick = onDeleteDeck,
+            isDangerous = true
+        )
     }
 }
 
