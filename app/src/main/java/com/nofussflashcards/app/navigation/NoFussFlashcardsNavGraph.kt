@@ -50,6 +50,8 @@ fun NoFussFlashcardsNavHost(
     modifier: Modifier = Modifier,
 ) {
     val durationMillis = 150
+    val isTablet = windowSize == WindowWidthSizeClass.Medium || windowSize == WindowWidthSizeClass.Expanded
+
     NavHost(
         navController = navController,
         startDestination = HomeDestination.route,
@@ -77,7 +79,7 @@ fun NoFussFlashcardsNavHost(
     ) {
         composable(route = HomeDestination.route) {
             HomeScreen(
-                windowSize = windowSize,
+                isTablet = isTablet,
                 onCreateDeckClicked = { navController.navigate(DeckEntryDestination.route) },
                 onDeckClicked = { deckId ->
                     navController.navigate("${DeckDetailsDestination.route}/$deckId")
@@ -96,6 +98,7 @@ fun NoFussFlashcardsNavHost(
 
             DeckDetailsScreen(
                 windowSize = windowSize,
+                isTablet = isTablet,
                 navigateToFlashcards = {
                     navController.navigate("${FlashcardsPagerDestination.route}/$deckId")
                 },
@@ -163,7 +166,7 @@ fun NoFussFlashcardsNavHost(
             })
         ) {
             FlashcardEntryScreen(
-                windowSize = windowSize,
+                isTablet = isTablet,
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() }
             )
@@ -178,7 +181,7 @@ fun NoFussFlashcardsNavHost(
             )
         ) {
             FlashcardEditScreen(
-                windowSize = windowSize,
+                isTablet = isTablet,
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() }
             )

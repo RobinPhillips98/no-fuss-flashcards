@@ -22,7 +22,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,7 +53,7 @@ object FlashcardEntryDestination: NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashcardEntryScreen(
-    windowSize: WindowWidthSizeClass,
+    isTablet: Boolean,
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     viewModel: FlashcardEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -64,8 +63,6 @@ fun FlashcardEntryScreen(
     val context = LocalContext.current
 
     val flashcardUiState = viewModel.flashcardUiState
-
-    val isTablet = windowSize == WindowWidthSizeClass.Expanded || windowSize == WindowWidthSizeClass.Medium
 
     // Collect events from the ViewModel and show snackbars for relevant events.
     LaunchedEffect(Unit) {
