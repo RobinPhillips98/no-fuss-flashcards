@@ -8,5 +8,6 @@
     <dimen name="footer_height">84dp</dimen>
     <dimen name="flashcard_item_height">160dp</dimen>
     <dimen name="padding_extra_small">4dp</dimen>
-    <dimen name="image_preview_height">195dp</dimen>
+    <dimen name="image_preview_min_height">180dp</dimen>
+    <dimen name="image_preview_max_height">420dp</dimen>
 </resources>
