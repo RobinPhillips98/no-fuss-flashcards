@@ -81,6 +81,7 @@ private data class FlashcardsPagerAnimationState(
 @Composable
 fun FlashcardsPagerScreen(
     windowSize: WindowWidthSizeClass,
+    isTablet: Boolean,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: FlashcardsPagerViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -155,6 +156,7 @@ fun FlashcardsPagerScreen(
                 hasFlippedCard = uiState.hasFlippedCard,
                 shuffleGeneration = uiState.shuffleGeneration,
                 windowSize = windowSize,
+                isTablet = isTablet,
                 onFlashcardClicked = {
                     viewModel.updateHasFlippedCard(true)
                 },
@@ -175,6 +177,7 @@ private fun FlashcardsPagerBody(
     hasFlippedCard: Boolean,
     shuffleGeneration: Int,
     windowSize: WindowWidthSizeClass,
+    isTablet: Boolean,
     onFlashcardClicked: () -> Unit,
     onReshuffleClicked: () -> Unit,
     retryLoadFlashcards: () -> Unit,
@@ -255,14 +258,13 @@ private fun FlashcardsPagerBody(
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_extra_small)))
             HorizontalDivider()
 
-            // If the user has never flipped a card, show a hint to flip the card
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                if (!hasFlippedCard) {
+            if (!hasFlippedCard) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = dimensionResource(R.dimen.padding_small)),
+                    contentAlignment = Alignment.Center,
+                ) {
                     Text(
                         text = stringResource(R.string.flashcard_flip_hint),
                         style = MaterialTheme.typography.headlineSmall,
@@ -292,6 +294,7 @@ private fun FlashcardsPagerBody(
                         flashcards = animatedState.flashcards,
                         pagerState = pagerState,
                         windowSize = windowSize,
+                        isTablet = isTablet,
                         onFlashcardClicked = onFlashcardClicked,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -313,27 +316,31 @@ private fun FlashcardsPager(
     flashcards: List<Flashcard>,
     pagerState: PagerState,
     windowSize: WindowWidthSizeClass,
+    isTablet: Boolean,
     onFlashcardClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val availableWidth = maxWidth
         val availableHeight = maxHeight
+        val isLandscape = availableWidth > availableHeight
 
         val sidePeek = when (windowSize) {
             WindowWidthSizeClass.Compact -> 20.dp
-            WindowWidthSizeClass.Medium -> 32.dp
-            WindowWidthSizeClass.Expanded -> 48.dp
-            else -> 32.dp
+            WindowWidthSizeClass.Medium -> if (isLandscape) 24.dp else 32.dp
+            WindowWidthSizeClass.Expanded -> if (isLandscape) 32.dp else 40.dp
+            else -> 24.dp
         }
 
         val pageWidth = (availableWidth - sidePeek * 2)
             .coerceAtLeast(280.dp)
 
-        val cardHeight = minOf(
-            pageWidth * 1.4f,
-            availableHeight * 0.82f
-        )
+        val cardHeight = when {
+            isTablet && isLandscape -> (availableHeight * 0.92f).coerceAtLeast(360.dp)
+            isLandscape -> minOf(pageWidth * 0.78f, availableHeight * 0.90f).coerceAtLeast(320.dp)
+            isTablet -> minOf(pageWidth * 1.08f, availableHeight * 0.88f).coerceAtLeast(360.dp)
+            else -> minOf(pageWidth * 1.28f, availableHeight * 0.84f).coerceAtLeast(320.dp)
+        }
 
         HorizontalPager(
             state = pagerState,
@@ -355,6 +362,7 @@ private fun FlashcardsPager(
                 FlashcardDetail(
                     flashcardData = flashcard,
                     flashcardIndex = page + 1,
+                    isTablet = isTablet,
                     onClick = onFlashcardClicked,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -386,6 +394,7 @@ fun FlashcardsPagerBodyPreview() {
         hasFlippedCard = false,
         shuffleGeneration = 0,
         windowSize = WindowWidthSizeClass.Compact,
+        isTablet = false,
         onFlashcardClicked = {},
         onReshuffleClicked = {},
         retryLoadFlashcards = {}
@@ -408,6 +417,7 @@ fun FlashcardPagerBodyEmptyPreview() {
         hasFlippedCard = true,
         shuffleGeneration = 0,
         windowSize = WindowWidthSizeClass.Compact,
+        isTablet = false,
         onFlashcardClicked = {},
         onReshuffleClicked = {},
         retryLoadFlashcards = {}
