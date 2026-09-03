@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,11 +23,13 @@ import com.nofussflashcards.app.ui.theme.AppThemeViewModel
 @Composable
 fun NoFussFlashcardsApp(
     appThemeViewModel: AppThemeViewModel,
+    windowSize: WindowWidthSizeClass,
     navController: NavHostController = rememberNavController()
 ) {
     NoFussFlashcardsNavHost(
         navController = navController,
-        appThemeViewModel = appThemeViewModel
+        appThemeViewModel = appThemeViewModel,
+        windowSize = windowSize
     )
 }
 
