@@ -136,6 +136,7 @@ fun NoFussFlashcardsNavHost(
         ) {
             FlashcardsPagerScreen(
                 windowSize = windowSize,
+                isTablet = isTablet,
                 navigateBack = { navController.navigateUp() }
             )
         }

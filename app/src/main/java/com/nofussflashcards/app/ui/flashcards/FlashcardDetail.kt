@@ -5,7 +5,9 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -35,6 +37,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.nofussflashcards.app.R
@@ -44,6 +47,7 @@ import com.nofussflashcards.app.data.flashcards.Flashcard
 fun FlashcardDetail(
     flashcardData: Flashcard,
     flashcardIndex: Int,
+    isTablet: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -61,12 +65,6 @@ fun FlashcardDetail(
     val sideLabel =
         if (showBackSide) stringResource(R.string.term)
         else stringResource(R.string.definition)
-    val cardText = if (showBackSide) flashcardData.term else flashcardData.definition
-    val cardStyle = if (showBackSide) {
-        MaterialTheme.typography.displaySmall
-    } else {
-        MaterialTheme.typography.titleMedium
-    }
 
     val density = LocalDensity.current
 
@@ -77,20 +75,17 @@ fun FlashcardDetail(
                 isFlipped = !isFlipped
             },
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.95f)
-                .heightIn(min = 320.dp)
+                .fillMaxSize()
                 .graphicsLayer {
                     rotationY = cardRotationY
-                    // Compose cameraDistance uses "px-like" units; larger = less perspective distortion.
                     cameraDistance = 12f * density.density * 100f
                 }
         ) {
-            // Counter-rotate content on the back half so text is not mirrored.
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer {
+                        // Counter-rotate content on the back half so text is not mirrored mid-flip.
                         rotationY = if (showBackSide) 180f else 0f
                     }
                     .padding(dimensionResource(R.dimen.padding_medium))
@@ -103,61 +98,177 @@ fun FlashcardDetail(
 
                 Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
 
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    if (cardText != null) {
-                        Text(
-                            text = cardText,
-                            style = cardStyle,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
-                    // Show image only on definition/front side.
-                    if (!showBackSide && flashcardData.imagePath != null) {
-                        Spacer(modifier = Modifier.height(
-                            dimensionResource(R.dimen.padding_medium_small)
-                        ))
-
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth(0.86f)
-                                .heightIn(min = 120.dp, max = 220.dp)
-                                .aspectRatio(1.35f),
-                            shape = RoundedCornerShape(dimensionResource(R.dimen.padding_medium)),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surface
-                            ),
-                            elevation = CardDefaults.cardElevation(
-                                defaultElevation = dimensionResource(R.dimen.padding_small)
-                            )
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(10.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                AsyncImage(
-                                    model = flashcardData.imagePath,
-                                    contentDescription = stringResource(
-                                        R.string.flashcard_image_content_description,
-                                        flashcardIndex
-                                    ),
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Fit
-                                )
-                            }
-                        }
-                    }
-                }
+                FlashcardInfo(
+                    flashcardData = flashcardData,
+                    flashcardIndex = flashcardIndex,
+                    isTablet = isTablet,
+                    showBackSide = showBackSide,
+                    modifier = Modifier.weight(1f)
+                )
             }
+        }
+    }
+}
+
+@Composable
+private fun FlashcardInfo(
+    flashcardData: Flashcard,
+    flashcardIndex: Int,
+    isTablet: Boolean,
+    showBackSide: Boolean,
+    modifier: Modifier = Modifier
+) {
+    BoxWithConstraints(
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        val useSplitLayout = isTablet &&
+                !flashcardData.definition.isNullOrBlank() &&
+                !flashcardData.imagePath.isNullOrBlank() &&
+                maxWidth >= 700.dp &&
+                maxWidth > maxHeight
+
+        if (showBackSide) {
+            Text(
+                text = flashcardData.term,
+                style = MaterialTheme.typography.displaySmall,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        } else {
+            if (useSplitLayout) {
+                FlashcardInfoSplit(
+                    definition = flashcardData.definition,
+                    imagePath = flashcardData.imagePath,
+                    flashcardIndex = flashcardIndex,
+                    availableHeight = maxHeight
+                )
+            } else {
+                FlashcardInfoStacked(
+                    definition = flashcardData.definition,
+                    imagePath = flashcardData.imagePath,
+                    flashcardIndex = flashcardIndex,
+                    availableHeight = maxHeight
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FlashcardInfoSplit(
+    definition: String,
+    imagePath: String,
+    flashcardIndex: Int,
+    availableHeight: Dp
+) {
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.spacedBy(
+            dimensionResource(R.dimen.padding_medium)
+        ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = definition,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .weight(0.95f)
+                .fillMaxHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            FlashcardImage(
+                imagePath = imagePath,
+                flashcardIndex = flashcardIndex,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 160.dp, max = availableHeight * 0.88f)
+                    .aspectRatio(1.2f, matchHeightConstraintsFirst = true)
+            )
+        }
+    }
+}
+
+@Composable
+private fun FlashcardInfoStacked(
+    definition: String?,
+    imagePath: String?,
+    flashcardIndex: Int,
+    availableHeight: Dp
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        if (!definition.isNullOrBlank()) {
+            Text(
+                text = definition,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium))
+            )
+        }
+
+        if (!imagePath.isNullOrBlank()) {
+            FlashcardImage(
+                imagePath = imagePath,
+                flashcardIndex = flashcardIndex,
+                modifier = Modifier
+                    .fillMaxWidth(0.86f)
+                    .heightIn(min = 140.dp, max = availableHeight * 0.65f)
+                    .aspectRatio(1.35f, matchHeightConstraintsFirst = true)
+            )
+        }
+    }
+}
+
+@Composable
+private fun FlashcardImage(
+    imagePath: String,
+    flashcardIndex: Int,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(dimensionResource(R.dimen.padding_medium)),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = dimensionResource(R.dimen.padding_small)
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(dimensionResource(R.dimen.padding_medium_small)),
+            contentAlignment = Alignment.Center
+        ) {
+            AsyncImage(
+                model = imagePath,
+                contentDescription = stringResource(
+                    R.string.flashcard_image_content_description,
+                    flashcardIndex
+                ),
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit
+            )
         }
     }
 }
@@ -172,5 +283,10 @@ fun FlashcardDetailPreview() {
         definition = "Sample Definition",
         imagePath = null
     )
-    FlashcardDetail(flashcardData = sampleFlashcard, flashcardIndex = 1, onClick = {})
+    FlashcardDetail(
+        flashcardData = sampleFlashcard,
+        flashcardIndex = 1,
+        isTablet = false,
+        onClick = {}
+    )
 }
